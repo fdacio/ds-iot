@@ -12,11 +12,11 @@
       "backgroundColor": "#ffffff"
     },
     "android": {
-      "package": "br.com.daciosoftware.ds-iot",
+      "package": "br.com.daciosofware.dsiot",
       "versionCode": 1
     },
     "ios": {
-      "bundleIndentify": "br.com.daciosoftware.ds-iot",
+      "bundleIndentify": "br.com.daciosoftware.dsiot",
       "buildNumber": "1.0.0"
     },
     "extra": {
