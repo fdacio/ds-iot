@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ds-iot",
+    "name": "DS-IOT",
     "slug": "ds-iot",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,20 +11,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "package": "br.com.daciosoftware.ds-iot",
+      "versionCode": 1
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "ios": {
+      "bundleIndentify": "br.com.daciosoftware.ds-iot",
+      "buildNumber": "1.0.0"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d5191b00-386c-40dc-9810-350c3d23d6f1"
+      }
     }
   }
 }
