@@ -13,7 +13,8 @@
     },
     "android": {
       "package": "br.com.daciosofware.dsiot",
-      "versionCode": 1
+      "versionCode": 1,
+      "blockedPermissions": ["android.permission.WRITE_EXTERNAL_STORAGE"]
     },
     "ios": {
       "bundleIndentify": "br.com.daciosoftware.dsiot",

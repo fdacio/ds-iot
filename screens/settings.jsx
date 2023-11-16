@@ -14,17 +14,16 @@ const Settings = () => {
         try {
             await AsyncStorage.setItem("ip-iot-1", ipIot1);
             await AsyncStorage.setItem("ip-iot-2", ipIot2);
-            Alert.alert("IPs salvos com sucesso.");
+            Alert.alert('DS-IOT', 'IPs salvos com sucesso.');
         } catch (error) {
             console.log(error);
-            Alert.alert("Erro ao salvar IPs");
+            Alert.alert('DS-IOT', 'Erro ao salvar IPs');
         }
     }
 
     const _loadIpIot1 = async () => {
         let ipIot1 = await AsyncStorage.getItem('ip-iot-1');
         if (ipIot1 != null) {
-            console.log(ipIot1);
             setIpIot1(ipIot1);
         }
     }
@@ -32,7 +31,6 @@ const Settings = () => {
     const _loadIpIot2 = async () => {
         let ipIot2 = await AsyncStorage.getItem('ip-iot-2');
         if (ipIot2 != null) {
-            console.log(ipIot2);
             setIpIot2(ipIot2);
         }
     }

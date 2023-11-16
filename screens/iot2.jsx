@@ -22,7 +22,7 @@ const Iot2 = () => {
         try {
             await fetch(url);
         } catch (error) {
-            Alert.alert(error.response);
+            Alert.alert('DS-IOT', error.response);
         }
     }
 
@@ -33,7 +33,7 @@ const Iot2 = () => {
         try {
             await fetch(url);
         } catch (error) {
-            Alert.alert(error.response);
+            Alert.alert('DS-IOT', error.response);
         }
     }
     return (
