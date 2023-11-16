@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,10 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Iot1 = () => {
 
     const _loadIpIot1 = async () => {
-        let ipIot1 = await AsyncStorage.getItem('ip-iot-1');
-        if (ipIot1 != null) {
-            return ipIot1 != null ? JSON.stringify(ipIot1).replaceAll('"','') : null;
-        }
+        let ipIot = await AsyncStorage.getItem('ip-iot-1');
+        if (ipIot != null) {
+            let ip = JSON.stringify(ipIot).replaceAll('"','');
+            return ip;
+        } 
+        return null;
     }
 
     const _on = async () => {
