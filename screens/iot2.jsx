@@ -36,6 +36,7 @@ const Iot2 = () => {
             Alert.alert('DS-IOT', error.response);
         }
     }
+
     return (
         <View style={styles.container}>
             <Header title="IOT 2"></Header>
