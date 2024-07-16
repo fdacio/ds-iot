@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
 import Header from '../components/Header';
+import HeaderScreen from '../components/HeaderScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,22 +38,10 @@ const Iot1 = () => {
         }
     }
 
-    // const getApiData = async () => {
-    //     let url = 'http://159.203.24.33:8083/siga/macroprocesso/get-all-percentual';
-    //     await fetch(url)
-    //         .then((response) => {
-    //             console.log(JSON.stringify(response))
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }
-
-    // getApiData();
-
     return (
         <View style={styles.container}>
-            <Header title="IOT 1"></Header>
+            <Header title="DS - IOT"/>
+            <HeaderScreen title="IOT 1" />
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
                     onPress={_on} > 

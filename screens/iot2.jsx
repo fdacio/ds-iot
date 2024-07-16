@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text, Alert } from 'react-native';
 import Header from '../components/Header';
+import HeaderScreen from '../components/HeaderScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -38,7 +39,8 @@ const Iot2 = () => {
     }
     return (
         <View style={styles.container}>
-            <Header title="IOT 2"></Header>
+            <Header title="DS - IOT" />
+            <HeaderScreen title="IOT 2" />
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
                     onPress={_on} >

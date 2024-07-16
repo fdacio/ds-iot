@@ -35,9 +35,9 @@ const App = () => {
           }
 
         }}>
+        <Tab.Screen name="Mqtt" component={Mqtt} options={{ title: 'MQTT', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
         <Tab.Screen name="Iot1" component={Iot1} options={{ title: 'IOT 1', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
         <Tab.Screen name="Iot2" component={Iot2} options={{ title: 'IOT 2', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
-        <Tab.Screen name="Mqtt" component={Mqtt} options={{ title: 'MQTT', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
         <Tab.Screen name="Settings" component={Settings} options={{ title: 'Settings', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
       </Tab.Navigator>
     </NavigationContainer>

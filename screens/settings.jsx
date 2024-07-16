@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import Header from '../components/Header';
+import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -88,17 +89,18 @@ const Settings = () => {
 
     return (
         <View style={styles.container}>
-            <Header title="Settings" />
+            <Header title="DS - IOT" />
+            <HeaderScreen title="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="IP IOT 1" onChangeText={text => setIpIot1(text)} value={ipIot1} keyboardType="default"/>
-                    <TextInputLabel label="IP IOT 2" onChangeText={text => setIpIot2(text)} value={ipIot2} keyboardType="default"/>
                     <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" />    
                     <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="default" />    
                     <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" />    
                     <TextInputLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" />    
                     <TextInputLabel label="Broken MQTT Topic Subscribe" onChangeText={text => setBrokenMqttTopicSubscribe(text)} value={brokenMqttTopicSubscribe} keyboardType="default" />    
                     <TextInputLabel label="Broken MQTT Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" />    
+                    <TextInputLabel label="IP IOT 1" onChangeText={text => setIpIot1(text)} value={ipIot1} keyboardType="default"/>
+                    <TextInputLabel label="IP IOT 2" onChangeText={text => setIpIot2(text)} value={ipIot2} keyboardType="default"/>
                     <Button label="Salvar" onPress={_onSave} />
                 </View>
             </ScrollView>

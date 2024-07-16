@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
+import HeaderScreen from '../components/HeaderScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Paho from "paho-mqtt";
@@ -44,7 +45,7 @@ const Mqtt = ({ navigation }) => {
             password: brokenMqttPass,
             mqttVersion: 3,
             onSuccess: () => {
-                console.log("Conexao com sucesso");
+                console.log("Conectado com sucesso!");
                 clientMqtt.subscribe(brokenMqttTopicSubscribe);
                 clientMqtt.onMessageArrived = (message) => {
                     if (message.destinationName === brokenMqttTopicSubscribe) {
@@ -53,7 +54,7 @@ const Mqtt = ({ navigation }) => {
                 }
             },
             onFailure: (err) => {
-                Alert.alert("MQTT", "Conexao Falhou: " + JSON.stringify(err, null, '\t'));
+                Alert.alert("MQTT", "Conexão Falhou: " + JSON.stringify(err, null, '\t'));
             }
         };
 
@@ -68,7 +69,9 @@ const Mqtt = ({ navigation }) => {
         if (isFocused) {
             loadMqttConfig();
         } else {
-            clientMqtt.disconnect();
+            if (clientMqtt.isConnected()) {
+                clientMqtt.disconnect();
+            }
         }
     }, [navigation, isFocused]);
 
@@ -90,7 +93,8 @@ const Mqtt = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Header title="MQTT"></Header>
+            <Header title="DS - IOT" />
+            <HeaderScreen title="MQTT" />
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
                     onPress={_on} >
