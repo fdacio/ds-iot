@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
@@ -44,13 +44,11 @@ const Mqtt = ({ navigation }) => {
             password: brokenMqttPass,
             mqttVersion: 3,
             onSuccess: () => {
-                if (clientMqtt.isConnected()) {
-                    console.log("Conexao com sucesso");
-                    clientMqtt.subscribe(brokenMqttTopicSubscribe);
-                    clientMqtt.onMessageArrived = (message) => {
-                        if (message.destinationName === brokenMqttTopicSubscribe) {
-                            console.log(message.payloadString);
-                        }
+                console.log("Conexao com sucesso");
+                clientMqtt.subscribe(brokenMqttTopicSubscribe);
+                clientMqtt.onMessageArrived = (message) => {
+                    if (message.destinationName === brokenMqttTopicSubscribe) {
+                        console.log(message.payloadString);
                     }
                 }
             },
@@ -62,10 +60,10 @@ const Mqtt = ({ navigation }) => {
         clientMqtt.connect(options);
 
         clientMqtt.onConnectionLost = () => {
-            console.log("Disconetado:");
+            console.log("Disconetado!");
         }
     }
-    
+
     useEffect(() => {
         if (isFocused) {
             loadMqttConfig();
