@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Iot2 = () => {
 
+    const stateLed = false;
+    
     const _loadIpIot2 = async () => {
         let ipIot = await AsyncStorage.getItem('ip-iot-2');
         if (ipIot != null) {
@@ -39,8 +41,16 @@ const Iot2 = () => {
     }
     return (
         <View style={styles.container}>
-            <Header title="DS - IOT" />
-            <HeaderScreen title="IOT 2" />
+            <Header title="IOT 2" />
+            <HeaderScreen title="Quarto" />
+            <View style={styles.contentIconsBulb}>
+                {(stateLed) &&
+                <Icon name="lightbulb-o" size={100} color="#ffe000" />
+                }
+                {(!stateLed) &&
+                <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
+                }
+            </View>
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
                     onPress={_on} >
@@ -62,10 +72,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-
+    contentIconsBulb: {
+        flexDirection: 'row',
+        paddingHorizontal: 20,
+        justifyContent: 'flex-end',
+    },
     contentButtons: {
         justifyContent: 'center',
-        flex: 1,
         alignItems: 'center',
     },
 

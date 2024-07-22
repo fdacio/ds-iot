@@ -7,12 +7,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Iot1 = () => {
 
+    const stateLed = false;
+
     const _loadIpIot1 = async () => {
         let ipIot = await AsyncStorage.getItem('ip-iot-1');
         if (ipIot != null) {
-            let ip = JSON.stringify(ipIot).replaceAll('"','');
+            let ip = JSON.stringify(ipIot).replaceAll('"', '');
             return ip;
-        } 
+        }
         return null;
     }
 
@@ -40,18 +42,26 @@ const Iot1 = () => {
 
     return (
         <View style={styles.container}>
-            <Header title="DS - IOT"/>
-            <HeaderScreen title="IOT 1" />
+            <Header title="IOT 1" />
+            <HeaderScreen title="Sala" />
+            <View style={styles.contentIconsBulb}>
+                {(stateLed) &&
+                    <Icon name="lightbulb-o" size={100} color="#ffe000" />
+                }
+                {(!stateLed) &&
+                    <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
+                }
+            </View>
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
-                    onPress={_on} > 
-                    <Icon name="power-off" size = { 60 } color="#006630"/>      
-                    <Text style={styles.textButton}>ON</Text>                
+                    onPress={_on} >
+                    <Icon name="power-off" size={60} color="#006630" />
+                    <Text style={styles.textButton}>ON</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttons} title="OFF"
-                    onPress={_off} > 
-                    <Icon name="power-off" size={ 60 } color="#f00"/>
-                    <Text style={styles.textButton}>OFF</Text> 
+                    onPress={_off} >
+                    <Icon name="power-off" size={60} color="#f00" />
+                    <Text style={styles.textButton}>OFF</Text>
                 </TouchableOpacity>
             </View>
 
@@ -60,18 +70,21 @@ const Iot1 = () => {
 }
 
 const styles = StyleSheet.create({
-    
+
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
-
+    contentIconsBulb: {
+        flexDirection: 'row',
+        paddingHorizontal: 20,
+        justifyContent: 'flex-end',
+    },
     contentButtons: {
         justifyContent: 'center',
-        flex: 1,
         alignItems: 'center',
     },
-    
+
     buttons: {
         borderWidth: 2,
         borderColor: "#ccc",

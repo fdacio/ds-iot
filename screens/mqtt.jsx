@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
@@ -7,19 +7,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Paho from "paho-mqtt";
 
-
+//Variáveis de uso global
 let clientMqtt;
+let brokenMqttHost;
+let brokenMqttPort;
+let brokenMqttUser;
+let brokenMqttPass;
+let brokenMqttTopicSubscribe;
+let brokenMqttTopicPublish;
 
-const Mqtt = ({ navigation }) => {
+const Mqtt = () => {
 
     const isFocused = useIsFocused();
-
-    let brokenMqttHost;
-    let brokenMqttPort;
-    let brokenMqttUser;
-    let brokenMqttPass;
-    let brokenMqttTopicSubscribe;
-    let brokenMqttTopicPublish;
+    const [stateLed, setStateLed] = useState(false);
 
     const loadMqttConfig = async () => {
 
@@ -27,12 +27,17 @@ const Mqtt = ({ navigation }) => {
         brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
         brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
         brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
+
+        if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
+            return;
+        }
+
         brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe");
         brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish");
 
         let host = brokenMqttHost;
         let port = parseInt(brokenMqttPort);
-        let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100)}`;
+        let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100000)}`;
 
         clientMqtt = new Paho.Client(
             host,
@@ -44,12 +49,18 @@ const Mqtt = ({ navigation }) => {
             userName: brokenMqttUser,
             password: brokenMqttPass,
             mqttVersion: 3,
-            onSuccess: () => {
+            onSuccess: async () => {
                 console.log("Conectado com sucesso!");
+                if (brokenMqttTopicSubscribe == null) return;
                 clientMqtt.subscribe(brokenMqttTopicSubscribe);
                 clientMqtt.onMessageArrived = (message) => {
                     if (message.destinationName === brokenMqttTopicSubscribe) {
-                        console.log(message.payloadString);
+                        //console.log(message.payloadString);
+                        if (message.payloadString == "on") {
+                            setStateLed(true);
+                        } else if (message.payloadString == "off") {
+                            setStateLed(false);
+                        } 
                     }
                 }
             },
@@ -62,39 +73,58 @@ const Mqtt = ({ navigation }) => {
 
         clientMqtt.onConnectionLost = () => {
             console.log("Disconetado!");
+
         }
     }
 
     useEffect(() => {
+
         if (isFocused) {
+
             loadMqttConfig();
+
         } else {
+
+            if (clientMqtt == null) return;
+
             if (clientMqtt.isConnected()) {
+                clientMqtt.unsubscribe(brokenMqttTopicSubscribe);
                 clientMqtt.disconnect();
             }
         }
-    }, [navigation, isFocused]);
+
+    }, [isFocused]);
 
     const _on = () => {
         try {
+            if (brokenMqttTopicPublish == null) return;
             clientMqtt.send(brokenMqttTopicPublish, "on");
         } catch (error) {
-            Alert.alert("MQTT", error.message);
+            loadMqttConfig();
         }
     }
 
-    const _off = async () => {
+    const _off = () => {
         try {
+            if (brokenMqttTopicPublish == null) return;
             clientMqtt.send(brokenMqttTopicPublish, "off");
         } catch (error) {
-            Alert.alert("MQTT", error.message);
+            loadMqttConfig();
         }
     }
 
     return (
         <View style={styles.container}>
-            <Header title="DS - IOT" />
-            <HeaderScreen title="MQTT" />
+            <Header title="MQTT" />
+            <HeaderScreen title="Cozinha" />
+            <View style={styles.contentIconsBulb}>
+                {(stateLed) &&
+                <Icon name="lightbulb-o" size={100} color="#ffe000" />
+                }
+                {(!stateLed) &&
+                <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
+                }
+            </View>
             <View style={styles.contentButtons}>
                 <TouchableOpacity style={styles.buttons} title="ON"
                     onPress={_on} >
@@ -113,18 +143,19 @@ const Mqtt = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
-
+    contentIconsBulb: {
+        flexDirection: 'row',
+        paddingHorizontal: 20,
+        justifyContent: 'flex-end',
+    },
     contentButtons: {
         justifyContent: 'center',
-        flex: 1,
         alignItems: 'center',
     },
-
     buttons: {
         borderWidth: 2,
         borderColor: "#ccc",
@@ -134,17 +165,14 @@ const styles = StyleSheet.create({
         margin: 8,
         alignItems: 'center',
     },
-
     iconButton: {
         width: 60,
         height: 60
     },
-
     textButton: {
         fontSize: 24,
         fontWeight: 'bold'
     }
-
 });
 
 export default Mqtt;
