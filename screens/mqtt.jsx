@@ -9,13 +9,13 @@ import ButtonOnOff from '../components/ButtonOnOff';
 import IconBulb from '../components/IconBulb';
 
 //Variáveis de uso global
-let clientMqtt = null;
-let brokenMqttHost;
-let brokenMqttPort;
-let brokenMqttUser;
-let brokenMqttPass;
-let brokenMqttTopicSubscribe;
-let brokenMqttTopicPublish;
+var clientMqttDSIOT = null;
+var brokenMqttHost = null;
+var brokenMqttPort = null;
+var brokenMqttUser = null;
+var brokenMqttPass = null;
+var brokenMqttTopicSubscribe = null;
+var brokenMqttTopicPublish = null;
 
 const Mqtt = () => {
 
@@ -79,7 +79,7 @@ const Mqtt = () => {
 
         _client.onConnectionLost = () => {
             console.log("Disconetado!");
-            clientMqtt = null;
+            clientMqttDSIOT = null;
         }
 
         return _client;
@@ -87,11 +87,23 @@ const Mqtt = () => {
     }
 
     const hasClientMqtt = () => {
-
-        if ((clientMqtt == null) || (clientMqtt == undefined) || (clientMqtt == '')) {
+        if ((clientMqttDSIOT == null) || (clientMqttDSIOT == undefined)) {
             return false;
         }
+        return true;
+    }
 
+    const hasTopicSubscribe = () => {
+        if ((brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined)) {
+            return false;
+        }
+        return true;
+    }
+
+    const hasTopicPublish = () => {
+        if ((brokenMqttTopicPublish == null) || (brokenMqttTopicPublish == undefined)) {
+            return false;
+        }
         return true;
     }
 
@@ -101,34 +113,32 @@ const Mqtt = () => {
 
             loadMqttConfig().then((hasConfig) => {
                 if (hasConfig) {
-                    clientMqtt = connectMqtt();
+                    clientMqttDSIOT = connectMqtt();
                 }
             });
 
         } else if (hasClientMqtt()) {
-            Alert.alert("Debug", "Client MQTT Passou");
-            /*
-            if (clientMqtt.isConnected()) {
-                clientMqtt.unsubscribe(brokenMqttTopicSubscribe);
-                clientMqtt.disconnect();
+            if (clientMqttDSIOT.isConnected()) {
+                if (hasTopicSubscribe()) {
+                    clientMqttDSIOT.unsubscribe(brokenMqttTopicSubscribe);
+                }
+                clientMqttDSIOT.disconnect();
             }
-            */
-
         }
 
     }, [isFocused]);
 
     const _on = () => {
 
-        if (hasClientMqtt()) {
-            clientMqtt.send(brokenMqttTopicPublish, "on");
+        if (hasClientMqtt() && hasTopicPublish()) {
+            clientMqttDSIOT.send(brokenMqttTopicPublish, "on");
         }
     }
 
     const _off = () => {
 
-        if (hasClientMqtt()) {
-            clientMqtt.send(brokenMqttTopicPublish, "off");
+        if (hasClientMqtt() && hasTopicPublish()) {
+            clientMqttDSIOT.send(brokenMqttTopicPublish, "off");
         }
     }
 
