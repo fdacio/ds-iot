@@ -43,11 +43,16 @@ const Iot1 = () => {
 
     return (
         <View style={styles.container}>
+
             <Header />
+
             <HeaderScreen title="Sala" />
+
             <View style={styles.contentIconsBulb}>
+
                 <IconBulb state={stateLed} />
             </View>
+
             <View style={styles.contentButtons}>
                 <ButtonOnOff tipo="on" action={_on} />
                 <ButtonOnOff tipo="off" action={_off} />
@@ -72,26 +77,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-
-    buttons: {
-        borderWidth: 2,
-        borderColor: "#ccc",
-        borderRadius: 500,
-        width: 120,
-        padding: 8,
-        margin: 8,
-        alignItems: 'center',
-    },
-
-    iconButton: {
-        width: 60,
-        height: 60
-    },
-
-    textButton: {
-        fontSize: 24,
-        fontWeight: 'bold'
-    }
 
 });
 

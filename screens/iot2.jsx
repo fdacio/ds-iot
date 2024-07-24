@@ -40,6 +40,7 @@ const Iot2 = () => {
             Alert.alert(error.response);
         }
     }
+
     return (
         <View style={styles.container}>
 
@@ -61,6 +62,7 @@ const Iot2 = () => {
 }
 
 const styles = StyleSheet.create({
+    
     container: {
         flex: 1,
         backgroundColor: '#fff',

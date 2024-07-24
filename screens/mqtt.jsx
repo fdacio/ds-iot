@@ -9,7 +9,7 @@ import ButtonOnOff from '../components/ButtonOnOff';
 import IconBulb from '../components/IconBulb';
 
 //Variáveis de uso global
-let clientMqtt;
+let clientMqtt = null;
 let brokenMqttHost;
 let brokenMqttPort;
 let brokenMqttUser;
@@ -31,14 +31,6 @@ const Mqtt = () => {
         brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe");
         brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish");
 
-        brokenMqttHost = null;
-        brokenMqttPort = null;
-        brokenMqttUser = null;
-        brokenMqttPass = null;
-        brokenMqttTopicSubscribe = null;
-        brokenMqttTopicPublish = null;
-
-
         if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
             return false;
         }
@@ -53,7 +45,7 @@ const Mqtt = () => {
         let port = parseInt(brokenMqttPort);
         let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100000)}`;
 
-        let clientMqtt = new Paho.Client(
+        let _client = new Paho.Client(
             host,
             port,
             clientId
@@ -66,8 +58,8 @@ const Mqtt = () => {
             onSuccess: async () => {
                 console.log("Conectado com sucesso!");
                 if (brokenMqttTopicSubscribe == null) return;
-                clientMqtt.subscribe(brokenMqttTopicSubscribe);
-                clientMqtt.onMessageArrived = (message) => {
+                _client.subscribe(brokenMqttTopicSubscribe);
+                _client.onMessageArrived = (message) => {
                     if (message.destinationName === brokenMqttTopicSubscribe) {
                         if (message.payloadString == "on") {
                             setStateLed(true);
@@ -83,59 +75,67 @@ const Mqtt = () => {
             }
         };
 
-        clientMqtt.connect(options);
+        _client.connect(options);
 
-        clientMqtt.onConnectionLost = () => {
+        _client.onConnectionLost = () => {
             console.log("Disconetado!");
+            clientMqtt = null;
         }
 
-        return clientMqtt;
+        return _client;
 
+    }
+
+    const hasClientMqtt = () => {
+
+        if ((clientMqtt == null) || (clientMqtt == undefined) || (clientMqtt == '')) {
+            return false;
+        }
+
+        return true;
     }
 
     useEffect(() => {
 
         if (isFocused) {
+
             loadMqttConfig().then((hasConfig) => {
                 if (hasConfig) {
                     clientMqtt = connectMqtt();
                 }
             });
 
-        } else {
-
-            console.warn("Debug1: " + clientMqtt);
-            if (clientMqtt == null || clientMqtt == undefined) return;
-            console.warn("Debug2: " + clientMqtt);
-
+        } else if (hasClientMqtt()) {
+            Alert.alert("Debug", "Client MQTT Passou");
+            /*
             if (clientMqtt.isConnected()) {
                 clientMqtt.unsubscribe(brokenMqttTopicSubscribe);
                 clientMqtt.disconnect();
             }
+            */
+
         }
 
     }, [isFocused]);
 
     const _on = () => {
 
-        if (clientMqtt == null || clientMqtt == undefined) return;
-        if (brokenMqttTopicPublish == null) return;
-
-        clientMqtt.send(brokenMqttTopicPublish, "on");
+        if (hasClientMqtt()) {
+            clientMqtt.send(brokenMqttTopicPublish, "on");
+        }
     }
 
     const _off = () => {
 
-        if (clientMqtt == null || clientMqtt == undefined) return;
-        if (brokenMqttTopicPublish == null) return;
-
-        clientMqtt.send(brokenMqttTopicPublish, "off");
+        if (hasClientMqtt()) {
+            clientMqtt.send(brokenMqttTopicPublish, "off");
+        }
     }
 
     return (
         <View style={styles.container}>
 
-            <Header title="MQTT" />
+            <Header />
 
             <HeaderScreen title="Cozinha" />
 
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     }
-    
+
 });
 
 export default Mqtt;
