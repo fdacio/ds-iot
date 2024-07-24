@@ -4,9 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 const HeaderScreen = (props) => {
     return (
         <View style={styles.content}>
-
             <Text style={styles.title}>{props.title}</Text>
-
         </View>
     );
 }

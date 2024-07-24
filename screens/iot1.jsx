@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
+import { StyleSheet, View, Alert, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ButtonOnOff from '../components/ButtonOnOff';
+import IconBulb from '../components/IconBulb';
 
 const Iot1 = () => {
 
@@ -42,27 +43,14 @@ const Iot1 = () => {
 
     return (
         <View style={styles.container}>
-            <Header title="IOT 1" />
+            <Header />
             <HeaderScreen title="Sala" />
             <View style={styles.contentIconsBulb}>
-                {(stateLed) &&
-                    <Icon name="lightbulb-o" size={100} color="#ffe000" />
-                }
-                {(!stateLed) &&
-                    <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
-                }
+                <IconBulb state={stateLed} />
             </View>
             <View style={styles.contentButtons}>
-                <TouchableOpacity style={styles.buttons} title="ON"
-                    onPress={_on} >
-                    <Icon name="power-off" size={60} color="#006630" />
-                    <Text style={styles.textButton}>ON</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons} title="OFF"
-                    onPress={_off} >
-                    <Icon name="power-off" size={60} color="#f00" />
-                    <Text style={styles.textButton}>OFF</Text>
-                </TouchableOpacity>
+                <ButtonOnOff tipo="on" action={_on} />
+                <ButtonOnOff tipo="off" action={_off} />
             </View>
 
         </View>

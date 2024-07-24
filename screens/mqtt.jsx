@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert, Text } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import Header from '../components/Header';
-import HeaderScreen from '../components/HeaderScreen';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Paho from "paho-mqtt";
+import Header from '../components/Header';
+import HeaderScreen from '../components/HeaderScreen';
+import ButtonOnOff from '../components/ButtonOnOff';
+import IconBulb from '../components/IconBulb';
 
 //Variáveis de uso global
 let clientMqtt;
@@ -29,6 +30,14 @@ const Mqtt = () => {
         brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
         brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe");
         brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish");
+
+        brokenMqttHost = null;
+        brokenMqttPort = null;
+        brokenMqttUser = null;
+        brokenMqttPass = null;
+        brokenMqttTopicSubscribe = null;
+        brokenMqttTopicPublish = null;
+
 
         if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
             return false;
@@ -60,7 +69,6 @@ const Mqtt = () => {
                 clientMqtt.subscribe(brokenMqttTopicSubscribe);
                 clientMqtt.onMessageArrived = (message) => {
                     if (message.destinationName === brokenMqttTopicSubscribe) {
-                        //console.log(message.payloadString);
                         if (message.payloadString == "on") {
                             setStateLed(true);
                         } else if (message.payloadString == "off") {
@@ -96,7 +104,9 @@ const Mqtt = () => {
 
         } else {
 
+            console.warn("Debug1: " + clientMqtt);
             if (clientMqtt == null || clientMqtt == undefined) return;
+            console.warn("Debug2: " + clientMqtt);
 
             if (clientMqtt.isConnected()) {
                 clientMqtt.unsubscribe(brokenMqttTopicSubscribe);
@@ -124,27 +134,18 @@ const Mqtt = () => {
 
     return (
         <View style={styles.container}>
+
             <Header title="MQTT" />
+
             <HeaderScreen title="Cozinha" />
+
             <View style={styles.contentIconsBulb}>
-                {(stateLed) &&
-                    <Icon name="lightbulb-o" size={100} color="#ffe000" />
-                }
-                {(!stateLed) &&
-                    <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
-                }
+                <IconBulb state={stateLed} />
             </View>
+
             <View style={styles.contentButtons}>
-                <TouchableOpacity style={styles.buttons} title="ON"
-                    onPress={_on} >
-                    <Icon name="power-off" size={60} color="#006630" />
-                    <Text style={styles.textButton}>ON</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons} title="OFF"
-                    onPress={_off} >
-                    <Icon name="power-off" size={60} color="#f00" />
-                    <Text style={styles.textButton}>OFF</Text>
-                </TouchableOpacity>
+                <ButtonOnOff tipo="on" action={_on} />
+                <ButtonOnOff tipo="off" action={_off} />
             </View>
 
         </View>
@@ -166,27 +167,8 @@ const styles = StyleSheet.create({
     contentButtons: {
         justifyContent: 'center',
         alignItems: 'center',
-    },
-
-    buttons: {
-        borderWidth: 2,
-        borderColor: "#ccc",
-        borderRadius: 500,
-        width: 120,
-        padding: 8,
-        margin: 8,
-        alignItems: 'center',
-    },
-
-    iconButton: {
-        width: 60,
-        height: 60
-    },
-    
-    textButton: {
-        fontSize: 24,
-        fontWeight: 'bold'
     }
+    
 });
 
 export default Mqtt;

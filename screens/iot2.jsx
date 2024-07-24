@@ -1,20 +1,21 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, Alert } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ButtonOnOff from '../components/ButtonOnOff';
+import IconBulb from '../components/IconBulb';
 
 const Iot2 = () => {
 
     const stateLed = false;
-    
+
     const _loadIpIot2 = async () => {
         let ipIot = await AsyncStorage.getItem('ip-iot-2');
         if (ipIot != null) {
-            let ip = JSON.stringify(ipIot).replaceAll('"','');
+            let ip = JSON.stringify(ipIot).replaceAll('"', '');
             return ip;
-        } 
+        }
         return null;
     }
 
@@ -41,28 +42,20 @@ const Iot2 = () => {
     }
     return (
         <View style={styles.container}>
-            <Header title="IOT 2" />
+
+            <Header />
+
             <HeaderScreen title="Quarto" />
+
             <View style={styles.contentIconsBulb}>
-                {(stateLed) &&
-                <Icon name="lightbulb-o" size={100} color="#ffe000" />
-                }
-                {(!stateLed) &&
-                <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
-                }
+                <IconBulb state={stateLed} />
             </View>
+
             <View style={styles.contentButtons}>
-                <TouchableOpacity style={styles.buttons} title="ON"
-                    onPress={_on} >
-                    <Icon name="power-off" size={60} color="#006630" />
-                    <Text style={styles.textButton}>ON</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons} title="OFF"
-                    onPress={_off} >
-                    <Icon name="power-off" size={60} color="#f00" />
-                    <Text style={styles.textButton}>OFF</Text>
-                </TouchableOpacity>
+                <ButtonOnOff tipo="on" action={_on} />
+                <ButtonOnOff tipo="off" action={_off} />
             </View>
+
         </View>
     );
 }
@@ -82,25 +75,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    buttons: {
-        borderWidth: 2,
-        borderColor: "#ccc",
-        borderRadius: 500,
-        width: 120,
-        padding: 8,
-        margin: 8,
-        alignItems: 'center',
-    },
-
-    iconButton: {
-        width: 60,
-        height: 60
-    },
-
-    textButton: {
-        fontSize: 24,
-        fontWeight: 'bold'
-    }
 });
 
 export default Iot2;

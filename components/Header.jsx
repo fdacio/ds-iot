@@ -2,14 +2,12 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Header = (props) => {
+const Header = () => {
     return (
         <View style={styles.content}>
-            
-                <Icon name="home" color="#fff" size={ 32 } style={styles.iconHome}/>
-                <Text style={styles.title}>{props.title}</Text>
-                <View style={styles.viewRight}/>
-            
+            <Icon name="home" color="#fff" size={32} style={styles.iconHome} />
+            <Text style={styles.title}>DS-IOT</Text>
+            <View style={styles.viewRight}></View>
         </View>
     );
 }
@@ -17,19 +15,15 @@ const Header = (props) => {
 const styles = StyleSheet.create({
 
     content: {
+        flexDirection: 'row',
         backgroundColor: '#201f1f',
         height: 56,
         paddingHorizontal: 8,
-        flexDirection: 'row',
-    },
-
-    contentBar: {
-        
     },
 
     iconHome: {
         flex: 1,
-        alignItems: 'flex-start',
+        textAlign: 'left',
         alignSelf: 'center',
     },
 
@@ -44,7 +38,9 @@ const styles = StyleSheet.create({
     },
 
     viewRight: {
-        flex: 1
+        flex: 1,
+        textAlign: 'right',
+        alignSelf: 'center',
     }
 })
 
