@@ -27,19 +27,24 @@ const Mqtt = () => {
         brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
         brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
         brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
-
-        if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
-            return;
-        }
-
         brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe");
         brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish");
+
+        if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    const connectMqtt = () => {
 
         let host = brokenMqttHost;
         let port = parseInt(brokenMqttPort);
         let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100000)}`;
 
-        clientMqtt = new Paho.Client(
+        let clientMqtt = new Paho.Client(
             host,
             port,
             clientId
@@ -60,12 +65,13 @@ const Mqtt = () => {
                             setStateLed(true);
                         } else if (message.payloadString == "off") {
                             setStateLed(false);
-                        } 
+                        }
                     }
                 }
             },
             onFailure: (err) => {
-                Alert.alert("MQTT", "Conexão Falhou: " + JSON.stringify(err, null, '\t'));
+                Alert.alert("MQTT", "Conexão Falhou: Ver configurações em Settings");
+                return null;
             }
         };
 
@@ -73,19 +79,24 @@ const Mqtt = () => {
 
         clientMqtt.onConnectionLost = () => {
             console.log("Disconetado!");
-
         }
+
+        return clientMqtt;
+
     }
 
     useEffect(() => {
 
         if (isFocused) {
-
-            loadMqttConfig();
+            loadMqttConfig().then((hasConfig) => {
+                if (hasConfig) {
+                    clientMqtt = connectMqtt();
+                }
+            });
 
         } else {
 
-            if (clientMqtt == null) return;
+            if (clientMqtt == null || clientMqtt == undefined) return;
 
             if (clientMqtt.isConnected()) {
                 clientMqtt.unsubscribe(brokenMqttTopicSubscribe);
@@ -96,21 +107,19 @@ const Mqtt = () => {
     }, [isFocused]);
 
     const _on = () => {
-        try {
-            if (brokenMqttTopicPublish == null) return;
-            clientMqtt.send(brokenMqttTopicPublish, "on");
-        } catch (error) {
-            loadMqttConfig();
-        }
+
+        if (clientMqtt == null || clientMqtt == undefined) return;
+        if (brokenMqttTopicPublish == null) return;
+
+        clientMqtt.send(brokenMqttTopicPublish, "on");
     }
 
     const _off = () => {
-        try {
-            if (brokenMqttTopicPublish == null) return;
-            clientMqtt.send(brokenMqttTopicPublish, "off");
-        } catch (error) {
-            loadMqttConfig();
-        }
+
+        if (clientMqtt == null || clientMqtt == undefined) return;
+        if (brokenMqttTopicPublish == null) return;
+
+        clientMqtt.send(brokenMqttTopicPublish, "off");
     }
 
     return (
@@ -119,10 +128,10 @@ const Mqtt = () => {
             <HeaderScreen title="Cozinha" />
             <View style={styles.contentIconsBulb}>
                 {(stateLed) &&
-                <Icon name="lightbulb-o" size={100} color="#ffe000" />
+                    <Icon name="lightbulb-o" size={100} color="#ffe000" />
                 }
                 {(!stateLed) &&
-                <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
+                    <Icon name="lightbulb-o" size={100} color="#c1c1c1" />
                 }
             </View>
             <View style={styles.contentButtons}>
@@ -147,15 +156,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+
     contentIconsBulb: {
         flexDirection: 'row',
         paddingHorizontal: 20,
         justifyContent: 'flex-end',
     },
+
     contentButtons: {
         justifyContent: 'center',
         alignItems: 'center',
     },
+
     buttons: {
         borderWidth: 2,
         borderColor: "#ccc",
@@ -165,10 +177,12 @@ const styles = StyleSheet.create({
         margin: 8,
         alignItems: 'center',
     },
+
     iconButton: {
         width: 60,
         height: 60
     },
+    
     textButton: {
         fontSize: 24,
         fontWeight: 'bold'
