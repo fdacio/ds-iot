@@ -4,7 +4,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Mqtt from './screens/Mqtt';
-import Settings from './screens/settings';
+import Settings from './screens/Settings';
 
 const Tab = createBottomTabNavigator();
 
