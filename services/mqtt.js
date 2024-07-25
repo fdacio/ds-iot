@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Paho from "paho-mqtt";
+
 //Variáveis de uso global
 var clientMqttDSIOT = null;
 var brokenMqttHost = null;
@@ -6,18 +9,21 @@ var brokenMqttUser = null;
 var brokenMqttPass = null;
 var brokenMqttTopicSubscribe = null;
 var brokenMqttTopicPublish = null;
+var payloadString = null;
+var onMessageArrived = null;
+var screenNum = 0;
 
-const MqttService = () => {
-
+const MqttService = (n) => {
+    screenNum = n;
 }
 
-export async function loadMqttConfig(screenNum) {
+export async function mqttServiceLoadConfig() {
     brokenMqttHost = await AsyncStorage.getItem("broken-mqtt");
     brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
     brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
     brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
-    brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe1");
-    brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish1");
+    brokenMqttTopicSubscribe = await AsyncStorage.getItem(`broken-mqtt-topic-subscribe${screenNum}`);
+    brokenMqttTopicPublish = await AsyncStorage.getItem(`broken-mqtt-topic-publish${screenNum}`);
 
     if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
         return false;
@@ -26,13 +32,13 @@ export async function loadMqttConfig(screenNum) {
     return true;
 }
 
-export function connectMqtt () {
+export function mqttServiceConnect() {
 
     let host = brokenMqttHost;
     let port = parseInt(brokenMqttPort);
     let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100000)}`;
 
-    let _client = new Paho.Client(
+    clientMqttDSIOT = new Paho.Client(
         host,
         port,
         clientId
@@ -45,14 +51,13 @@ export function connectMqtt () {
         onSuccess: async () => {
             console.log("Conectado com sucesso!");
             if (brokenMqttTopicSubscribe == null) return;
-            _client.subscribe(brokenMqttTopicSubscribe);
-            _client.onMessageArrived = (message) => {
+            clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+            clientMqttDSIOT.onMessageArrived = (message) => {
                 if (message.destinationName === brokenMqttTopicSubscribe) {
-                    if (message.payloadString == "on") {
-                        setStateLed(true);
-                    } else if (message.payloadString == "off") {
-                        setStateLed(false);
-                    }
+                    payloadString = message.payloadString;
+                    console.log(payloadString);
+                    onMessageArrived()
+
                 }
             }
         },
@@ -62,15 +67,61 @@ export function connectMqtt () {
         }
     };
 
-    _client.connect(options);
+    clientMqttDSIOT.connect(options);
 
-    _client.onConnectionLost = () => {
+    clientMqttDSIOT.onConnectionLost = () => {
         console.log("Disconetado!");
         clientMqttDSIOT = null;
     }
 
-    return _client;
+}
 
+export function mqttServiceDisconnect() {
+    if (hasClientMqtt()) {
+        if (clientMqttDSIOT.isConnected()) {
+            if (hasTopicSubscribe()) {
+                clientMqttDSIOT.unsubscribe(brokenMqttTopicSubscribe);
+            }
+            clientMqttDSIOT.disconnect();
+        }
+    }
+}
+
+export function mqttServicePublish(value) {
+    console.log("Tem Client: " + hasClientMqtt());
+    console.log("Tem Publish: " +  hasTopicPublish());
+    if (hasClientMqtt() && hasTopicPublish()) {
+        clientMqttDSIOT.send(brokenMqttTopicPublish, value);
+    }
+}
+
+export function mqttServiceGetPayload() {
+    return payloadString;
+}
+
+export function mqttServiceSetOnMessageArrived(callBack) {
+    onMessageArrived = callBack;
+}
+
+const hasClientMqtt = () => {
+    if ((clientMqttDSIOT == null) || (clientMqttDSIOT == undefined)) {
+        return false;
+    }
+    return true;
+}
+
+const hasTopicSubscribe = () => {
+    if ((brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined)) {
+        return false;
+    }
+    return true;
+}
+
+const hasTopicPublish = () => {
+    if ((brokenMqttTopicPublish == null) || (brokenMqttTopicPublish == undefined)) {
+        return false;
+    }
+    return true;
 }
 
 

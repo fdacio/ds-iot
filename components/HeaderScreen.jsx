@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Pressable, Modal, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TextInputLabel from './TextInputLabel';
-import Settings, { onSaveSettings } from '../services/settings';
 
 const HeaderScreen = (props) => {
 
@@ -18,10 +17,10 @@ const HeaderScreen = (props) => {
     const _onSave = async () => {
         
         try {
-
             await AsyncStorage.setItem(titleKey, title);
             await AsyncStorage.setItem(topicSubscribeKey, brokenMqttTopicSubscribe);
             await AsyncStorage.setItem(topicPublishKey, brokenMqttTopicPublish);
+            props.actionPostSaveConfig();
             Alert.alert("DS-IOT", "Configuração salva com sucesso");
             setModalVisible(false);
         } catch (error) {

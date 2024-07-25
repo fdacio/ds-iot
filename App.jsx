@@ -1,11 +1,9 @@
 import React from 'react'
 import { StyleSheet, StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Mqtt1 from './screens/mqtt1';
-import Mqtt2 from './screens/mqtt2';
-import Mqtt3 from './screens/mqtt3';
+import Mqtt from './screens/Mqtt';
 import Settings from './screens/settings';
 
 const Tab = createBottomTabNavigator();
@@ -13,6 +11,10 @@ const Tab = createBottomTabNavigator();
 const App = () => {
 
   console.log("App init");
+
+  const Mqtt1 = () => (<Mqtt numScreen="1" />);
+  const Mqtt2 = () => (<Mqtt numScreen="2" />);
+  const Mqtt3 = () => (<Mqtt numScreen="3" />);
   
   return (
 

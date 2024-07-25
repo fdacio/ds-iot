@@ -16,8 +16,6 @@ const Settings = () => {
 
     const _onSave = async () => {
         try {
-            await AsyncStorage.setItem("ip-iot-1", ipIot1);
-            await AsyncStorage.setItem("ip-iot-2", ipIot2);
             await AsyncStorage.setItem("broken-mqtt", brokenMqtt);
             await AsyncStorage.setItem("broken-mqtt-port", brokenMqttPort);
             await AsyncStorage.setItem("broken-mqtt-user", brokenMqttUser);
