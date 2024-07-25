@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
@@ -6,7 +6,7 @@ import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
 import IconBulb from '../components/IconBulb';
 
-const Iot2 = () => {
+const Mqtt3 = () => {
 
     const stateLed = false;
 
@@ -46,7 +46,7 @@ const Iot2 = () => {
 
             <Header />
 
-            <HeaderScreen title="Quarto" />
+            <HeaderScreen defaultTitle="MQTT 3" actionSetting={true} screenNumber={3}/>
 
             <View style={styles.contentIconsBulb}>
                 <IconBulb state={stateLed} />
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Iot2;
+export default Mqtt3;

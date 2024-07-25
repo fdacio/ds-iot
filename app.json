@@ -33,7 +33,11 @@
         {
           "android": {
             "usesCleartextTraffic": true,
-            "networkInspector": true
+            "networkInspector": true,
+            "adaptiveIcon": {
+              "foregroundImage": "./assets/adaptive-icon.png",
+              "backgroundColor": "#ffffff"
+            }
           }
         }
       ]

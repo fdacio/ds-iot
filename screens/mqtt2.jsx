@@ -6,7 +6,7 @@ import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
 import IconBulb from '../components/IconBulb';
 
-const Iot1 = () => {
+const Mqtt2 = () => {
 
     const stateLed = false;
 
@@ -46,7 +46,7 @@ const Iot1 = () => {
 
             <Header />
 
-            <HeaderScreen title="Sala" />
+            <HeaderScreen defaultTitle="MQTT 2" actionSetting={true} screenNumber={2}/>
 
             <View style={styles.contentIconsBulb}>
 
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Iot1;
+export default Mqtt2;

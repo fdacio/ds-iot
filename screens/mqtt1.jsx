@@ -17,7 +17,7 @@ var brokenMqttPass = null;
 var brokenMqttTopicSubscribe = null;
 var brokenMqttTopicPublish = null;
 
-const Mqtt = () => {
+const Mqtt1 = () => {
 
     const isFocused = useIsFocused();
     const [stateLed, setStateLed] = useState(false);
@@ -28,8 +28,8 @@ const Mqtt = () => {
         brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
         brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
         brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
-        brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe");
-        brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish");
+        brokenMqttTopicSubscribe = await AsyncStorage.getItem("broken-mqtt-topic-subscribe1");
+        brokenMqttTopicPublish = await AsyncStorage.getItem("broken-mqtt-topic-publish1");
 
         if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
             return false;
@@ -147,7 +147,7 @@ const Mqtt = () => {
 
             <Header />
 
-            <HeaderScreen title="Cozinha" />
+            <HeaderScreen defaultTitle="MQTT 1" actionSetting={true} screenNumber={1}/>
 
             <View style={styles.contentIconsBulb}>
                 <IconBulb state={stateLed} />
@@ -181,4 +181,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Mqtt;
+export default Mqtt1;
