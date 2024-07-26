@@ -50,14 +50,17 @@ export function mqttServiceConnect() {
         mqttVersion: 3,
         onSuccess: async () => {
             console.log("Conectado com sucesso!");
-            if (brokenMqttTopicSubscribe == null) return;
+            if (!clientMqttDSIOT.isConnected()) return;
+            if ((brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined) || brokenMqttTopicSubscribe == "") return;
             clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+            
             clientMqttDSIOT.onMessageArrived = (message) => {
                 if (message.destinationName === brokenMqttTopicSubscribe) {
                     payloadString = message.payloadString;
                     onMessageArrived()
                 }
             }
+            clientMqttDSIOT.publish(brokenMqttTopicPublish, "");
         },
         onFailure: (err) => {
             Alert.alert("MQTT", "Conexão Falhou: Ver configurações em Settings");
