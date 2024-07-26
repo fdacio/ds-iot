@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
@@ -8,13 +9,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
 
+    const isFocused = useIsFocused();
     const [brokenMqtt, setBrokenMqtt] = useState('');
     const [brokenMqttPort, setBrokenMqttPort] = useState('');
     const [brokenMqttUser, setBrokenMqttUser] = useState('');
     const [brokenMqttPass, setBrokenMqttPass] = useState('');
-
+    const [alertBrokenMqtt, setAlertBrokenMqtt] = useState();
+    const [alertBrokenMqttPort, setAlertBrokenMqttPort] = useState();
+    const [alertBrokenMqttUser, setAlertBrokenMqttUser] = useState();
+    const [alertBrokenMqttPass, setAlertBrokenMqttPass] = useState();
 
     const _onSave = async () => {
+
+        _resetAlerts();
+
+        if (!_onValid()) return;
+
         try {
             await AsyncStorage.setItem("broken-mqtt", brokenMqtt);
             await AsyncStorage.setItem("broken-mqtt-port", brokenMqttPort);
@@ -27,8 +37,40 @@ const Settings = () => {
         }
     }
 
+    const _onValid = () => {
+        
+        let _isValid = true;
+        
+        if ((brokenMqtt == "") || (brokenMqtt == null) || (brokenMqtt == undefined)) {
+            setAlertBrokenMqtt("Broken MQTT is required");
+            _isValid = false;
+        }
+        if ((brokenMqttPort == "") || (brokenMqttPort == null) || (brokenMqttPort == undefined)) {
+            setAlertBrokenMqttPort("Broke Port is required");
+            _isValid = false;
+        }
+        if ((brokenMqttUser == "") || (brokenMqttUser == null) || (brokenMqttUser == undefined)) {
+            setAlertBrokenMqttUser("Broken User is required");
+            _isValid = false;
+        }
+        if ((brokenMqttPass == "") || (brokenMqttPass == null) || (brokenMqttPass == undefined)) {
+            setAlertBrokenMqttPass("Broken Pass is required");
+            _isValid = false;
+        }
+
+        return _isValid;
+    }
+
+    const _resetAlerts = () => {
+        setAlertBrokenMqtt();
+        setAlertBrokenMqttPort();
+        setAlertBrokenMqttUser();
+        setAlertBrokenMqttPass();
+    }
 
     const _loadBrokenMqtt = async () => {
+        
+        _resetAlerts();
 
         let brokenMqtt = await AsyncStorage.getItem("broken-mqtt");
         if (brokenMqtt != null) {
@@ -53,19 +95,18 @@ const Settings = () => {
 
     useEffect(() => {
         _loadBrokenMqtt();
-
-    }, []);
+    }, [isFocused]);
 
     return (
         <View style={styles.container}>
             <Header/>
-            <HeaderScreen  defaultTitle="Settings" />
+            <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" />    
-                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="default" />    
-                    <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" />    
-                    <TextInputLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" />    
+                    <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />    
+                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="default" alert={alertBrokenMqttPort} />    
+                    <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />    
+                    <TextInputLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />    
                     <Button label="Salvar" onPress={_onSave} />
                 </View>
             </ScrollView>

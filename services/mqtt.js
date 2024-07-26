@@ -55,9 +55,7 @@ export function mqttServiceConnect() {
             clientMqttDSIOT.onMessageArrived = (message) => {
                 if (message.destinationName === brokenMqttTopicSubscribe) {
                     payloadString = message.payloadString;
-                    console.log(payloadString);
                     onMessageArrived()
-
                 }
             }
         },

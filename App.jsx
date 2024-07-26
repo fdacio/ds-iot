@@ -12,9 +12,9 @@ const App = () => {
 
   console.log("App init");
 
-  const Mqtt1 = () => (<Mqtt numScreen="1" />);
-  const Mqtt2 = () => (<Mqtt numScreen="2" />);
-  const Mqtt3 = () => (<Mqtt numScreen="3" />);
+  const Mqtt1 = () => (<Mqtt numScreen="1" title="Iot 1"/>);
+  const Mqtt2 = () => (<Mqtt numScreen="2" title="Iot 2"/>);
+  const Mqtt3 = () => (<Mqtt numScreen="3" title="Iot 3"/>);
   
   return (
 
@@ -37,9 +37,9 @@ const App = () => {
           }
 
         }}>
-        <Tab.Screen name="Mqtt1" component={Mqtt1} options={{ title: 'MQTT 1', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
-        <Tab.Screen name="Mqtt2" component={Mqtt2} options={{ title: 'MQTT 2', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
-        <Tab.Screen name="Mqtt3" component={Mqtt3} options={{ title: 'MQTT 3', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt1" component={Mqtt1} options={{ title: 'IoT 1', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt2" component={Mqtt2} options={{ title: 'IoT 2', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt3" component={Mqtt3} options={{ title: 'IoT 3', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="home" size={size} color={color} />) }} />
         <Tab.Screen name="Settings" component={Settings} options={{ title: 'Settings', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
       </Tab.Navigator>
     </NavigationContainer>
@@ -55,4 +55,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
 export default App;

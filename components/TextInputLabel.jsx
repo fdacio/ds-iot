@@ -7,7 +7,7 @@ const TextInputLabel = (props) => {
         <View style={styles.content}>
             <Text style={styles.textLabel}>{props.label}</Text>
             <TextInput style={styles.textInput} onChangeText={props.onChangeText} value={props.value} autoCapitalize={props.autoCapitalize} inputMode={props.inputMode} autoComplete={props.autoComplete} keyboardType={props.keyboardType} autoCorrect={props.autoCorrect}/>
-            {(props.textAlert != undefined) && 
+            {(props.alert!= undefined) && 
             <Text style={styles.textAlert}>{props.alert}</Text>
             }
         </View>

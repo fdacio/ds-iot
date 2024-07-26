@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
-
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
-import IconBulb from '../components/IconBulb';
 import SettingsTopics from '../components/SettingsTopics';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MqttService, {
     mqttServiceLoadConfig,
     mqttServiceConnect,
@@ -16,17 +14,14 @@ import MqttService, {
     mqttServiceGetPayload,
     mqttServiceDisconnect
 } from '../services/mqtt';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//Variáveis de uso global
-const Mqtt = (props) => {
 
-    console.log("render");
-
+const Mqtt = ( props ) => {
+    
     const isFocused = useIsFocused();
     const [stateLed, setStateLed] = useState(false);
     const [numScreen, setNumScreen] = useState();
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
 
     const settingShowModal = (numScreen) => {
@@ -56,9 +51,7 @@ const Mqtt = (props) => {
             .then((title) => {
                 if (title != null) {
                     setTitle(title);
-                } else {
-                    setTitle("Mqtt " + numScreen);
-                }
+                } 
             });
     }
 
@@ -93,11 +86,7 @@ const Mqtt = (props) => {
 
             <Header />
 
-            <HeaderScreen defaultTitle={title} actionSetting={() => settingShowModal(numScreen)} />
-
-            <View style={styles.contentIconsBulb}>
-                <IconBulb state={stateLed} />
-            </View>
+            <HeaderScreen defaultTitle={title} actionSetting={() => settingShowModal(numScreen)} stateLed={stateLed} />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff tipo="on" action={_on} />
@@ -114,15 +103,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
 
-    contentIconsBulb: {
-        flexDirection: 'row',
-        paddingHorizontal: 20,
-        justifyContent: 'flex-end',
-    },
-
     contentButtons: {
-        justifyContent: 'center',
+        flexGrow: 1,
         alignItems: 'center',
+        justifyContent: 'center',
     }
 
 });

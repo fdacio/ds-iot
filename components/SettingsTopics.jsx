@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Modal, View, StyleSheet, Text, Pressable, Alert } from 'react-native';
 import TextInputLabel from './TextInputLabel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -6,19 +6,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsTopics = forwardRef((props, ref) => {
 
-    const [numScreen, setNumScreen] = useState();
-    const [title, setTitle] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [title, setTitle] = useState("");
     const [brokenMqttTopicSubscribe, setBrokenMqttTopicSubscribe] = useState('');
     const [brokenMqttTopicPublish, setBrokenMqttTopicPublish] = useState('');
     const [titleKey, setTitleKey] = useState("");
     const [topicSubscribeKey, setTopicSubscribeKey] = useState("");
     const [topicPublishKey, setTopicPublishKey] = useState("");
+    const [alertTitle, setAlertTitle] = useState();
+    const [alertSubscribe, setAlertSubscribe] = useState();
+    const [alertPublish, setAlertPublish] = useState();
 
     const publicRef = {
         // add any methods or properties here
-        showModal: (numScreen) => {
-            setNumScreen(numScreen);
+        showModal: async (numScreen) => {
+            _setKeysStore(numScreen);
             setModalVisible(true);
         }
     };
@@ -27,45 +29,82 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const _onSave = async () => {
 
+        _resetAlerts();
+
+        if (!_onValid()) return;
+
         try {
             await AsyncStorage.setItem(titleKey, title);
             await AsyncStorage.setItem(topicSubscribeKey, brokenMqttTopicSubscribe);
             await AsyncStorage.setItem(topicPublishKey, brokenMqttTopicPublish);
-            Alert.alert("DS-IOT", "Configuração salva com sucesso");
             setModalVisible(false);
             if (props.callBackPostSave != undefined) props.callBackPostSave();
         } catch (error) {
-            console.log(error);
             Alert.alert("DS-IOT", "Erro ao salvar configuração");
         }
     }
 
-    const _onShowModal = async () => {
+    const _onValid = () => {
 
-        setTitleKey(`title-screen${numScreen}`);
-        setTopicSubscribeKey(`broken-mqtt-topic-subscribe${numScreen}`);
-        setTopicPublishKey(`broken-mqtt-topic-publish${numScreen}`);
+        let _isValid = true;
 
-        await AsyncStorage.getItem(titleKey).then((title) => {
-            if (title != null) {
-                setTitle(title);
-            }
-        });
-        
-        await AsyncStorage.getItem(topicSubscribeKey).then((subscribe) => {
-            if (subscribe != null) {
-                setBrokenMqttTopicSubscribe(subscribe);
-            }
-        });
+        if ((title == "") || (title == null) || (title == undefined)) {
+            setAlertTitle("Title is required");
+            _isValid = false;
+        }
+        if ((brokenMqttTopicSubscribe == "") || (brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined)) {
+            setAlertSubscribe("Tópic Subscribe is required");
+            _isValid = false;
+        }
+        if ((brokenMqttTopicPublish == "") || (brokenMqttTopicPublish == null) || (brokenMqttTopicPublish == undefined)) {
+            setAlertPublish("Tópic Publish is required");
+            _isValid = false;
+        }
 
-        await AsyncStorage.getItem(topicPublishKey).then((publish) => {
-            if (publish != null) {
-                setBrokenMqttTopicPublish(publish);
-            }
-        });
-        
+        return _isValid;
+
     }
 
+    const _onLoadData = async () => {
+        
+        console.log("Key 1" + titleKey);
+        
+        let title = await AsyncStorage.getItem(titleKey);
+        if (title != null) {
+            setTitle(title);
+        }
+
+        let subscribe = await AsyncStorage.getItem(topicSubscribeKey);
+        if (subscribe != null) {
+            setBrokenMqttTopicSubscribe(subscribe);
+        }
+
+        let publish = await AsyncStorage.getItem(topicPublishKey);
+        if (publish != null) {
+            setBrokenMqttTopicPublish(publish);
+        }
+
+    }
+
+    const _onShowModal = async () => {
+        _resetAlerts();
+        try {
+            _onLoadData();
+        } catch (e) {
+            Alert.alert("DS-IOT", "Erro ao carregar conficurações");
+        }
+    }
+
+    const _setKeysStore = (numScreen) => {
+        setTitleKey(`title-screen${numScreen}`);
+        setTopicSubscribeKey(`broken-mqtt-topic-subscribe${numScreen}`);
+        setTopicPublishKey(`broken-mqtt-topic-publish${numScreen}`);    }
+
+    const _resetAlerts = () => {
+        setAlertTitle();
+        setAlertSubscribe();
+        setAlertPublish();
+    }
 
     return (
 
@@ -77,9 +116,9 @@ const SettingsTopics = forwardRef((props, ref) => {
             onShow={_onShowModal}>
             <View style={styles.modalView}>
 
-                <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" />
-                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokenMqttTopicSubscribe(text)} value={brokenMqttTopicSubscribe} keyboardType="default" />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" />
+                <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
+                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokenMqttTopicSubscribe(text)} value={brokenMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" alert={alertPublish} />
 
                 <View style={styles.contentPressable}>
                     <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
@@ -93,6 +132,7 @@ const SettingsTopics = forwardRef((props, ref) => {
             </View>
         </Modal>
     );
+
 });
 
 const styles = StyleSheet.create({
