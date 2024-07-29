@@ -3,7 +3,6 @@ import { Modal, View, StyleSheet, Text, Pressable, Alert } from 'react-native';
 import TextInputLabel from './TextInputLabel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const SettingsTopics = forwardRef((props, ref) => {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -118,7 +117,7 @@ const SettingsTopics = forwardRef((props, ref) => {
 
                 <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
                 <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokenMqttTopicSubscribe(text)} value={brokenMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" alert={alertPublish} />
+                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
 
                 <View style={styles.contentPressable}>
                     <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>

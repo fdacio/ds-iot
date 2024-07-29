@@ -1,5 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Paho from "paho-mqtt";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 //Variáveis de uso global
 var clientMqttDSIOT = null;
@@ -10,14 +11,40 @@ var brokenMqttPass = null;
 var brokenMqttTopicSubscribe = null;
 var brokenMqttTopicPublish = null;
 var payloadString = null;
-var onMessageArrived = null;
+var callBackMessage = null;
+var callBackConnetionSuccess = null;
+var callBackConnetionError = null;
 var screenNum = 0;
 
-const MqttService = (n) => {
+const MqttService = async (n) => {
     screenNum = n;
+    const hasConfig = await loadConfig();
+    if (hasConfig) {
+        if (hasTopicSubscribe()) {
+            if (isConnected()) clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+        }
+
+        if (hasTopicPublish()) {
+            if (isConnected()) clientMqttDSIOT.publish(brokenMqttTopicPublish, "");
+        }
+    }
 }
 
-export async function mqttServiceLoadConfig() {
+export async function mqttServiceProcessConnect(_callBackConnetionSuccess, _callBackConnetionError) {
+
+    callBackConnetionSuccess = _callBackConnetionSuccess;
+    callBackConnetionError = _callBackConnetionError;
+
+    const hasConfig = await loadConfig();
+    if (hasConfig) {
+        connect();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const loadConfig = async () => {
     brokenMqttHost = await AsyncStorage.getItem("broken-mqtt");
     brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
     brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
@@ -28,15 +55,18 @@ export async function mqttServiceLoadConfig() {
     if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
         return false;
     }
-
     return true;
 }
 
-export function mqttServiceConnect() {
+const connect = async () => {
+
+    if (isConnected()) {
+        clientMqttDSIOT.disconnect();
+    }
 
     let host = brokenMqttHost;
     let port = parseInt(brokenMqttPort);
-    let clientId = `mqtt-dsiot-${parseInt(Math.random() * 100000)}`;
+    let clientId = `mqtt-dsiot-app-android-${(Math.random()) * 1000}`;
 
     clientMqttDSIOT = new Paho.Client(
         host,
@@ -48,60 +78,57 @@ export function mqttServiceConnect() {
         userName: brokenMqttUser,
         password: brokenMqttPass,
         mqttVersion: 3,
-        onSuccess: async () => {
-            console.log("Conectado com sucesso!");
-            if (!clientMqttDSIOT.isConnected()) return;
-            if ((brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined) || brokenMqttTopicSubscribe == "") return;
-            clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
-            
+
+        onSuccess: () => {
+
+            console.log("Conectado com sucesso: " + clientId);
+
             clientMqttDSIOT.onMessageArrived = (message) => {
                 if (message.destinationName === brokenMqttTopicSubscribe) {
                     payloadString = message.payloadString;
-                    onMessageArrived()
+                    if (callBackMessage != null)
+                        callBackMessage(payloadString);
                 }
             }
-            clientMqttDSIOT.publish(brokenMqttTopicPublish, "");
+
+            clientMqttDSIOT.onConnectionLost = () => {
+                console.log("Disconetado!");
+                clientMqttDSIOT = null;
+            }
+            if (callBackConnetionSuccess != null) callBackConnetionSuccess();
+
+            if (hasTopicSubscribe()) {
+                if (isConnected()) clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+            }
+
+            if (hasTopicPublish()) {
+                if (isConnected()) clientMqttDSIOT.publish(brokenMqttTopicPublish, "");
+            }
         },
-        onFailure: (err) => {
-            Alert.alert("MQTT", "Conexão Falhou: Ver configurações em Settings");
-            return null;
+
+        onFailure: (error) => {
+            if (callBackConnetionError != null) callBackConnetionError(error.errorMessage);
         }
     };
 
     clientMqttDSIOT.connect(options);
 
-    clientMqttDSIOT.onConnectionLost = () => {
-        console.log("Disconetado!");
-        clientMqttDSIOT = null;
-    }
-
-}
-
-export function mqttServiceDisconnect() {
-    if (hasClientMqtt()) {
-        if (clientMqttDSIOT.isConnected()) {
-            if (hasTopicSubscribe()) {
-                clientMqttDSIOT.unsubscribe(brokenMqttTopicSubscribe);
-            }
-            clientMqttDSIOT.disconnect();
-        }
-    }
 }
 
 export function mqttServicePublish(value) {
     console.log("Tem Client: " + hasClientMqtt());
-    console.log("Tem Publish: " +  hasTopicPublish());
+    console.log("Tem Publish: " + hasTopicPublish());
     if (hasClientMqtt() && hasTopicPublish()) {
         clientMqttDSIOT.send(brokenMqttTopicPublish, value);
     }
 }
 
-export function mqttServiceGetPayload() {
-    return payloadString;
+export function mqttServiceSetOnMessageArrived(_callBackMessageArrived) {
+    callBackMessage = _callBackMessageArrived;
 }
 
-export function mqttServiceSetOnMessageArrived(callBack) {
-    onMessageArrived = callBack;
+export function mqttServiceStatusConnected() {
+    return isConnected();
 }
 
 const hasClientMqtt = () => {
@@ -125,5 +152,11 @@ const hasTopicPublish = () => {
     return true;
 }
 
+const isConnected = () => {
+    if (hasClientMqtt()) {
+        return clientMqttDSIOT.isConnected();
+    }
+    return false;
+}
 
 export default MqttService;

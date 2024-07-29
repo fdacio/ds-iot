@@ -1,10 +1,11 @@
 import React from 'react'
-import { StyleSheet, StatusBar } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { StyleSheet, StatusBar, Alert } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Mqtt from './screens/Mqtt';
 import Settings from './screens/Settings';
+import { mqttServiceProcessConnect } from './services/mqtt';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +13,23 @@ const App = () => {
 
   console.log("App init");
 
-  const Mqtt1 = () => (<Mqtt numScreen="1" title="Iot 1"/>);
-  const Mqtt2 = () => (<Mqtt numScreen="2" title="Iot 2"/>);
-  const Mqtt3 = () => (<Mqtt numScreen="3" title="Iot 3"/>);
-  
+  try {
+    mqttServiceProcessConnect(
+      () => {/** conexão realisada com sucesso */}, 
+      (error) => { Alert.alert("DS-IOT", error);}
+    ).then((hasConfig) => {
+      if (!hasConfig) {
+        Alert.alert("DS-IOT", "Informe as configurações do Broken MQTT em Settings");
+      }
+    });
+  } catch (error) {
+    Alert.alert("DS-IOT", error);
+  }
+
+  const Mqtt1 = () => (<Mqtt numScreen="1" title="Iot 1" />);
+  const Mqtt2 = () => (<Mqtt numScreen="2" title="Iot 2" />);
+  const Mqtt3 = () => (<Mqtt numScreen="3" title="Iot 3" />);
+
   return (
 
     <NavigationContainer>

@@ -1,11 +1,12 @@
-import React from 'react';
-import { StyleSheet, View, Text, Pressable, Modal, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Pressable,} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconBulb from '../components/IconBulb';
+import { mqttServiceSetOnMessageArrived } from '../services/mqtt';
 
 const HeaderScreen = (props) => {
 
-    return (
+      return (
         <View style={styles.content}>
             <Text style={styles.title}>{props.defaultTitle}</Text>
             {(props.actionSetting != undefined) &&
@@ -19,6 +20,11 @@ const HeaderScreen = (props) => {
                 </Pressable>
             </View>
             </>
+            }
+            {(props.iconConnection != undefined) && 
+            <View style={styles.contenIconConnection}>
+                <Icon name="wifi" color={(props.connected) ? styles.iconConnected.color : styles.iconDisconnected.color} size={32} />
+            </View>  
             }
         </View>
     );
@@ -52,6 +58,16 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
+    contenIconConnection: {
+        flex: 1,
+        alignItems: 'flex-end',
+    },
+    iconConnected: {
+        color: "#00fa00"
+    },
+    iconDisconnected: {
+        color: "#cccccc"
+    }
 })
 
 export default HeaderScreen

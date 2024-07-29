@@ -4,8 +4,11 @@ import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
+import TextInputPasswordLabel from '../components/TextInputPasswordLabel';
+import Loading from '../components/Loading';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mqttServiceProcessConnect, mqttServiceStatusConnected } from '../services/mqtt';
 
 const Settings = () => {
 
@@ -18,8 +21,17 @@ const Settings = () => {
     const [alertBrokenMqttPort, setAlertBrokenMqttPort] = useState();
     const [alertBrokenMqttUser, setAlertBrokenMqttUser] = useState();
     const [alertBrokenMqttPass, setAlertBrokenMqttPass] = useState();
+    const [loading, setLoading] = useState(false);
+    const defaultLabelBotao = "Salvar";
+    const [disabledButton, setDisabledButton] = useState(false);
+    const [labelButton, setLabelButton] = useState(defaultLabelBotao);
+    const [connected, setConnected] = useState(false);
 
     const _onSave = async () => {
+
+        setLoading(true);
+        setLabelButton("Aguarde ...");
+        setDisabledButton(true);
 
         _resetAlerts();
 
@@ -30,11 +42,21 @@ const Settings = () => {
             await AsyncStorage.setItem("broken-mqtt-port", brokenMqttPort);
             await AsyncStorage.setItem("broken-mqtt-user", brokenMqttUser);
             await AsyncStorage.setItem("broken-mqtt-pass", brokenMqttPass);
-            Alert.alert("DS-IOT", "Configuração salva com sucesso");
+            mqttServiceProcessConnect(
+                () => {
+                    Alert.alert("DS-IOT", "Configuração salva com sucesso");    
+                    _updateSecreenPostSave();
+                }, 
+                () => {
+                    Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT");  
+                    _updateSecreenPostSave();
+            });
         } catch (error) {
             console.log(error);
             Alert.alert("DS-IOT", "Erro ao salvar configuração");
+            _updateSecreenPostSave();
         }
+        
     }
 
     const _onValid = () => {
@@ -93,22 +115,31 @@ const Settings = () => {
         }
     }
 
+    const _updateSecreenPostSave = () => {
+        setLoading(false);
+        setLabelButton(defaultLabelBotao);
+        setDisabledButton(false);
+        setConnected(mqttServiceStatusConnected());
+    }
+
     useEffect(() => {
         _loadBrokenMqtt();
+        setConnected(mqttServiceStatusConnected());
     }, [isFocused]);
 
     return (
         <View style={styles.container}>
             <Header/>
-            <HeaderScreen defaultTitle="Settings" />
+            <HeaderScreen defaultTitle="Settings" iconConnection={true} connected={connected}/>
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />    
                     <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="default" alert={alertBrokenMqttPort} />    
                     <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />    
-                    <TextInputLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />    
-                    <Button label="Salvar" onPress={_onSave} />
+                    <TextInputPasswordLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />    
+                    <Button label={labelButton} onPress={_onSave} disabled={disabledButton}/>
                 </View>
+                <Loading loading={loading} />
             </ScrollView>
         </View>
     );

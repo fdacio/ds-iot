@@ -1,49 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { View, StyleSheet, Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
 import SettingsTopics from '../components/SettingsTopics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MqttService, {
-    mqttServiceLoadConfig,
-    mqttServiceConnect,
-    mqttServicePublish,
-    mqttServiceSetOnMessageArrived,
-    mqttServiceGetPayload,
-    mqttServiceDisconnect
-} from '../services/mqtt';
+import MqttService, { mqttServicePublish, mqttServiceSetOnMessageArrived } from '../services/mqtt';
 
+const Mqtt = (props) => {
 
-const Mqtt = ( props ) => {
-    
     const isFocused = useIsFocused();
     const [stateLed, setStateLed] = useState(false);
-    const [numScreen, setNumScreen] = useState();
     const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
 
-    const settingShowModal = (numScreen) => {
+    const _settingShowModal = (numScreen) => {
         if (!settingTopicsRef.current) return;
         settingTopicsRef.current.showModal(numScreen);
-    }
-
-    const _onMqttProcessConnect = () => {
-
-        mqttServiceLoadConfig().then((hasConfig) => {
-            if (hasConfig) {
-                mqttServiceConnect();
-                mqttServiceSetOnMessageArrived(() => {
-                    console.log("Led: " + mqttServiceGetPayload());
-                    if (mqttServiceGetPayload() === "on") {
-                        setStateLed(true);
-                    } else if (mqttServiceGetPayload() == "off") {
-                        setStateLed(false);
-                    }
-                })
-            }
-        });
     }
 
     const _setTitleFromStore = async (numScreen) => {
@@ -51,24 +25,25 @@ const Mqtt = ( props ) => {
             .then((title) => {
                 if (title != null) {
                     setTitle(title);
-                } 
+                }
             });
     }
 
     const _postSaveSetting = () => {
-        _setTitleFromStore(numScreen);
-        _onMqttProcessConnect();
+        _setTitleFromStore(props.numScreen);
+        MqttService(props.numScreen);
     }
 
     useEffect(() => {
         if (isFocused) {
-            setNumScreen(props.numScreen);
-            MqttService(props.numScreen);
+            console.log("Focus in: " + props.numScreen);
             _setTitleFromStore(props.numScreen);
-            _onMqttProcessConnect();
-        } else {
-            mqttServiceDisconnect();
-        }
+            MqttService(props.numScreen);
+            mqttServiceSetOnMessageArrived((message) => {
+                if (message == 'on') setStateLed(true);
+                if (message == 'off') setStateLed(false);
+            })
+        } 
     }, [isFocused]);
 
     const _on = () => {
@@ -86,7 +61,7 @@ const Mqtt = ( props ) => {
 
             <Header />
 
-            <HeaderScreen defaultTitle={title} actionSetting={() => settingShowModal(numScreen)} stateLed={stateLed} />
+            <HeaderScreen defaultTitle={title} actionSetting={() => _settingShowModal(props.numScreen)} stateLed={stateLed} />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff tipo="on" action={_on} />
