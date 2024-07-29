@@ -115,12 +115,12 @@ const connect = async () => {
 
 }
 
+const reconnect = async () => {
+
+}
+
 export function mqttServicePublish(value) {
-    console.log("Tem Client: " + hasClientMqtt());
-    console.log("Tem Publish: " + hasTopicPublish());
-    if (hasClientMqtt() && hasTopicPublish()) {
-        clientMqttDSIOT.send(brokenMqttTopicPublish, value);
-    }
+    clientMqttDSIOT.send(brokenMqttTopicPublish, value);
 }
 
 export function mqttServiceSetOnMessageArrived(_callBackMessageArrived) {
@@ -129,6 +129,14 @@ export function mqttServiceSetOnMessageArrived(_callBackMessageArrived) {
 
 export function mqttServiceStatusConnected() {
     return isConnected();
+}
+
+export function mqttServiceHasTopicSubscribe() {
+    return hasTopicSubscribe();
+}
+
+export function mqttServiceHasTopicPublish() {
+    return hasTopicPublish();
 }
 
 const hasClientMqtt = () => {

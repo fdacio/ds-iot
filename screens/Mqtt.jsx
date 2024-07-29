@@ -6,7 +6,11 @@ import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
 import SettingsTopics from '../components/SettingsTopics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MqttService, { mqttServicePublish, mqttServiceSetOnMessageArrived } from '../services/mqtt';
+import MqttService, { 
+    mqttServicePublish, 
+    mqttServiceSetOnMessageArrived, 
+    mqttServiceStatusConnected,
+    mqttServiceHasTopicPublish } from '../services/mqtt';
 
 const Mqtt = (props) => {
 
@@ -14,6 +18,18 @@ const Mqtt = (props) => {
     const [stateLed, setStateLed] = useState(false);
     const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
+
+    useEffect(() => {
+        if (isFocused) {
+            console.log("Focus in: " + props.numScreen);
+            _setTitleFromStore(props.numScreen);
+            MqttService(props.numScreen);
+            mqttServiceSetOnMessageArrived((message) => {
+                if (message == 'on') setStateLed(true);
+                if (message == 'off') setStateLed(false);
+            })
+        } 
+    }, [isFocused]);
 
     const _settingShowModal = (numScreen) => {
         if (!settingTopicsRef.current) return;
@@ -34,24 +50,24 @@ const Mqtt = (props) => {
         MqttService(props.numScreen);
     }
 
-    useEffect(() => {
-        if (isFocused) {
-            console.log("Focus in: " + props.numScreen);
-            _setTitleFromStore(props.numScreen);
-            MqttService(props.numScreen);
-            mqttServiceSetOnMessageArrived((message) => {
-                if (message == 'on') setStateLed(true);
-                if (message == 'off') setStateLed(false);
-            })
+    const _pusblish = (message) => {
+        if(!mqttServiceStatusConnected()) {
+            Alert.alert("DS-IOT", "Broken MQTT não conectado.");
+            return;
         } 
-    }, [isFocused]);
-
-    const _on = () => {
-        mqttServicePublish("on");
+        if (!mqttServiceHasTopicPublish()) {
+            Alert.alert("DS-IOT", "Não há topico publish.");
+            return;
+        }
+        mqttServicePublish(message);
     }
 
+    const _on = () => {
+        _pusblish("on");
+    }   
+
     const _off = () => {
-        mqttServicePublish("off");
+        _pusblish("off");
     }
 
     return (
@@ -59,7 +75,7 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header />
+            <Header connected={mqttServiceStatusConnected()}/>
 
             <HeaderScreen defaultTitle={title} actionSetting={() => _settingShowModal(props.numScreen)} stateLed={stateLed} />
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Pressable,} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconBulb from '../components/IconBulb';
-import { mqttServiceSetOnMessageArrived } from '../services/mqtt';
 
 const HeaderScreen = (props) => {
 
@@ -20,11 +19,6 @@ const HeaderScreen = (props) => {
                 </Pressable>
             </View>
             </>
-            }
-            {(props.iconConnection != undefined) && 
-            <View style={styles.contenIconConnection}>
-                <Icon name="wifi" color={(props.connected) ? styles.iconConnected.color : styles.iconDisconnected.color} size={32} />
-            </View>  
             }
         </View>
     );

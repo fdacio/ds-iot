@@ -25,17 +25,14 @@ const Settings = () => {
     const defaultLabelBotao = "Salvar";
     const [disabledButton, setDisabledButton] = useState(false);
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
-    const [connected, setConnected] = useState(false);
 
-    const _onSave = async () => {
+    const _onSave = async () => {        
+        
+        if (!_onValid()) return;
 
         setLoading(true);
         setLabelButton("Aguarde ...");
         setDisabledButton(true);
-
-        _resetAlerts();
-
-        if (!_onValid()) return;
 
         try {
             await AsyncStorage.setItem("broken-mqtt", brokenMqtt);
@@ -60,6 +57,8 @@ const Settings = () => {
     }
 
     const _onValid = () => {
+        
+        _resetAlerts();
         
         let _isValid = true;
         
@@ -119,18 +118,16 @@ const Settings = () => {
         setLoading(false);
         setLabelButton(defaultLabelBotao);
         setDisabledButton(false);
-        setConnected(mqttServiceStatusConnected());
     }
 
     useEffect(() => {
         _loadBrokenMqtt();
-        setConnected(mqttServiceStatusConnected());
     }, [isFocused]);
 
     return (
         <View style={styles.container}>
-            <Header/>
-            <HeaderScreen defaultTitle="Settings" iconConnection={true} connected={connected}/>
+            <Header connected={mqttServiceStatusConnected()}/>
+            <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />    
