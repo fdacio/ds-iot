@@ -67,7 +67,11 @@ const Settings = () => {
             _isValid = false;
         }
         if ((brokenMqttPort == "") || (brokenMqttPort == null) || (brokenMqttPort == undefined)) {
-            setAlertBrokenMqttPort("Broke Port is required");
+            setAlertBrokenMqttPort("Broken Port is required");
+            _isValid = false;
+        }
+        if (Number(brokenMqttPort) > 9999) {
+            setAlertBrokenMqttPort("Invalid Broken Port");
             _isValid = false;
         }
         if ((brokenMqttUser == "") || (brokenMqttUser == null) || (brokenMqttUser == undefined)) {
@@ -131,7 +135,7 @@ const Settings = () => {
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />    
-                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="default" alert={alertBrokenMqttPort} />    
+                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="numeric" alert={alertBrokenMqttPort} />    
                     <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />    
                     <TextInputPasswordLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />    
                     <Button label={labelButton} onPress={_onSave} disabled={disabledButton}/>

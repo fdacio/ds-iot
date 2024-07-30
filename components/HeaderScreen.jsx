@@ -37,19 +37,18 @@ const styles = StyleSheet.create({
     },
     
     title: {
+        flex: 3,
         fontSize: 24,
         fontWeight: 'bold',
         color: '#000',
-        flex: 1,
         alignItems: 'flex-start',
     },
     contentIconsBulb: {
-        marginLeft: 20,
         flex: 1,
         alignItems: 'center',
     },
     contenIconSetting: {
-        flex: 1,
+        flex: 3,
         alignItems: 'flex-end',
     },
     contenIconConnection: {

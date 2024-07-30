@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Pressable, Alert } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { mqttServiceStatusConnected, mqttServiceProcessConnect } from '../services/mqtt';
 
 const Header = (props) => {
 
     const [connected, setConnected] = useState(false);
+    const [textConnect, setTextConnect] = useState("Conectar");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setConnected(props.connected);
@@ -13,13 +15,26 @@ const Header = (props) => {
 
     const _onConnect = () => {
         if (!mqttServiceStatusConnected()) {
+            setTextConnect("Aguarde ...");
+            setLoading(true);
             mqttServiceProcessConnect(
                 () => {
                     setConnected(true);
+                    setLoading(false);
+                    setTextConnect("Conectar");             
                 },
-                () => {
-                    Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT. Ver Settings!");
+                (error) => {
+                    Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT: " + error);
                     setConnected(false);
+                    setTextConnect("Conectar");
+                    setLoading(false);
+                }).then((hasConfig) => {
+                    if (!hasConfig) {
+                        Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT. Ver Settings!");
+                        setConnected(false);
+                        setTextConnect("Conectar");
+                        setLoading(false);
+                    }
                 });
         }
     }
@@ -33,12 +48,19 @@ const Header = (props) => {
                 <Text style={styles.title}>DS-IOT</Text>
             </View>
             <View style={styles.contentRight}>
+                {props.actionConnect &&
                 <Pressable onPress={() => _onConnect()} style={styles.buttonConnect}>
-                    <Icon name="wifi" color={(connected) ? styles.iconConnected.color : styles.iconDisconnected.color} size={32} />
+                    {(!loading) &&
+                        <Icon name="wifi" color={(connected) ? styles.iconConnected.color : styles.iconDisconnected.color} size={24} />
+                    }
+                    {(loading) &&
+                        <ActivityIndicator color="#ccc" size={32} />
+                    }
                     {(!connected) &&
-                    <Text style={styles.textIconConnection}>Connect</Text>
+                        <Text style={styles.textIconConnection}>{textConnect}</Text>
                     }
                 </Pressable>
+                }
             </View>
         </View>
     );

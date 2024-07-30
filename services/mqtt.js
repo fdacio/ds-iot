@@ -107,6 +107,7 @@ const connect = async () => {
         },
 
         onFailure: (error) => {
+            console.log("Erro de conexão");
             if (callBackConnetionError != null) callBackConnetionError(error.errorMessage);
         }
     };

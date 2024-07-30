@@ -18,16 +18,15 @@ const Mqtt = (props) => {
     const [stateLed, setStateLed] = useState(false);
     const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
-
+    
     useEffect(() => {
         if (isFocused) {
-            console.log("Focus in: " + props.numScreen);
             _setTitleFromStore(props.numScreen);
             MqttService(props.numScreen);
             mqttServiceSetOnMessageArrived((message) => {
                 if (message == 'on') setStateLed(true);
                 if (message == 'off') setStateLed(false);
-            })
+            });
         } 
     }, [isFocused]);
 
@@ -75,7 +74,7 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header connected={mqttServiceStatusConnected()}/>
+            <Header actionConnect={true} connected={(props.connected != undefined) ? props.connected : mqttServiceStatusConnected()}/>
 
             <HeaderScreen defaultTitle={title} actionSetting={() => _settingShowModal(props.numScreen)} stateLed={stateLed} />
 
