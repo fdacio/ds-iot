@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, Pressable,} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconBulb from '../components/IconBulb';

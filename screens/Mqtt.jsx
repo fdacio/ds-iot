@@ -30,9 +30,9 @@ const Mqtt = (props) => {
         } 
     }, [isFocused]);
 
-    const _settingShowModal = (numScreen) => {
+    const _settingShowModal = () => {
         if (!settingTopicsRef.current) return;
-        settingTopicsRef.current.showModal(numScreen);
+        settingTopicsRef.current.showModal(props.numScreen);
     }
 
     const _setTitleFromStore = async (numScreen) => {
@@ -74,9 +74,9 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header actionConnect={true} connected={(props.connected != undefined) ? props.connected : mqttServiceStatusConnected()}/>
+            <Header actionConnect={true} />
 
-            <HeaderScreen defaultTitle={title} actionSetting={() => _settingShowModal(props.numScreen)} stateLed={stateLed} />
+            <HeaderScreen defaultTitle={title} actionSetting={_settingShowModal} stateLed={stateLed} />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff tipo="on" action={_on} />

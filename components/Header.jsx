@@ -5,12 +5,12 @@ import { mqttServiceStatusConnected, mqttServiceProcessConnect } from '../servic
 
 const Header = (props) => {
 
-    const [connected, setConnected] = useState(false);
+    const [connected, setConnected] = useState(true);
     const [textConnect, setTextConnect] = useState("Conectar");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setConnected(props.connected);
+        setConnected(mqttServiceStatusConnected());
     }, [props]);
 
     const _onConnect = () => {
@@ -20,8 +20,7 @@ const Header = (props) => {
             mqttServiceProcessConnect(
                 () => {
                     setConnected(true);
-                    setLoading(false);
-                    setTextConnect("Conectar");             
+                    setLoading(false);         
                 },
                 (error) => {
                     Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT: " + error);
@@ -49,17 +48,23 @@ const Header = (props) => {
             </View>
             <View style={styles.contentRight}>
                 {props.actionConnect &&
-                <Pressable onPress={() => _onConnect()} style={styles.buttonConnect}>
-                    {(!loading) &&
-                        <Icon name="wifi" color={(connected) ? styles.iconConnected.color : styles.iconDisconnected.color} size={24} />
+                <>
+                    {connected && 
+                        <Icon name="wifi" color={styles.iconConnected.color} size={24} />
                     }
-                    {(loading) &&
-                        <ActivityIndicator color="#ccc" size={32} />
+            
+                    {!connected && 
+                        <Pressable onPress={_onConnect} style={styles.buttonConnect}>
+                            {(!loading) &&
+                                <Icon name="wifi" color={styles.iconDisconnected.color} size={24} />
+                            }
+                            {(loading) &&
+                                <ActivityIndicator color="#ccc" size={24} />
+                            }
+                            <Text style={styles.textIconConnection}>{textConnect}</Text>
+                        </Pressable>
                     }
-                    {(!connected) &&
-                        <Text style={styles.textIconConnection}>{textConnect}</Text>
-                    }
-                </Pressable>
+                </>
                 }
             </View>
         </View>
