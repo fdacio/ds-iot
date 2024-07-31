@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { mqttServiceStatusConnected, mqttServiceProcessConnect } from '../services/mqtt';
+import { mqttServiceProcessConnect } from '../services/mqtt';
 
-const Header = (props) => {
+const Header = forwardRef((props, ref) => {
 
     const [connected, setConnected] = useState(false);
     const [textConnect, setTextConnect] = useState("Conectar");
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        let brokenConnected = mqttServiceStatusConnected();
-        setConnected(brokenConnected);
-    }, [props]);
+
+    const publicRef = {
+    updateStateConneticon: (status) => {
+            setConnected(status);
+        }
+    };
+
+    useImperativeHandle(ref, () => publicRef);
 
     const _onConnect = () => {
         setTextConnect("Aguarde ...");
@@ -68,7 +72,7 @@ const Header = (props) => {
             </View>
         </View>
     );
-}
+})
 
 const styles = StyleSheet.create({
 

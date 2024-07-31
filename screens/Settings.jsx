@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
@@ -25,6 +25,7 @@ const Settings = () => {
     const defaultLabelBotao = "Salvar";
     const [disabledButton, setDisabledButton] = useState(false);
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
+    const headerRef = useRef();
 
     const _onSave = async () => {        
         
@@ -131,7 +132,7 @@ const Settings = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header actionConnect={ true }/>
+            <Header ref={ headerRef } actionConnect={ false }/>
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>

@@ -18,6 +18,7 @@ const Mqtt = (props) => {
     const [stateLed, setStateLed] = useState(false);
     const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
+    const headerRef = useRef();
     
     useEffect(() => {
         if (isFocused) {
@@ -27,12 +28,18 @@ const Mqtt = (props) => {
                 if (message == 'on') setStateLed(true);
                 if (message == 'off') setStateLed(false);
             });
+            _onUpdateStatusBarConnection(mqttServiceStatusConnected());
         } 
     }, [isFocused]);
 
     const _settingShowModal = () => {
         if (!settingTopicsRef.current) return;
         settingTopicsRef.current.showModal(props.numScreen);
+    }
+
+    const _onUpdateStatusBarConnection = (status) => {
+        if (!headerRef.current) return;
+        headerRef.current.updateStateConneticon(status)
     }
 
     const _setTitleFromStore = async (numScreen) => {
@@ -52,6 +59,7 @@ const Mqtt = (props) => {
     const _pusblish = (message) => {
         if(!mqttServiceStatusConnected()) {
             Alert.alert("DS-IOT", "Broken MQTT não conectado.");
+            _onUpdateStatusBarConnection(false);
             return;
         } 
         if (!mqttServiceHasTopicPublish()) {
@@ -74,7 +82,7 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header actionConnect={ true }/>
+            <Header ref={headerRef} actionConnect={ true }/>
 
             <HeaderScreen defaultTitle={title} actionSetting={_settingShowModal} stateLed={stateLed} />
 
