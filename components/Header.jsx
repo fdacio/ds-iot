@@ -1,25 +1,28 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { mqttServiceProcessConnect } from '../services/mqtt';
 
 const Header = forwardRef((props, ref) => {
 
-    const [connected, setConnected] = useState(false);
-    const [textConnect, setTextConnect] = useState("Conectar");
-    const [loading, setLoading] = useState(false);
+    const labelWait = "Aguarde ...";
+    const labelConnect = "Conectar";
 
+    const [connected, setConnected] = useState(false);
+    const [textConnect, setTextConnect] = useState(labelConnect);
+    const [loading, setLoading] = useState(false);
 
     const publicRef = {
     updateStateConneticon: (status) => {
             setConnected(status);
+            if (!status) setTextConnect(labelConnect);
         }
     };
 
     useImperativeHandle(ref, () => publicRef);
 
     const _onConnect = () => {
-        setTextConnect("Aguarde ...");
+        setTextConnect(labelWait);
         setLoading(true);
         mqttServiceProcessConnect(
             () => {
@@ -29,13 +32,13 @@ const Header = forwardRef((props, ref) => {
             (error) => {
                 Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT: " + error);
                 setConnected(false);
-                setTextConnect("Conectar");
+                setTextConnect(labelConnect);
                 setLoading(false);
             }).then((hasConfig) => {
                 if (!hasConfig) {
                     Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT. Ver Settings!");
                     setConnected(false);
-                    setTextConnect("Conectar");
+                    setTextConnect(labelConnect);
                     setLoading(false);
                 }
             });
