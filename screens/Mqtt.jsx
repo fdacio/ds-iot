@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
@@ -70,7 +70,7 @@ const Mqtt = (props) => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
@@ -83,7 +83,7 @@ const Mqtt = (props) => {
                 <ButtonOnOff tipo="off" action={_off} />
             </View>
 
-        </View>
+        </SafeAreaView>
     );
 }
 

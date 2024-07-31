@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
@@ -130,7 +130,7 @@ const Settings = () => {
     }, [isFocused]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header actionConnect={ true }/>
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
@@ -143,7 +143,7 @@ const Settings = () => {
                 </View>
                 <Loading loading={loading} />
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }
 
