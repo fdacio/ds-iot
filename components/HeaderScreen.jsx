@@ -27,13 +27,13 @@ const HeaderScreen = (props) => {
 const styles = StyleSheet.create({
 
     content: {
-        flexDirection: 'row',
-        height: 80,
+        height: 70,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        marginHorizontal: 16,
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginHorizontal: 16,
     },
     
     title: {

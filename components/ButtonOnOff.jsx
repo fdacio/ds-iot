@@ -8,7 +8,7 @@ const ButtonOnOff = (props) => {
         <Fragment>
             {
                 props.tipo == "on" &&
-                <TouchableOpacity style={styles.buttons} title="ON"
+                <TouchableOpacity style={styles.contentButtons} title="ON"
                     onPress={props.action} >
                     <Icon name="power-off" size={60} color="#006630" />
                     <Text style={styles.textButton}>ON</Text>
@@ -16,7 +16,7 @@ const ButtonOnOff = (props) => {
             }
             {   
                 props.tipo == "off" &&
-                <TouchableOpacity style={styles.buttons} title="OFF"
+                <TouchableOpacity style={styles.contentButtons} title="OFF"
                     onPress={props.action} >
                     <Icon name="power-off" size={60} color="#f00" />
                     <Text style={styles.textButton}>OFF</Text>
@@ -28,11 +28,11 @@ const ButtonOnOff = (props) => {
 
 const styles = StyleSheet.create({
 
-    buttons: {
+    contentButtons: {
+        width: 120,
+        borderRadius: 60,
         borderWidth: 2,
         borderColor: "#ccc",
-        borderRadius: 500,
-        width: 120,
         padding: 8,
         margin: 8,
         alignItems: 'center',

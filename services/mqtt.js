@@ -1,7 +1,6 @@
 import Paho from "paho-mqtt";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 //Variáveis de uso global
 var clientMqttDSIOT = null;
 var brokenMqttHost = null;

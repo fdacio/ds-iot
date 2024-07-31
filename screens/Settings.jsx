@@ -44,7 +44,8 @@ const Settings = () => {
                     Alert.alert("DS-IOT", "Configuração salva com sucesso");    
                     _updateSecreenPostSave();
                 }, 
-                () => {
+                (error) => {
+                    console.log(error);
                     Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT");  
                     _updateSecreenPostSave();
             });
@@ -130,7 +131,7 @@ const Settings = () => {
 
     return (
         <View style={styles.container}>
-            <Header connected={mqttServiceStatusConnected()}/>
+            <Header actionConnect={ true }/>
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>

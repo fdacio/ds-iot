@@ -74,7 +74,7 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header actionConnect={true} />
+            <Header actionConnect={ true }/>
 
             <HeaderScreen defaultTitle={title} actionSetting={_settingShowModal} stateLed={stateLed} />
 
@@ -88,6 +88,7 @@ const Mqtt = (props) => {
 }
 
 const styles = StyleSheet.create({
+    
     container: {
         flex: 1,
         backgroundColor: '#fff',
