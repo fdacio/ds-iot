@@ -20,7 +20,8 @@
       }
     },
     "ios": {
-      "buildNumber": "1.0.8"
+      "buildNumber": "1.0.8",
+      "bundleIdentifier": "br.com.daciosoftware.dsiot"
     },
     "extra": {
       "eas": {

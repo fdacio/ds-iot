@@ -15,18 +15,17 @@ import MqttService, {
 const Mqtt = (props) => {
 
     const isFocused = useIsFocused();
-    const [stateLed, setStateLed] = useState(false);
     const [title, setTitle] = useState(props.title);
     const settingTopicsRef = useRef();
     const headerRef = useRef();
+    const headerScreenRef = useRef();
     
     useEffect(() => {
         if (isFocused) {
             _setTitleFromStore(props.numScreen);
             MqttService(props.numScreen);
             mqttServiceSetOnMessageArrived((message) => {
-                if (message == 'on') setStateLed(true);
-                if (message == 'off') setStateLed(false);
+                _onUpdateStateBulb(message)
             });
             _onUpdateStatusBarConnection(mqttServiceStatusConnected());
         } 
@@ -40,6 +39,11 @@ const Mqtt = (props) => {
     const _onUpdateStatusBarConnection = (status) => {
         if (!headerRef.current) return;
         headerRef.current.updateStateConneticon(status)
+    }
+
+    const _onUpdateStateBulb = (message) => {
+        if (!headerScreenRef.current) return;
+        headerScreenRef.current.updateStateIconBulb(message)
     }
 
     const _setTitleFromStore = async (numScreen) => {
@@ -84,7 +88,7 @@ const Mqtt = (props) => {
 
             <Header ref={headerRef} actionConnect={ true }/>
 
-            <HeaderScreen defaultTitle={title} actionSetting={_settingShowModal} stateLed={stateLed} />
+            <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingShowModal}  />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff tipo="on" action={_on} />

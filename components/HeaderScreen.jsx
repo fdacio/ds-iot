@@ -1,28 +1,41 @@
-import React from 'react';
-import { StyleSheet, View, Text, Pressable,} from 'react-native';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { StyleSheet, View, Text, Pressable, } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconBulb from '../components/IconBulb';
 
-const HeaderScreen = (props) => {
+const HeaderScreen = forwardRef((props, ref) => {
 
-      return (
+    const [stateBulb, setStateBulb] = useState(false);
+
+    const publicRef = {
+        updateStateIconBulb: (payload) => {
+            if (payload == "on") {
+                setStateBulb(true);
+            } else if (payload == "off") {
+                setStateBulb(false);
+            }
+        }
+    }
+    useImperativeHandle(ref, () => publicRef);
+    
+    return (
         <View style={styles.content}>
             <Text style={styles.title}>{props.defaultTitle}</Text>
             {(props.actionSetting != undefined) &&
-            <>
-            <View style={styles.contentIconsBulb}>
-                <IconBulb state={props.stateLed} />
-            </View>
-            <View style={styles.contenIconSetting}>
-                <Pressable onPress={props.actionSetting}>
-                    <Icon name="cog" color="#ccc" size={32} />
-                </Pressable>
-            </View>
-            </>
+                <>
+                    <View style={styles.contentIconsBulb}>
+                        <IconBulb state={stateBulb} />
+                    </View>
+                    <View style={styles.contenIconSetting}>
+                        <Pressable onPress={props.actionSetting}>
+                            <Icon name="cog" color="#ccc" size={32} />
+                        </Pressable>
+                    </View>
+                </>
             }
         </View>
     );
-}
+});
 
 const styles = StyleSheet.create({
 
@@ -35,7 +48,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    
+
     title: {
         flex: 3,
         fontSize: 24,

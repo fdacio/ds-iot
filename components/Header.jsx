@@ -13,7 +13,7 @@ const Header = forwardRef((props, ref) => {
     const [loading, setLoading] = useState(false);
 
     const publicRef = {
-    updateStateConneticon: (status) => {
+        updateStateConneticon: (status) => {
             setConnected(status);
             if (!status) setTextConnect(labelConnect);
         }

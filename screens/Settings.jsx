@@ -8,7 +8,7 @@ import TextInputPasswordLabel from '../components/TextInputPasswordLabel';
 import Loading from '../components/Loading';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { mqttServiceProcessConnect, mqttServiceStatusConnected } from '../services/mqtt';
+import { mqttServiceProcessConnect } from '../services/mqtt';
 
 const Settings = () => {
 
@@ -22,7 +22,7 @@ const Settings = () => {
     const [alertBrokenMqttUser, setAlertBrokenMqttUser] = useState();
     const [alertBrokenMqttPass, setAlertBrokenMqttPass] = useState();
     const [loading, setLoading] = useState(false);
-    const defaultLabelBotao = "Salvar";
+    const defaultLabelBotao = "Conectar";
     const [disabledButton, setDisabledButton] = useState(false);
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
     const headerRef = useRef();
@@ -42,7 +42,7 @@ const Settings = () => {
             await AsyncStorage.setItem("broken-mqtt-pass", brokenMqttPass);
             mqttServiceProcessConnect(
                 () => {
-                    Alert.alert("DS-IOT", "Configuração salva com sucesso");    
+                    Alert.alert("DS-IOT", "Conexão realizada com sucesso");    
                     _updateSecreenPostSave();
                 }, 
                 (error) => {

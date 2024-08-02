@@ -12,14 +12,6 @@
         "buildType": "apk"
       }
     },
-    "preview2": {
-      "android": {
-        "buildType": "apk"
-      },
-      "env": {
-        "NODE_ENV" : "development"
-      }
-    },
     "preview3": {
       "developmentClient": true
     },
