@@ -39,7 +39,7 @@ const SettingsTopics = forwardRef((props, ref) => {
             setModalVisible(false);
             if (props.callBackPostSave != undefined) props.callBackPostSave();
         } catch (error) {
-            Alert.alert("DS-IOT", "Erro ao salvar configuração");
+            Alert.alert(`${app.name}`, "Erro ao salvar configuração");
         }
     }
 
@@ -90,7 +90,7 @@ const SettingsTopics = forwardRef((props, ref) => {
         try {
             _onLoadData();
         } catch (e) {
-            Alert.alert("DS-IOT", "Erro ao carregar conficurações");
+            Alert.alert(`${app.name}`, "Erro ao carregar configurações");
         }
     }
 

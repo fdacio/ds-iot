@@ -2,6 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { mqttServiceProcessConnect } from '../services/mqtt';
+import { app } from '../app.json';
 
 const Header = forwardRef((props, ref) => {
 
@@ -30,13 +31,13 @@ const Header = forwardRef((props, ref) => {
                 setLoading(false);
             },
             (error) => {
-                Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT: " + error);
+                Alert.alert(`${app.name}`, "Erro ao conectar com Broken MQTT: " + error);
                 setConnected(false);
                 setTextConnect(labelConnect);
                 setLoading(false);
             }).then((hasConfig) => {
                 if (!hasConfig) {
-                    Alert.alert("DS-IOT", "Erro ao conectar com Broken MQTT. Ver Settings!");
+                    Alert.alert(`${app.name}`, "Erro ao conectar com Broken MQTT. Ver Settings!");
                     setConnected(false);
                     setTextConnect(labelConnect);
                     setLoading(false);
@@ -50,7 +51,8 @@ const Header = forwardRef((props, ref) => {
                 <Icon name="home" color="#fff" size={32} style={styles.iconLeft} />
             </View>
             <View style={styles.contentTitle}>
-                <Text style={styles.title}>DS-IOT</Text>
+                <Text style={styles.title}>{app.name}</Text>
+                <Text style={styles.textVersion}>{app.version}</Text>
             </View>
             <View style={styles.contentRight}>
                 {props.actionConnect &&
@@ -108,7 +110,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
-
+    textVersion: {
+        fontSize: 8,
+        color: '#ccc',
+    },
     buttonConnect: {
         flexDirection: "row",
         textAlignVertical: 'center'
