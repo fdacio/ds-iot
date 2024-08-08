@@ -55,7 +55,7 @@ const Header = forwardRef((props, ref) => {
                 <Text style={styles.textVersion}>{app.version}</Text>
             </View>
             <View style={styles.contentRight}>
-                {props.actionConnect &&
+                {props.showActionConnect &&
                     <>
                         {connected &&
                             <Icon name="wifi" color={styles.iconConnected.color} size={24} />

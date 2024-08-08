@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
@@ -28,8 +28,8 @@ const Settings = () => {
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
     const headerRef = useRef();
 
-    const _onSave = async () => {        
-        
+    const _onSave = async () => {
+
         if (!_onValid()) return;
 
         setLoading(true);
@@ -43,28 +43,28 @@ const Settings = () => {
             await AsyncStorage.setItem("broken-mqtt-pass", brokenMqttPass);
             mqttServiceProcessConnect(
                 () => {
-                    Alert.alert(`${app.name}`, "Conexão realizada com sucesso");    
+                    Alert.alert(`${app.name}`, "Conexão realizada com sucesso");
                     _updateSecreenPostSave();
-                }, 
+                },
                 (error) => {
                     console.log(error);
-                    Alert.alert(`${app.name}`, "Erro ao conectar com Broken MQTT");  
+                    Alert.alert(`${app.name}`, "Erro ao conectar com Broken MQTT: " + error);
                     _updateSecreenPostSave();
-            });
+                });
         } catch (error) {
             console.log(error);
             Alert.alert(`${app.name}`, "Erro ao salvar configuração");
             _updateSecreenPostSave();
         }
-        
+
     }
 
     const _onValid = () => {
-        
+
         _resetAlerts();
-        
+
         let _isValid = true;
-        
+
         if ((brokenMqtt == "") || (brokenMqtt == null) || (brokenMqtt == undefined)) {
             setAlertBrokenMqtt("Broken MQTT is required");
             _isValid = false;
@@ -97,7 +97,7 @@ const Settings = () => {
     }
 
     const _loadBrokenMqtt = async () => {
-        
+
         _resetAlerts();
 
         let brokenMqtt = await AsyncStorage.getItem("broken-mqtt");
@@ -133,15 +133,15 @@ const Settings = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header ref={ headerRef } actionConnect={ false }/>
+            <Header ref={headerRef} showActionConnect={false} />
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />    
-                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="numeric" alert={alertBrokenMqttPort} />    
-                    <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />    
-                    <TextInputPasswordLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />    
-                    <Button label={labelButton} onPress={_onSave} disabled={disabledButton}/>
+                    <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />
+                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="numeric" alert={alertBrokenMqttPort} />
+                    <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />
+                    <TextInputPasswordLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />
+                    <Button label={labelButton} onPress={_onSave} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />
             </ScrollView>

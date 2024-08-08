@@ -26,8 +26,8 @@ const Mqtt = (props) => {
         if (isFocused) {
             _setTitleFromStore(props.numScreen);
             MqttService(props.numScreen);
-            mqttServiceSetOnMessageArrived((message) => {
-                _onUpdateStateBulb(message)
+            mqttServiceSetOnMessageArrived((payload) => {
+                _onUpdateStateBulb(payload)
             });
             _onUpdateStatusBarConnection(mqttServiceStatusConnected());
         } 
@@ -49,12 +49,10 @@ const Mqtt = (props) => {
     }
 
     const _setTitleFromStore = async (numScreen) => {
-        await AsyncStorage.getItem(`title-screen${numScreen}`)
-            .then((title) => {
-                if (title != null) {
-                    setTitle(title);
-                }
-            });
+        let title = await AsyncStorage.getItem(`title-screen${numScreen}`);
+        if (title != null) {
+            setTitle(title);
+        }
     }
 
     const _postSaveSetting = () => {
@@ -62,7 +60,7 @@ const Mqtt = (props) => {
         MqttService(props.numScreen);
     }
 
-    const _pusblish = (message) => {
+    const _pusblish = (payload) => {
         if(!mqttServiceStatusConnected()) {
             Alert.alert(`${app.name}`, "Broken MQTT não conectado.");
             _onUpdateStatusBarConnection(false);
@@ -72,7 +70,7 @@ const Mqtt = (props) => {
             Alert.alert(`${app.name}`, "Não há topico publish.");
             return;
         }
-        mqttServicePublish(message);
+        mqttServicePublish(payload);
     }
 
     const _on = () => {
@@ -88,7 +86,7 @@ const Mqtt = (props) => {
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header ref={headerRef} actionConnect={ true }/>
+            <Header ref={headerRef} showActionConnect={true}/>
 
             <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingShowModal}  />
 

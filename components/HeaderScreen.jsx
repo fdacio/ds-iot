@@ -9,6 +9,8 @@ const HeaderScreen = forwardRef((props, ref) => {
 
     const publicRef = {
         updateStateIconBulb: (payload) => {
+            console.log("payload HeaderScreen: " + payload);
+            setStateBulb(false);
             if (payload == "on") {
                 setStateBulb(true);
             } else if (payload == "off") {

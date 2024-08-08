@@ -66,8 +66,6 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const _onLoadData = async () => {
         
-        console.log("Key 1" + titleKey);
-        
         let title = await AsyncStorage.getItem(titleKey);
         if (title != null) {
             setTitle(title);
