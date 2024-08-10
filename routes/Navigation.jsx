@@ -22,9 +22,15 @@ const Navigation = () => {
 
   const _setTitlesTabFromAsyncStorage = async () => {
     console.log("Set titles from async store");
-    await AsyncStorage.getItem('title-screen1').then((title) => { if (title == null) return; setTitleTab1(title);});
-    await AsyncStorage.getItem('title-screen2').then((title) => { if (title == null) return; setTitleTab2(title);});
-    await AsyncStorage.getItem('title-screen3').then((title) => { if (title == null) return; setTitleTab3(title);});
+
+    let title1 = await AsyncStorage.getItem('title-screen1');
+    let title2 = await AsyncStorage.getItem('title-screen2');
+    let title3 = await AsyncStorage.getItem('title-screen3');
+
+    if (title1 != null) setTitleTab1(title1);
+    if (title2 != null) setTitleTab2(title2);
+    if (title3 != null) setTitleTab3(title3);
+
   }
 
   const _setTitleTabByNumScreen = async (numScreen) => {
