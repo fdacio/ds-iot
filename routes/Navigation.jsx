@@ -11,42 +11,29 @@ const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
 
-  let _titles = ["On/Off", "On/Off", "On/Off"];
-  const [titles, setTitles] = useState(_titles);
+  const _titleDefault = "On/Off";
+  const [titleTab1, setTitleTab1] = useState(_titleDefault);
+  const [titleTab2, setTitleTab2] = useState(_titleDefault);
+  const [titleTab3, setTitleTab3] = useState(_titleDefault);
 
-  const Mqtt1 = () => (<Mqtt numScreen="1" title={_titles[0]} />);
-  const Mqtt2 = () => (<Mqtt numScreen="2" title={_titles[1]} />);
-  const Mqtt3 = () => (<Mqtt numScreen="3" title={_titles[2]} />);
+  const Mqtt1 = () => (<Mqtt numScreen="1" title={ _titleDefault } />);
+  const Mqtt2 = () => (<Mqtt numScreen="2" title={ _titleDefault } />);
+  const Mqtt3 = () => (<Mqtt numScreen="3" title={ _titleDefault } />);
 
-  const _setTitlesNavigationFromAsyncStorage = async () => {
-    let title1 = await AsyncStorage.getItem('title-screen1');
-    if (title1 != null) {
-      _titles[0] = title1;
-    }
-    let title2 = await AsyncStorage.getItem('title-screen2');
-    if (title2 != null) {
-      _titles[1] = title2;
-    }
-    let title3 = await AsyncStorage.getItem('title-screen3');
-    if (title3 != null) {
-      _titles[2] = title3;
-    }
-    console.log("call from async store");
-    console.log(_titles);
-    setTitles(_titles);
+  const _setTitlesTabFromAsyncStorage = async () => {
+    console.log("Set titles from async store");
+    await AsyncStorage.getItem('title-screen1').then((title) => { if (title == null) return; setTitleTab1(title);});
+    await AsyncStorage.getItem('title-screen2').then((title) => { if (title == null) return; setTitleTab2(title);});
+    await AsyncStorage.getItem('title-screen3').then((title) => { if (title == null) return; setTitleTab3(title);});
   }
 
   const _setTitleTabByNumScreen = async (numScreen) => {
     let title = await AsyncStorage.getItem(`title-screen${numScreen}`);
-    if (title != null) {
-      _titles[(numScreen - 1)] = title;
-    }
-    setTitles(_titles);
   }
 
   useEffect(() => {
-    _setTitlesNavigationFromAsyncStorage();
-  }, [_titles]);
+    _setTitlesTabFromAsyncStorage();
+  }, []);
 
   return (
     <NavigationContainer>
@@ -68,9 +55,9 @@ const Navigation = () => {
           }
 
         }}>
-        <Tab.Screen name="Mqtt1" component={Mqtt1} options={{ title: titles[0], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-        <Tab.Screen name="Mqtt2" component={Mqtt2} options={{ title: titles[1], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-        <Tab.Screen name="Mqtt3" component={Mqtt3} options={{ title: titles[2], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt1" component={Mqtt1} options={{ title: titleTab1, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt2" component={Mqtt2} options={{ title: titleTab2, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+        <Tab.Screen name="Mqtt3" component={Mqtt3} options={{ title: titleTab3, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
         <Tab.Screen name="Settings" component={Settings} options={{ title: 'Settings', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
       </Tab.Navigator>
     </NavigationContainer>
