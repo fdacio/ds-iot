@@ -14,14 +14,14 @@ import { expo } from '../app.json';
 const Settings = () => {
 
     const isFocused = useIsFocused();
-    const [borkerMqtt, setBorkerMqtt] = useState('');
-    const [borkerMqttPort, setBorkerMqttPort] = useState('');
-    const [borkerMqttUser, setBorkerMqttUser] = useState('');
-    const [borkerMqttPass, setBorkerMqttPass] = useState('');
-    const [alertBorkerMqtt, setAlertBorkerMqtt] = useState();
-    const [alertBorkerMqttPort, setAlertBorkerMqttPort] = useState();
-    const [alertBorkerMqttUser, setAlertBorkerMqttUser] = useState();
-    const [alertBorkerMqttPass, setAlertBorkerMqttPass] = useState();
+    const [brokerMqtt, setBrokerMqtt] = useState('');
+    const [brokerMqttPort, setBrokerMqttPort] = useState('');
+    const [brokerMqttUser, setBrokerMqttUser] = useState('');
+    const [brokerMqttPass, setBrokerMqttPass] = useState('');
+    const [alertBrokerMqtt, setAlertBrokerMqtt] = useState();
+    const [alertBrokerMqttPort, setAlertBrokerMqttPort] = useState();
+    const [alertBrokerMqttUser, setAlertBrokerMqttUser] = useState();
+    const [alertBrokerMqttPass, setAlertBrokerMqttPass] = useState();
     const [loading, setLoading] = useState(false);
     const defaultLabelBotao = "Connect";
     const [disabledButton, setDisabledButton] = useState(false);
@@ -37,10 +37,10 @@ const Settings = () => {
         setDisabledButton(true);
 
         try {
-            await AsyncStorage.setItem("borker-mqtt", borkerMqtt);
-            await AsyncStorage.setItem("borker-mqtt-port", borkerMqttPort);
-            await AsyncStorage.setItem("borker-mqtt-user", borkerMqttUser);
-            await AsyncStorage.setItem("borker-mqtt-pass", borkerMqttPass);
+            await AsyncStorage.setItem("broker-mqtt", brokerMqtt);
+            await AsyncStorage.setItem("broker-mqtt-port", brokerMqttPort);
+            await AsyncStorage.setItem("broker-mqtt-user", brokerMqttUser);
+            await AsyncStorage.setItem("broker-mqtt-pass", brokerMqttPass);
             mqttServiceProcessConnect(
                 () => {
                     Alert.alert(`${expo.name}`, "Connection made successfully");
@@ -65,24 +65,24 @@ const Settings = () => {
 
         let _isValid = true;
 
-        if ((borkerMqtt == "") || (borkerMqtt == null) || (borkerMqtt == undefined)) {
-            setAlertBorkerMqtt("Borker MQTT is required");
+        if ((brokerMqtt == "") || (brokerMqtt == null) || (brokerMqtt == undefined)) {
+            setAlertBrokerMqtt("Broker MQTT is required");
             _isValid = false;
         }
-        if ((borkerMqttPort == "") || (borkerMqttPort == null) || (borkerMqttPort == undefined)) {
-            setAlertBorkerMqttPort("Borker Port is required");
+        if ((brokerMqttPort == "") || (brokerMqttPort == null) || (brokerMqttPort == undefined)) {
+            setAlertBrokerMqttPort("Broker Port is required");
             _isValid = false;
         }
-        if (Number(borkerMqttPort) > 9999) {
-            setAlertBorkerMqttPort("Invalid Borker Port");
+        if (Number(brokerMqttPort) > 9999) {
+            setAlertBrokerMqttPort("Invalid Broker Port");
             _isValid = false;
         }
-        if ((borkerMqttUser == "") || (borkerMqttUser == null) || (borkerMqttUser == undefined)) {
-            setAlertBorkerMqttUser("Borker User is required");
+        if ((brokerMqttUser == "") || (brokerMqttUser == null) || (brokerMqttUser == undefined)) {
+            setAlertBrokerMqttUser("Broker User is required");
             _isValid = false;
         }
-        if ((borkerMqttPass == "") || (borkerMqttPass == null) || (borkerMqttPass == undefined)) {
-            setAlertBorkerMqttPass("Borker Pass is required");
+        if ((brokerMqttPass == "") || (brokerMqttPass == null) || (brokerMqttPass == undefined)) {
+            setAlertBrokerMqttPass("Broker Pass is required");
             _isValid = false;
         }
 
@@ -90,34 +90,34 @@ const Settings = () => {
     }
 
     const _resetAlerts = () => {
-        setAlertBorkerMqtt();
-        setAlertBorkerMqttPort();
-        setAlertBorkerMqttUser();
-        setAlertBorkerMqttPass();
+        setAlertBrokerMqtt();
+        setAlertBrokerMqttPort();
+        setAlertBrokerMqttUser();
+        setAlertBrokerMqttPass();
     }
 
-    const _loadBorkerMqtt = async () => {
+    const _loadBrokerMqtt = async () => {
 
         _resetAlerts();
 
-        let borkerMqtt = await AsyncStorage.getItem("borker-mqtt");
-        if (borkerMqtt != null) {
-            setBorkerMqtt(borkerMqtt);
+        let brokerMqtt = await AsyncStorage.getItem("broker-mqtt");
+        if (brokerMqtt != null) {
+            setBrokerMqtt(brokerMqtt);
         }
 
-        let borkerMqttPort = await AsyncStorage.getItem("borker-mqtt-port");
-        if (borkerMqttPort != null) {
-            setBorkerMqttPort(borkerMqttPort);
+        let brokerMqttPort = await AsyncStorage.getItem("broker-mqtt-port");
+        if (brokerMqttPort != null) {
+            setBrokerMqttPort(brokerMqttPort);
         }
 
-        let borkerMqttUser = await AsyncStorage.getItem("borker-mqtt-user");
-        if (borkerMqttUser != null) {
-            setBorkerMqttUser(borkerMqttUser);
+        let brokerMqttUser = await AsyncStorage.getItem("broker-mqtt-user");
+        if (brokerMqttUser != null) {
+            setBrokerMqttUser(brokerMqttUser);
         }
 
-        let borkerMqttPass = await AsyncStorage.getItem("borker-mqtt-pass");
-        if (borkerMqttPass != null) {
-            setBorkerMqttPass(borkerMqttPass);
+        let brokerMqttPass = await AsyncStorage.getItem("broker-mqtt-pass");
+        if (brokerMqttPass != null) {
+            setBrokerMqttPass(brokerMqttPass);
         }
     }
 
@@ -128,7 +128,7 @@ const Settings = () => {
     }
 
     useEffect(() => {
-        _loadBorkerMqtt();
+        _loadBrokerMqtt();
     }, [isFocused]);
 
     return (
@@ -137,10 +137,10 @@ const Settings = () => {
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="Broker MQTT" onChangeText={text => setBorkerMqtt(text)} value={borkerMqtt} keyboardType="default" alert={alertBorkerMqtt} />
-                    <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBorkerMqttPort(text)} value={borkerMqttPort} keyboardType="numeric" alert={alertBorkerMqttPort} />
-                    <TextInputLabel label="Broker MQTT User" onChangeText={text => setBorkerMqttUser(text)} value={borkerMqttUser} keyboardType="default" alert={alertBorkerMqttUser} />
-                    <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBorkerMqttPass(text)} value={borkerMqttPass} keyboardType="default" alert={alertBorkerMqttPass} />
+                    <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqtt(text)} value={brokerMqtt} keyboardType="default" alert={alertBrokerMqtt} />
+                    <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBrokerMqttPort(text)} value={brokerMqttPort} keyboardType="numeric" alert={alertBrokerMqttPort} />
+                    <TextInputLabel label="Broker MQTT User" onChangeText={text => setBrokerMqttUser(text)} value={brokerMqttUser} keyboardType="default" alert={alertBrokerMqttUser} />
+                    <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBrokerMqttPass(text)} value={brokerMqttPass} keyboardType="default" alert={alertBrokerMqttPass} />
                     <Button label={labelButton} onPress={_onSave} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />

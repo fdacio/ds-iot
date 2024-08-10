@@ -7,8 +7,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState("");
-    const [borkerMqttTopicSubscribe, setBorkerMqttTopicSubscribe] = useState('');
-    const [borkerMqttTopicPublish, setBorkerMqttTopicPublish] = useState('');
+    const [brokerMqttTopicSubscribe, setBrokerMqttTopicSubscribe] = useState('');
+    const [brokerMqttTopicPublish, setBrokerMqttTopicPublish] = useState('');
     const [titleKey, setTitleKey] = useState("");
     const [topicSubscribeKey, setTopicSubscribeKey] = useState("");
     const [topicPublishKey, setTopicPublishKey] = useState("");
@@ -34,8 +34,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
         try {
             await AsyncStorage.setItem(titleKey, title);
-            await AsyncStorage.setItem(topicSubscribeKey, borkerMqttTopicSubscribe);
-            await AsyncStorage.setItem(topicPublishKey, borkerMqttTopicPublish);
+            await AsyncStorage.setItem(topicSubscribeKey, brokerMqttTopicSubscribe);
+            await AsyncStorage.setItem(topicPublishKey, brokerMqttTopicPublish);
             setModalVisible(false);
             if (props.callBackPostSave != undefined) props.callBackPostSave();
         } catch (error) {
@@ -51,11 +51,11 @@ const SettingsTopics = forwardRef((props, ref) => {
             setAlertTitle("Title is required");
             _isValid = false;
         }
-        if ((borkerMqttTopicSubscribe == "") || (borkerMqttTopicSubscribe == null) || (borkerMqttTopicSubscribe == undefined)) {
+        if ((brokerMqttTopicSubscribe == "") || (brokerMqttTopicSubscribe == null) || (brokerMqttTopicSubscribe == undefined)) {
             setAlertSubscribe("Topic Subscribe is required");
             _isValid = false;
         }
-        if ((borkerMqttTopicPublish == "") || (borkerMqttTopicPublish == null) || (borkerMqttTopicPublish == undefined)) {
+        if ((brokerMqttTopicPublish == "") || (brokerMqttTopicPublish == null) || (brokerMqttTopicPublish == undefined)) {
             setAlertPublish("Topic Publish is required");
             _isValid = false;
         }
@@ -73,12 +73,12 @@ const SettingsTopics = forwardRef((props, ref) => {
 
         let subscribe = await AsyncStorage.getItem(topicSubscribeKey);
         if (subscribe != null) {
-            setBorkerMqttTopicSubscribe(subscribe);
+            setBrokerMqttTopicSubscribe(subscribe);
         }
 
         let publish = await AsyncStorage.getItem(topicPublishKey);
         if (publish != null) {
-            setBorkerMqttTopicPublish(publish);
+            setBrokerMqttTopicPublish(publish);
         }
 
     }
@@ -94,8 +94,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const _setKeysStore = (numScreen) => {
         setTitleKey(`title-screen${numScreen}`);
-        setTopicSubscribeKey(`borker-mqtt-topic-subscribe${numScreen}`);
-        setTopicPublishKey(`borker-mqtt-topic-publish${numScreen}`);    }
+        setTopicSubscribeKey(`broker-mqtt-topic-subscribe${numScreen}`);
+        setTopicPublishKey(`broker-mqtt-topic-publish${numScreen}`);    }
 
     const _resetAlerts = () => {
         setAlertTitle();
@@ -114,16 +114,16 @@ const SettingsTopics = forwardRef((props, ref) => {
             <View style={styles.modalView}>
 
                 <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBorkerMqttTopicSubscribe(text)} value={borkerMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBorkerMqttTopicPublish(text)} value={borkerMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
+                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={brokerMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={brokerMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
 
                 <View style={styles.contentPressable}>
                     <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
-                        <Text style={styles.pressableText}>Salvar</Text>
+                        <Text style={styles.pressableText}>Save</Text>
                     </Pressable>
                     <View style={styles.pressableSeparator}></View>
                     <Pressable style={[styles.pressableButton]} onPress={() => setModalVisible(!modalVisible)}>
-                        <Text style={styles.pressableText}>Cancelar</Text>
+                        <Text style={styles.pressableText}>Cancel</Text>
                     </Pressable>
                 </View>
             </View>
