@@ -85,7 +85,10 @@ const connect = async () => {
             }
 
             clientMqttDSIOT.onConnectionLost = (error) => {
-                console.log("Disconnected! Error:" + error.errorMessage);
+                console.log("Disconnected");
+                if (error.errorMessage != "OK") {
+                    console.log(error.errorMessage);
+                }
                 clientMqttDSIOT = null;
             }
 
@@ -104,7 +107,14 @@ const connect = async () => {
 
         onFailure: (error) => {
             console.log("Connection fail");
-            if (callBackConnetionError != null) callBackConnetionError(error.errorMessage);
+            let messageFail = "";
+            if (error.errorMessage.includes("undefined")) {
+                messageFail = "Broker address or port invalid";
+            }
+            if (error.errorMessage.includes("not authorized")) {
+                messageFail = "Broker user or pass invalid";
+            }
+            if (callBackConnetionError != null) callBackConnetionError(messageFail);
         }
     };
 
