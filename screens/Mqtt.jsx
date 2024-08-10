@@ -6,7 +6,7 @@ import HeaderScreen from '../components/HeaderScreen';
 import ButtonOnOff from '../components/ButtonOnOff';
 import SettingsTopics from '../components/SettingsTopics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { app } from '../app.json';
+import { expo } from '../app.json';
 
 import MqttService, { 
     mqttServicePublish, 
@@ -62,12 +62,12 @@ const Mqtt = (props) => {
 
     const _pusblish = (payload) => {
         if(!mqttServiceStatusConnected()) {
-            Alert.alert(`${app.name}`, "Broken MQTT não conectado.");
+            Alert.alert(`${expo.name}`, "Broken MQTT não conectado.");
             _onUpdateStatusBarConnection(false);
             return;
         } 
         if (!mqttServiceHasTopicPublish()) {
-            Alert.alert(`${app.name}`, "Não há topico publish.");
+            Alert.alert(`${expo.name}`, "Não há topico publish.");
             return;
         }
         mqttServicePublish(payload);

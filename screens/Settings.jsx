@@ -9,7 +9,7 @@ import Loading from '../components/Loading';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mqttServiceProcessConnect } from '../services/mqtt';
-import { app } from '../app.json';
+import { expo } from '../app.json';
 
 const Settings = () => {
 
@@ -43,17 +43,17 @@ const Settings = () => {
             await AsyncStorage.setItem("broken-mqtt-pass", brokenMqttPass);
             mqttServiceProcessConnect(
                 () => {
-                    Alert.alert(`${app.name}`, "Conexão realizada com sucesso");
+                    Alert.alert(`${expo.name}`, "Conexão realizada com sucesso");
                     _updateSecreenPostSave();
                 },
                 (error) => {
                     console.log(error);
-                    Alert.alert(`${app.name}`, "Erro ao conectar com Broken MQTT: " + error);
+                    Alert.alert(`${expo.name}`, "Erro ao conectar com Broken MQTT: " + error);
                     _updateSecreenPostSave();
                 });
         } catch (error) {
             console.log(error);
-            Alert.alert(`${app.name}`, "Erro ao salvar configuração");
+            Alert.alert(`${expo.name}`, "Erro ao salvar configuração");
             _updateSecreenPostSave();
         }
 
