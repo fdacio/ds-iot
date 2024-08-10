@@ -7,8 +7,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState("");
-    const [brokenMqttTopicSubscribe, setBrokenMqttTopicSubscribe] = useState('');
-    const [brokenMqttTopicPublish, setBrokenMqttTopicPublish] = useState('');
+    const [borkerMqttTopicSubscribe, setBorkerMqttTopicSubscribe] = useState('');
+    const [borkerMqttTopicPublish, setBorkerMqttTopicPublish] = useState('');
     const [titleKey, setTitleKey] = useState("");
     const [topicSubscribeKey, setTopicSubscribeKey] = useState("");
     const [topicPublishKey, setTopicPublishKey] = useState("");
@@ -34,8 +34,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
         try {
             await AsyncStorage.setItem(titleKey, title);
-            await AsyncStorage.setItem(topicSubscribeKey, brokenMqttTopicSubscribe);
-            await AsyncStorage.setItem(topicPublishKey, brokenMqttTopicPublish);
+            await AsyncStorage.setItem(topicSubscribeKey, borkerMqttTopicSubscribe);
+            await AsyncStorage.setItem(topicPublishKey, borkerMqttTopicPublish);
             setModalVisible(false);
             if (props.callBackPostSave != undefined) props.callBackPostSave();
         } catch (error) {
@@ -51,12 +51,12 @@ const SettingsTopics = forwardRef((props, ref) => {
             setAlertTitle("Title is required");
             _isValid = false;
         }
-        if ((brokenMqttTopicSubscribe == "") || (brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined)) {
-            setAlertSubscribe("Tópic Subscribe is required");
+        if ((borkerMqttTopicSubscribe == "") || (borkerMqttTopicSubscribe == null) || (borkerMqttTopicSubscribe == undefined)) {
+            setAlertSubscribe("Topic Subscribe is required");
             _isValid = false;
         }
-        if ((brokenMqttTopicPublish == "") || (brokenMqttTopicPublish == null) || (brokenMqttTopicPublish == undefined)) {
-            setAlertPublish("Tópic Publish is required");
+        if ((borkerMqttTopicPublish == "") || (borkerMqttTopicPublish == null) || (borkerMqttTopicPublish == undefined)) {
+            setAlertPublish("Topic Publish is required");
             _isValid = false;
         }
 
@@ -73,12 +73,12 @@ const SettingsTopics = forwardRef((props, ref) => {
 
         let subscribe = await AsyncStorage.getItem(topicSubscribeKey);
         if (subscribe != null) {
-            setBrokenMqttTopicSubscribe(subscribe);
+            setBorkerMqttTopicSubscribe(subscribe);
         }
 
         let publish = await AsyncStorage.getItem(topicPublishKey);
         if (publish != null) {
-            setBrokenMqttTopicPublish(publish);
+            setBorkerMqttTopicPublish(publish);
         }
 
     }
@@ -94,8 +94,8 @@ const SettingsTopics = forwardRef((props, ref) => {
 
     const _setKeysStore = (numScreen) => {
         setTitleKey(`title-screen${numScreen}`);
-        setTopicSubscribeKey(`broken-mqtt-topic-subscribe${numScreen}`);
-        setTopicPublishKey(`broken-mqtt-topic-publish${numScreen}`);    }
+        setTopicSubscribeKey(`borker-mqtt-topic-subscribe${numScreen}`);
+        setTopicPublishKey(`borker-mqtt-topic-publish${numScreen}`);    }
 
     const _resetAlerts = () => {
         setAlertTitle();
@@ -114,8 +114,8 @@ const SettingsTopics = forwardRef((props, ref) => {
             <View style={styles.modalView}>
 
                 <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokenMqttTopicSubscribe(text)} value={brokenMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokenMqttTopicPublish(text)} value={brokenMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
+                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBorkerMqttTopicSubscribe(text)} value={borkerMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                <TextInputLabel label="Topic Publish" onChangeText={text => setBorkerMqttTopicPublish(text)} value={borkerMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
 
                 <View style={styles.contentPressable}>
                     <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>

@@ -14,16 +14,16 @@ import { expo } from '../app.json';
 const Settings = () => {
 
     const isFocused = useIsFocused();
-    const [brokenMqtt, setBrokenMqtt] = useState('');
-    const [brokenMqttPort, setBrokenMqttPort] = useState('');
-    const [brokenMqttUser, setBrokenMqttUser] = useState('');
-    const [brokenMqttPass, setBrokenMqttPass] = useState('');
-    const [alertBrokenMqtt, setAlertBrokenMqtt] = useState();
-    const [alertBrokenMqttPort, setAlertBrokenMqttPort] = useState();
-    const [alertBrokenMqttUser, setAlertBrokenMqttUser] = useState();
-    const [alertBrokenMqttPass, setAlertBrokenMqttPass] = useState();
+    const [borkerMqtt, setBorkerMqtt] = useState('');
+    const [borkerMqttPort, setBorkerMqttPort] = useState('');
+    const [borkerMqttUser, setBorkerMqttUser] = useState('');
+    const [borkerMqttPass, setBorkerMqttPass] = useState('');
+    const [alertBorkerMqtt, setAlertBorkerMqtt] = useState();
+    const [alertBorkerMqttPort, setAlertBorkerMqttPort] = useState();
+    const [alertBorkerMqttUser, setAlertBorkerMqttUser] = useState();
+    const [alertBorkerMqttPass, setAlertBorkerMqttPass] = useState();
     const [loading, setLoading] = useState(false);
-    const defaultLabelBotao = "Conectar";
+    const defaultLabelBotao = "Connect";
     const [disabledButton, setDisabledButton] = useState(false);
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
     const headerRef = useRef();
@@ -33,27 +33,27 @@ const Settings = () => {
         if (!_onValid()) return;
 
         setLoading(true);
-        setLabelButton("Aguarde ...");
+        setLabelButton("Wait ...");
         setDisabledButton(true);
 
         try {
-            await AsyncStorage.setItem("broken-mqtt", brokenMqtt);
-            await AsyncStorage.setItem("broken-mqtt-port", brokenMqttPort);
-            await AsyncStorage.setItem("broken-mqtt-user", brokenMqttUser);
-            await AsyncStorage.setItem("broken-mqtt-pass", brokenMqttPass);
+            await AsyncStorage.setItem("borker-mqtt", borkerMqtt);
+            await AsyncStorage.setItem("borker-mqtt-port", borkerMqttPort);
+            await AsyncStorage.setItem("borker-mqtt-user", borkerMqttUser);
+            await AsyncStorage.setItem("borker-mqtt-pass", borkerMqttPass);
             mqttServiceProcessConnect(
                 () => {
-                    Alert.alert(`${expo.name}`, "Conexão realizada com sucesso");
+                    Alert.alert(`${expo.name}`, "Connection made successfully");
                     _updateSecreenPostSave();
                 },
                 (error) => {
                     console.log(error);
-                    Alert.alert(`${expo.name}`, "Erro ao conectar com Broken MQTT: " + error);
+                    Alert.alert(`${expo.name}`, "Error connecting to MQTT Broker: " + error);
                     _updateSecreenPostSave();
                 });
         } catch (error) {
             console.log(error);
-            Alert.alert(`${expo.name}`, "Erro ao salvar configuração");
+            Alert.alert(`${expo.name}`, "Error saving configuration");
             _updateSecreenPostSave();
         }
 
@@ -65,24 +65,24 @@ const Settings = () => {
 
         let _isValid = true;
 
-        if ((brokenMqtt == "") || (brokenMqtt == null) || (brokenMqtt == undefined)) {
-            setAlertBrokenMqtt("Broken MQTT is required");
+        if ((borkerMqtt == "") || (borkerMqtt == null) || (borkerMqtt == undefined)) {
+            setAlertBorkerMqtt("Borker MQTT is required");
             _isValid = false;
         }
-        if ((brokenMqttPort == "") || (brokenMqttPort == null) || (brokenMqttPort == undefined)) {
-            setAlertBrokenMqttPort("Broken Port is required");
+        if ((borkerMqttPort == "") || (borkerMqttPort == null) || (borkerMqttPort == undefined)) {
+            setAlertBorkerMqttPort("Borker Port is required");
             _isValid = false;
         }
-        if (Number(brokenMqttPort) > 9999) {
-            setAlertBrokenMqttPort("Invalid Broken Port");
+        if (Number(borkerMqttPort) > 9999) {
+            setAlertBorkerMqttPort("Invalid Borker Port");
             _isValid = false;
         }
-        if ((brokenMqttUser == "") || (brokenMqttUser == null) || (brokenMqttUser == undefined)) {
-            setAlertBrokenMqttUser("Broken User is required");
+        if ((borkerMqttUser == "") || (borkerMqttUser == null) || (borkerMqttUser == undefined)) {
+            setAlertBorkerMqttUser("Borker User is required");
             _isValid = false;
         }
-        if ((brokenMqttPass == "") || (brokenMqttPass == null) || (brokenMqttPass == undefined)) {
-            setAlertBrokenMqttPass("Broken Pass is required");
+        if ((borkerMqttPass == "") || (borkerMqttPass == null) || (borkerMqttPass == undefined)) {
+            setAlertBorkerMqttPass("Borker Pass is required");
             _isValid = false;
         }
 
@@ -90,34 +90,34 @@ const Settings = () => {
     }
 
     const _resetAlerts = () => {
-        setAlertBrokenMqtt();
-        setAlertBrokenMqttPort();
-        setAlertBrokenMqttUser();
-        setAlertBrokenMqttPass();
+        setAlertBorkerMqtt();
+        setAlertBorkerMqttPort();
+        setAlertBorkerMqttUser();
+        setAlertBorkerMqttPass();
     }
 
-    const _loadBrokenMqtt = async () => {
+    const _loadBorkerMqtt = async () => {
 
         _resetAlerts();
 
-        let brokenMqtt = await AsyncStorage.getItem("broken-mqtt");
-        if (brokenMqtt != null) {
-            setBrokenMqtt(brokenMqtt);
+        let borkerMqtt = await AsyncStorage.getItem("borker-mqtt");
+        if (borkerMqtt != null) {
+            setBorkerMqtt(borkerMqtt);
         }
 
-        let brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
-        if (brokenMqttPort != null) {
-            setBrokenMqttPort(brokenMqttPort);
+        let borkerMqttPort = await AsyncStorage.getItem("borker-mqtt-port");
+        if (borkerMqttPort != null) {
+            setBorkerMqttPort(borkerMqttPort);
         }
 
-        let brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
-        if (brokenMqttUser != null) {
-            setBrokenMqttUser(brokenMqttUser);
+        let borkerMqttUser = await AsyncStorage.getItem("borker-mqtt-user");
+        if (borkerMqttUser != null) {
+            setBorkerMqttUser(borkerMqttUser);
         }
 
-        let brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
-        if (brokenMqttPass != null) {
-            setBrokenMqttPass(brokenMqttPass);
+        let borkerMqttPass = await AsyncStorage.getItem("borker-mqtt-pass");
+        if (borkerMqttPass != null) {
+            setBorkerMqttPass(borkerMqttPass);
         }
     }
 
@@ -128,7 +128,7 @@ const Settings = () => {
     }
 
     useEffect(() => {
-        _loadBrokenMqtt();
+        _loadBorkerMqtt();
     }, [isFocused]);
 
     return (
@@ -137,10 +137,10 @@ const Settings = () => {
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="Broken MQTT" onChangeText={text => setBrokenMqtt(text)} value={brokenMqtt} keyboardType="default" alert={alertBrokenMqtt} />
-                    <TextInputLabel label="Broken MQTT Port" onChangeText={text => setBrokenMqttPort(text)} value={brokenMqttPort} keyboardType="numeric" alert={alertBrokenMqttPort} />
-                    <TextInputLabel label="Broken MQTT User" onChangeText={text => setBrokenMqttUser(text)} value={brokenMqttUser} keyboardType="default" alert={alertBrokenMqttUser} />
-                    <TextInputPasswordLabel label="Broken MQTT Pass" onChangeText={text => setBrokenMqttPass(text)} value={brokenMqttPass} keyboardType="default" alert={alertBrokenMqttPass} />
+                    <TextInputLabel label="Broker MQTT" onChangeText={text => setBorkerMqtt(text)} value={borkerMqtt} keyboardType="default" alert={alertBorkerMqtt} />
+                    <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBorkerMqttPort(text)} value={borkerMqttPort} keyboardType="numeric" alert={alertBorkerMqttPort} />
+                    <TextInputLabel label="Broker MQTT User" onChangeText={text => setBorkerMqttUser(text)} value={borkerMqttUser} keyboardType="default" alert={alertBorkerMqttUser} />
+                    <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBorkerMqttPass(text)} value={borkerMqttPass} keyboardType="default" alert={alertBorkerMqttPass} />
                     <Button label={labelButton} onPress={_onSave} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />

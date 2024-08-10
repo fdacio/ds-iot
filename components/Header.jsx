@@ -6,8 +6,8 @@ import { expo } from '../app.json';
 
 const Header = forwardRef((props, ref) => {
 
-    const labelWait = "Aguarde ...";
-    const labelConnect = "Conectar";
+    const labelWait = "Wait ...";
+    const labelConnect = "Connect";
 
     const [connected, setConnected] = useState(false);
     const [textConnect, setTextConnect] = useState(labelConnect);
@@ -31,13 +31,13 @@ const Header = forwardRef((props, ref) => {
                 setLoading(false);
             },
             (error) => {
-                Alert.alert(`${expo.name}`, "Erro ao conectar com Broken MQTT: " + error);
+                Alert.alert(`${expo.name}`, "Error connecting to MQTT Broker: " + error);
                 setConnected(false);
                 setTextConnect(labelConnect);
                 setLoading(false);
             }).then((hasConfig) => {
                 if (!hasConfig) {
-                    Alert.alert(`${expo.name}`, "Erro ao conectar com Broken MQTT. Ver Settings!");
+                    Alert.alert(`${expo.name}`, "Error connecting to MQTT Broker. See Settings!");
                     setConnected(false);
                     setTextConnect(labelConnect);
                     setLoading(false);

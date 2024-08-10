@@ -3,13 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Variáveis de uso global
 var clientMqttDSIOT = null;
-var brokenMqttHost = null;
-var brokenMqttPort = null;
-var brokenMqttUser = null;
-var brokenMqttPass = null;
-var brokenMqttClientId = null;
-var brokenMqttTopicSubscribe = null;
-var brokenMqttTopicPublish = null;
+var borkerMqttHost = null;
+var borkerMqttPort = null;
+var borkerMqttUser = null;
+var borkerMqttPass = null;
+var borkerMqttClientId = null;
+var borkerMqttTopicSubscribe = null;
+var borkerMqttTopicPublish = null;
 var payloadString = null;
 var callBackMessageArrived = null;
 var callBackConnetionSuccess = null;
@@ -22,18 +22,18 @@ const MqttService = async (n) => {
     if (hasConfig) {
         if (!hasClientMqtt()) {
             clientMqttDSIOT = new Paho.Client(
-                brokenMqttHost,
-                parseInt(brokenMqttPort),
-                brokenMqttClientId
+                borkerMqttHost,
+                parseInt(borkerMqttPort),
+                borkerMqttClientId
             );
         }
         if (hasTopicSubscribe()) {
-            if (isConnected()) clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+            if (isConnected()) clientMqttDSIOT.subscribe(borkerMqttTopicSubscribe);
         }
 
         if (hasTopicPublish()) {
             let message = new Paho.Message("");
-            message.destinationName = brokenMqttTopicPublish;
+            message.destinationName = borkerMqttTopicPublish;
             if (isConnected()) clientMqttDSIOT.send(message);
         }
     }
@@ -46,7 +46,7 @@ export async function mqttServiceProcessConnect(_callBackConnetionSuccess, _call
 
     const hasConfig = await loadConfig();
     if (hasConfig) {
-        console.log(brokenMqttPort);
+        console.log(borkerMqttPort);
         connect();
         return true;
     } else {
@@ -55,14 +55,14 @@ export async function mqttServiceProcessConnect(_callBackConnetionSuccess, _call
 }
 
 const loadConfig = async () => {
-    brokenMqttHost = await AsyncStorage.getItem("broken-mqtt");
-    brokenMqttPort = await AsyncStorage.getItem("broken-mqtt-port");
-    brokenMqttUser = await AsyncStorage.getItem("broken-mqtt-user");
-    brokenMqttPass = await AsyncStorage.getItem("broken-mqtt-pass");
-    brokenMqttTopicSubscribe = await AsyncStorage.getItem(`broken-mqtt-topic-subscribe${screenNum}`);
-    brokenMqttTopicPublish = await AsyncStorage.getItem(`broken-mqtt-topic-publish${screenNum}`);
-    brokenMqttClientId = `mqtt-dsiot-app-android-${(Math.random()) * 1000}`;
-    if ((brokenMqttHost == null) || (brokenMqttPort == null) || (brokenMqttUser == null) || (brokenMqttPass == null)) {
+    borkerMqttHost = await AsyncStorage.getItem("borker-mqtt");
+    borkerMqttPort = await AsyncStorage.getItem("borker-mqtt-port");
+    borkerMqttUser = await AsyncStorage.getItem("borker-mqtt-user");
+    borkerMqttPass = await AsyncStorage.getItem("borker-mqtt-pass");
+    borkerMqttTopicSubscribe = await AsyncStorage.getItem(`borker-mqtt-topic-subscribe${screenNum}`);
+    borkerMqttTopicPublish = await AsyncStorage.getItem(`borker-mqtt-topic-publish${screenNum}`);
+    borkerMqttClientId = `mqtt-dsiot-app-android-${(Math.random()) * 1000}`;
+    if ((borkerMqttHost == null) || (borkerMqttPort == null) || (borkerMqttUser == null) || (borkerMqttPass == null)) {
         return false;
     }
     return true;
@@ -75,16 +75,16 @@ const connect = async () => {
     }
 
     const options = {
-        userName: brokenMqttUser,
-        password: brokenMqttPass,
+        userName: borkerMqttUser,
+        password: borkerMqttPass,
         mqttVersion: 3,
 
         onSuccess: () => {
 
-            console.log("Conectado com sucesso: " + brokenMqttClientId);
+            console.log("Connected successfully: " + borkerMqttClientId);
 
             clientMqttDSIOT.onMessageArrived = (message) => {
-                if (message.destinationName === brokenMqttTopicSubscribe) {
+                if (message.destinationName === borkerMqttTopicSubscribe) {
                     payloadString = message.payloadString;
                     if (callBackMessageArrived != null)
                         callBackMessageArrived(payloadString);
@@ -92,34 +92,34 @@ const connect = async () => {
             }
 
             clientMqttDSIOT.onConnectionLost = (error) => {
-                console.log("Disconetado! Error:" + error.errorMessage);
+                console.log("Disconnected! Error:" + error.errorMessage);
                 clientMqttDSIOT = null;
             }
 
             if (callBackConnetionSuccess != null) callBackConnetionSuccess();
 
             if (hasTopicSubscribe()) {
-                if (isConnected()) clientMqttDSIOT.subscribe(brokenMqttTopicSubscribe);
+                if (isConnected()) clientMqttDSIOT.subscribe(borkerMqttTopicSubscribe);
             }
     
             if (hasTopicPublish()) {
                 let message = new Paho.Message("");
-                message.destinationName = brokenMqttTopicPublish
+                message.destinationName = borkerMqttTopicPublish
                 if (isConnected()) clientMqttDSIOT.send(message);
             }
         },
 
         onFailure: (error) => {
-            console.log("*** Erro de conexão ***");
+            console.log("Connection fail");
             if (callBackConnetionError != null) callBackConnetionError(error.errorMessage);
         }
     };
 
     if (!hasClientMqtt()) {
         clientMqttDSIOT = new Paho.Client(
-            brokenMqttHost,
-            parseInt(brokenMqttPort),
-            brokenMqttClientId
+            borkerMqttHost,
+            parseInt(borkerMqttPort),
+            borkerMqttClientId
         );
     }
     clientMqttDSIOT.connect(options);
@@ -132,7 +132,7 @@ const reconnect = async () => {
 
 export function mqttServicePublish(value) {
     let message = new Paho.Message(value);
-    message.destinationName = brokenMqttTopicPublish;
+    message.destinationName = borkerMqttTopicPublish;
     clientMqttDSIOT.send(message);
 }
 
@@ -160,14 +160,14 @@ const hasClientMqtt = () => {
 }
 
 const hasTopicSubscribe = () => {
-    if ((brokenMqttTopicSubscribe == null) || (brokenMqttTopicSubscribe == undefined)) {
+    if ((borkerMqttTopicSubscribe == null) || (borkerMqttTopicSubscribe == undefined)) {
         return false;
     }
     return true;
 }
 
 const hasTopicPublish = () => {
-    if ((brokenMqttTopicPublish == null) || (brokenMqttTopicPublish == undefined)) {
+    if ((borkerMqttTopicPublish == null) || (borkerMqttTopicPublish == undefined)) {
         return false;
     }
     return true;

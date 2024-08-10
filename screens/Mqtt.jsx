@@ -62,12 +62,12 @@ const Mqtt = (props) => {
 
     const _pusblish = (payload) => {
         if(!mqttServiceStatusConnected()) {
-            Alert.alert(`${expo.name}`, "Broken MQTT não conectado.");
+            Alert.alert(`${expo.name}`, "MQTT broker not connected.");
             _onUpdateStatusBarConnection(false);
             return;
         } 
         if (!mqttServiceHasTopicPublish()) {
-            Alert.alert(`${expo.name}`, "Não há topico publish.");
+            Alert.alert(`${expo.name}`, "There is no configured publish topic.");
             return;
         }
         mqttServicePublish(payload);
