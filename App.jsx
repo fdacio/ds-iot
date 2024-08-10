@@ -6,7 +6,7 @@ const App = () => {
   console.log("App init");
 
   return (
-      <Navigation />
+    <Navigation />
   );
 }
 
