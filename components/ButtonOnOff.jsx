@@ -7,7 +7,7 @@ const ButtonOnOff = (props) => {
     return (
         <Fragment>
             {
-                props.tipo == "on" &&
+                props.type == "on" &&
                 <TouchableOpacity style={styles.contentButtons} title="ON"
                     onPress={props.action} >
                     <Icon name="power-off" size={60} color="#006630" />
@@ -15,7 +15,7 @@ const ButtonOnOff = (props) => {
                 </TouchableOpacity>
             }
             {   
-                props.tipo == "off" &&
+                props.type == "off" &&
                 <TouchableOpacity style={styles.contentButtons} title="OFF"
                     onPress={props.action} >
                     <Icon name="power-off" size={60} color="#f00" />

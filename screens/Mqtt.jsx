@@ -91,8 +91,8 @@ const Mqtt = (props) => {
             <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingShowModal}  />
 
             <View style={styles.contentButtons}>
-                <ButtonOnOff tipo="on" action={_on} />
-                <ButtonOnOff tipo="off" action={_off} />
+                <ButtonOnOff type="on" action={_on} />
+                <ButtonOnOff type="off" action={_off} />
             </View>
 
         </SafeAreaView>

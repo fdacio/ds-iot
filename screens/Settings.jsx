@@ -57,7 +57,8 @@ const Settings = () => {
                     console.log(error);
                     Alert.alert(`${expo.name}`, "Error connecting to MQTT Broker: " + error);
                     _updateSecreenPostSave();
-                });
+                }
+            );
         } catch (error) {
             console.log(error);
             Alert.alert(`${expo.name}`, "Error saving configuration");
