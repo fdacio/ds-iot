@@ -1,5 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { useNetInfoInstance } from "@react-native-community/netinfo";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { mqttServiceProcessConnect } from '../services/mqtt';
 import { expo } from '../app.json';
@@ -22,7 +23,13 @@ const Header = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => publicRef);
 
+    const { netInfo, refresh } = useNetInfoInstance();
+
     const _onConnect = () => {
+        if (!netInfo.isConnected) {
+            Alert.alert(`${expo.name}`, "Check the internet connection");
+            return;
+        }
         setTextConnect(labelWait);
         setLoading(true);
         mqttServiceProcessConnect(

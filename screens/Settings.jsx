@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import { useNetInfoInstance } from "@react-native-community/netinfo";
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
@@ -14,6 +15,7 @@ import { expo } from '../app.json';
 const Settings = () => {
 
     const isFocused = useIsFocused();
+    const { netInfo, refresh } = useNetInfoInstance();
     const [brokerMqtt, setBrokerMqtt] = useState('');
     const [brokerMqttPort, setBrokerMqttPort] = useState('');
     const [brokerMqttUser, setBrokerMqttUser] = useState('');
@@ -28,7 +30,7 @@ const Settings = () => {
     const [labelButton, setLabelButton] = useState(defaultLabelBotao);
     const headerRef = useRef();
 
-    const _onSave = async () => {
+    const _onSaveAndConnect = async () => {
 
         if (!_onValid()) return;
 
@@ -41,6 +43,11 @@ const Settings = () => {
             await AsyncStorage.setItem("broker-mqtt-port", brokerMqttPort);
             await AsyncStorage.setItem("broker-mqtt-user", brokerMqttUser);
             await AsyncStorage.setItem("broker-mqtt-pass", brokerMqttPass);
+            if (!netInfo.isConnected) {
+                Alert.alert(`${expo.name}`, "Check the internet connection");
+                _updateSecreenPostSave();
+                return;
+            }
             mqttServiceProcessConnect(
                 () => {
                     Alert.alert(`${expo.name}`, "Connection made successfully");
@@ -141,7 +148,7 @@ const Settings = () => {
                     <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBrokerMqttPort(text)} value={brokerMqttPort} keyboardType="numeric" alert={alertBrokerMqttPort} />
                     <TextInputLabel label="Broker MQTT User" onChangeText={text => setBrokerMqttUser(text)} value={brokerMqttUser} keyboardType="default" alert={alertBrokerMqttUser} />
                     <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBrokerMqttPass(text)} value={brokerMqttPass} keyboardType="default" alert={alertBrokerMqttPass} />
-                    <Button label={labelButton} onPress={_onSave} disabled={disabledButton} />
+                    <Button label={labelButton} onPress={_onSaveAndConnect} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />
             </ScrollView>

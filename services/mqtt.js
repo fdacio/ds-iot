@@ -106,13 +106,14 @@ const connect = async () => {
         },
 
         onFailure: (error) => {
-            console.log("Connection fail");
+            console.log("Connection fail: " + error.errorMessage);
             let messageFail = "";
             if (error.errorMessage.includes("undefined")) {
                 messageFail = "Broker address or port invalid";
-            }
-            if (error.errorMessage.includes("not authorized")) {
+            } else if (error.errorMessage.includes("not authorized")) {
                 messageFail = "Broker user or pass invalid";
+            } else {
+                messageFail = error.errorMessage;
             }
             if (callBackConnetionError != null) callBackConnetionError(messageFail);
         }
