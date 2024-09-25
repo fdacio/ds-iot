@@ -46,6 +46,7 @@ export async function mqttServiceProcessConnect(_callBackConnetionSuccess, _call
 }
 
 const loadConfig = async () => {
+
     brokerMqttHost = await AsyncStorage.getItem("broker-mqtt");
     brokerMqttPort = await AsyncStorage.getItem("broker-mqtt-port");
     brokerMqttUser = await AsyncStorage.getItem("broker-mqtt-user");
@@ -57,6 +58,7 @@ const loadConfig = async () => {
     if ((brokerMqttHost == null) || (brokerMqttPort == null) || (brokerMqttUser == null) || (brokerMqttPass == null)) {
         return false;
     }
+
     return true;
 }
 
@@ -129,11 +131,8 @@ const connect = async () => {
 
 }
 
-const reconnect = async () => {
-
-}
-
 export function mqttServicePublish(value) {
+    if (!isConnected()) return;
     let message = new Paho.Message(value);
     message.destinationName = brokerMqttTopicPublish;
     clientMqttDSIOT.send(message);
