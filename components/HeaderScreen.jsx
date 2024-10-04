@@ -18,21 +18,22 @@ const HeaderScreen = forwardRef((props, ref) => {
         }
     }
     useImperativeHandle(ref, () => publicRef);
-    
+
     return (
         <View style={styles.content}>
             <Text style={styles.title}>{props.defaultTitle}</Text>
+            {(props.onoff != undefined) &&
+                <View style={styles.contentIconsBulb}>
+                    <IconBulb state={stateBulb} />
+                </View>
+            }
+
             {(props.actionSetting != undefined) &&
-                <>
-                    <View style={styles.contentIconsBulb}>
-                        <IconBulb state={stateBulb} />
-                    </View>
-                    <View style={styles.contenIconSetting}>
-                        <Pressable onPress={props.actionSetting}>
-                            <Icon name="cog" color="#ccc" size={32} />
-                        </Pressable>
-                    </View>
-                </>
+                <View style={styles.contenIconSetting}>
+                    <Pressable onPress={props.actionSetting}>
+                        <Icon name="cog" color="#ccc" size={32} />
+                    </Pressable>
+                </View>
             }
         </View>
     );

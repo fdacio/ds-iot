@@ -5,25 +5,30 @@ import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SettingsTopics from '../components/SettingsTopics';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import MqttService, { mqttServicePublish,
     mqttServiceSetOnMessageArrived, 
     mqttServiceStatusConnected } from '../services/mqtt';
 
 const Weather = (props) => {
-
+    const numScreen = 3;
     const isFocused = useIsFocused();
+    const [title, setTitle] = useState("Weather");
     const [temp, setTemp] = useState(0);
     const [humi, setHumi] = useState(0);
     const settingTopicsRef = useRef();
     const headerRef = useRef();   
+    const headerScreenRef = useRef();
+
+    const _settingTopicsShowModal = () => {
+        if (!settingTopicsRef.current) return;
+        settingTopicsRef.current.showModal(numScreen);
+    }
     
     useEffect(() => {
         if (isFocused) {
-            AsyncStorage.setItem('broker-mqtt-topic-subscribe3', "casa/temp-humid");
-            AsyncStorage.setItem('broker-mqtt-topic-publish3', "casa/temp-humid/get");
-            MqttService(3);
+            MqttService(numScreen);
             mqttServiceSetOnMessageArrived((payload) => {
                 _onUpdateTempHumi(payload)
             });
@@ -56,7 +61,7 @@ const Weather = (props) => {
 
             <Header ref={headerRef} showActionConnect={true}/>
 
-            <HeaderScreen defaultTitle="Weather" />
+            <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingTopicsShowModal}  />
 
             <View style={styles.containerDados}>
                 <View style={styles.contentDados}>

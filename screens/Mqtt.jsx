@@ -33,7 +33,7 @@ const Mqtt = (props) => {
         } 
     }, [isFocused]);
 
-    const _settingShowModal = () => {
+    const _settingTopicsShowModal = () => {
         if (!settingTopicsRef.current) return;
         settingTopicsRef.current.showModal(props.numScreen);
     }
@@ -88,7 +88,7 @@ const Mqtt = (props) => {
 
             <Header ref={headerRef} showActionConnect={true}/>
 
-            <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingShowModal}  />
+            <HeaderScreen ref={headerScreenRef} onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal}  />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff type="on" action={_on} />
