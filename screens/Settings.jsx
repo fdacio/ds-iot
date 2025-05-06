@@ -140,7 +140,7 @@ const Settings = () => {
     }, [isFocused]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <Header ref={headerRef} showActionConnect={false} />
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
@@ -153,7 +153,7 @@ const Settings = () => {
                 </View>
                 <Loading loading={loading} />
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 

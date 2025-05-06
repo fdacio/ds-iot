@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Alert, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
@@ -8,11 +8,12 @@ import SettingsTopics from '../components/SettingsTopics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { expo } from '../app.json';
 
-import MqttService, { 
-    mqttServicePublish, 
-    mqttServiceSetOnMessageArrived, 
+import MqttService, {
+    mqttServicePublish,
+    mqttServiceSetOnMessageArrived,
     mqttServiceStatusConnected,
-    mqttServiceHasTopicPublish } from '../services/mqtt';
+    mqttServiceHasTopicPublish
+} from '../services/mqtt';
 
 const Mqtt = (props) => {
 
@@ -21,7 +22,7 @@ const Mqtt = (props) => {
     const settingTopicsRef = useRef();
     const headerRef = useRef();
     const headerScreenRef = useRef();
-    
+
     useEffect(() => {
         if (isFocused) {
             _setTitleFromStore(props.numScreen);
@@ -30,7 +31,7 @@ const Mqtt = (props) => {
                 _onUpdateStateBulb(payload)
             });
             _onUpdateStatusBarConnection(mqttServiceStatusConnected());
-        } 
+        }
     }, [isFocused]);
 
     const _settingTopicsShowModal = () => {
@@ -61,11 +62,11 @@ const Mqtt = (props) => {
     }
 
     const _pusblish = (payload) => {
-        if(!mqttServiceStatusConnected()) {
+        if (!mqttServiceStatusConnected()) {
             Alert.alert(`${expo.name}`, "MQTT broker not connected.");
             _onUpdateStatusBarConnection(false);
             return;
-        } 
+        }
         if (!mqttServiceHasTopicPublish()) {
             Alert.alert(`${expo.name}`, "There is no configured publish topic.");
             return;
@@ -75,35 +76,36 @@ const Mqtt = (props) => {
 
     const _on = () => {
         _pusblish("on");
-    }   
+    }
 
     const _off = () => {
         _pusblish("off");
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
-            <Header ref={headerRef} showActionConnect={true}/>
+            <Header ref={headerRef} showActionConnect={true} />
 
-            <HeaderScreen ref={headerScreenRef} onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal}  />
+            <HeaderScreen ref={headerScreenRef} onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal} />
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff type="on" action={_on} />
                 <ButtonOnOff type="off" action={_off} />
             </View>
 
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    
+
     container: {
         flex: 1,
         backgroundColor: '#fff',
+
     },
 
     contentButtons: {

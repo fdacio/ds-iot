@@ -55,7 +55,7 @@ const Weather = (props) => {
 
     return (
 
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
 
             <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
 
@@ -86,7 +86,7 @@ const Weather = (props) => {
                 </View>
             </View>
 
-        </SafeAreaView>
+        </View>
     );
 }
 
