@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "br.com.daciosoftware.dsiot",
-      "versionCode": 15,
+      "versionCode": 16,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
