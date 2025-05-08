@@ -1,13 +1,11 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { expo } from '../app.json';
 import ButtonOnOff from '../components/ButtonOnOff';
-import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
+import IconBulb from '../components/IconBulb';
 import AppContext from '../context/AppProvider';
 import MqttContext from '../context/MqttProvider';
-import IconBulb from '../components/IconBulb';
 
 const OnOff = (props) => {
 
@@ -31,11 +29,11 @@ const OnOff = (props) => {
     const _pusblish = (payload) => {
 
         if (!mqttContext.isConnected) {
-            Alert.alert(`${expo.name}`, "MQTT broker not connected.");
+            Alert.alert(`${appContext.appName}`, "MQTT broker not connected.");
             return;
         }
         if (!topicPublish) {
-            Alert.alert(`${expo.name}`, "There is no configured publish topic.");
+            Alert.alert(`${appContext.appName}`, "There is no configured publish topic.");
             return;
         }
         mqttContext.handlerPublish(topicPublish, payload);
@@ -50,11 +48,9 @@ const OnOff = (props) => {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container}>            
 
-            
-
-            <HeaderScreen defaultTitle={title} editSetting={true} />
+            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numberScreen}/>
             
             <View style={styles.contentIconsBulb}>
                 <IconBulb state={stateBulb} />

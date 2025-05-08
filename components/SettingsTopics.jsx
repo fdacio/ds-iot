@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, useContext } from 'react';
 import { Modal, View, StyleSheet, Text, Pressable, Alert } from 'react-native';
 import TextInputLabel from './TextInputLabel';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from '../context/AppProvider';
 
 const SettingsTopics = (props) => {
@@ -15,16 +15,17 @@ const SettingsTopics = (props) => {
     const [alertTitle, setAlertTitle] = useState();
     const [alertSubscribe, setAlertSubscribe] = useState();
     const [alertPublish, setAlertPublish] = useState();
-
-    useEffect(() => {
-
-    }, []);
-
+    
+    const showEditSetting = () => {
+        setModalVisible(true);
+    }
+    
     const _onShowModal = () => {
-        const params = appContext.screenMqttParams(props.numScreen);
+        const params = appContext.screenMqttParams(props.numberScreen);
         setTitle(params.title);
         setTopicPublish(params.topicPublish);
         setTopicSubscribe(params.topicSubscribe);
+        _resetAlerts();
     }
 
     const _onSave = async () => {
@@ -42,7 +43,7 @@ const SettingsTopics = (props) => {
             appContext.screenMqttSaveParams(props.numScreen, params);
             setModalVisible(false);
         } catch (error) {
-            Alert.alert(`${app.name}`, "Erro ao salvar configuração");
+            Alert.alert(`${app.name}`, "Error on save topics settings");
         }
     }
 
@@ -50,15 +51,15 @@ const SettingsTopics = (props) => {
 
         let _isValid = true;
 
-        if (title == "") {
+        if (!title) {
             setAlertTitle("Title is required");
             _isValid = false;
         }
-        if (topicSubscribe == "") {
+        if (!topicSubscribe) {
             setAlertSubscribe("Topic Subscribe is required");
             _isValid = false;
         }
-        if (topicPublish == "") {
+        if (!topicPublish) {
             setAlertPublish("Topic Publish is required");
             _isValid = false;
         }
@@ -67,7 +68,7 @@ const SettingsTopics = (props) => {
 
     }
 
-  
+
     const _resetAlerts = () => {
         setAlertTitle("");
         setAlertSubscribe("");
@@ -75,30 +76,35 @@ const SettingsTopics = (props) => {
     }
 
     return (
+        <>
+            <Pressable onPress={showEditSetting}>
+                <Icon name="edit" color="#ccc" size={32} />
+            </Pressable>
 
-        <Modal
-            visible={modalVisible}
-            animationType="none"
-            transparent={true}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-            onShow={_onShowModal}>
-            <View style={styles.modalView}>
+            <Modal
+                visible={modalVisible}
+                animationType="none"
+                transparent={true}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+                onShow={_onShowModal}>
+                <View style={styles.modalView}>
 
-                <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
+                    <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
+                    <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                    <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
-                <View style={styles.contentPressable}>
-                    <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
-                        <Text style={styles.pressableText}>Save</Text>
-                    </Pressable>
-                    <View style={styles.pressableSeparator}></View>
-                    <Pressable style={[styles.pressableButton]} onPress={() => setModalVisible(!modalVisible)}>
-                        <Text style={styles.pressableText}>Cancel</Text>
-                    </Pressable>
+                    <View style={styles.contentPressable}>
+                        <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
+                            <Text style={styles.pressableText}>Save</Text>
+                        </Pressable>
+                        <View style={styles.pressableSeparator}></View>
+                        <Pressable style={[styles.pressableButton]} onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.pressableText}>Cancel</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
+        </>
     );
 
 }

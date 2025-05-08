@@ -1,6 +1,6 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { StyleSheet, Text, View } from 'react-native';
+import SettingsTopics from './SettingsTopics';
 
 const HeaderScreen = (props)  => {
 
@@ -10,9 +10,7 @@ const HeaderScreen = (props)  => {
 
             {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>
-                    <Pressable onPress={props.handlerEditSetting}>
-                        <Icon name="edit" color="#ccc" size={32} />
-                    </Pressable>
+                    <SettingsTopics numberScreen={props.numberScreen}/>
                 </View>
             }
         </View>
@@ -32,26 +30,17 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        flex: 3,
+        flex: 1,
         fontSize: 24,
         fontWeight: 'bold',
         color: '#000',
         alignItems: 'flex-start',
     },
+
     contenIconSetting: {
-        flex: 3,
-        alignItems: 'flex-end',
-    },
-    contenIconConnection: {
         flex: 1,
         alignItems: 'flex-end',
     },
-    iconConnected: {
-        color: "#00fa00"
-    },
-    iconDisconnected: {
-        color: "#cccccc"
-    }
 })
 
 export default HeaderScreen
