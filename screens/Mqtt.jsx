@@ -1,77 +1,47 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import { expo } from '../app.json';
+import ButtonOnOff from '../components/ButtonOnOff';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
-import ButtonOnOff from '../components/ButtonOnOff';
 import SettingsTopics from '../components/SettingsTopics';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { expo } from '../app.json';
-
-import MqttService, {
-    mqttServicePublish,
-    mqttServiceSetOnMessageArrived,
-    mqttServiceStatusConnected,
-    mqttServiceHasTopicPublish
-} from '../services/mqtt';
+import AppContext from '../context/AppProvider';
+import MqttContext from '../context/MqttProvider';
 
 const Mqtt = (props) => {
 
+    const appContext = useContext(AppContext);
+    const mqttContext = useContext(MqttContext);
     const isFocused = useIsFocused();
-    const [title, setTitle] = useState(props.title);
-    const settingTopicsRef = useRef();
-    const headerRef = useRef();
-    const headerScreenRef = useRef();
 
+    const [topicSubscribe, setTopicSubscribe] = useState("");
+    const [topicPublish, setTopicPublish] = useState("");
+    const [title, setTitle] = useState(props.title);
+    const [stateBulb, setStateBulb] = useState(false);
+    
     useEffect(() => {
         if (isFocused) {
-            _setTitleFromStore(props.numScreen);
-            MqttService(props.numScreen);
-            mqttServiceSetOnMessageArrived((payload) => {
-                _onUpdateStateBulb(payload)
-            });
-            _onUpdateStatusBarConnection(mqttServiceStatusConnected());
+            const params = appContext.screenMqttParams(props.numScreen);
+            setTopicPublish(params.topicPublish);
+            setTopicSubscribe(params.topicSubscribe);
+            setTitle(params.setTitle);
         }
     }, [isFocused]);
 
-    const _settingTopicsShowModal = () => {
-        if (!settingTopicsRef.current) return;
-        settingTopicsRef.current.showModal(props.numScreen);
-    }
-
-    const _onUpdateStatusBarConnection = (status) => {
-        if (!headerRef.current) return;
-        headerRef.current.updateStateConneticon(status)
-    }
-
-    const _onUpdateStateBulb = (message) => {
-        if (!headerScreenRef.current) return;
-        headerScreenRef.current.updateStateIconBulb(message)
-    }
-
-    const _setTitleFromStore = async (numScreen) => {
-        let title = await AsyncStorage.getItem(`title-screen${numScreen}`);
-        if (title != null) {
-            setTitle(title);
-        }
-    }
-
-    const _postSaveSetting = () => {
-        _setTitleFromStore(props.numScreen);
-        MqttService(props.numScreen);
-    }
 
     const _pusblish = (payload) => {
-        if (!mqttServiceStatusConnected()) {
+
+        if (!mqttContext.isConnected) {
             Alert.alert(`${expo.name}`, "MQTT broker not connected.");
             _onUpdateStatusBarConnection(false);
             return;
         }
-        if (!mqttServiceHasTopicPublish()) {
+        if (topicPublish === '') {
             Alert.alert(`${expo.name}`, "There is no configured publish topic.");
             return;
         }
-        mqttServicePublish(payload);
+        mqttContext.handlerPublish(topicPublish, payload);
     }
 
     const _on = () => {
@@ -85,11 +55,15 @@ const Mqtt = (props) => {
     return (
         <View style={styles.container}>
 
-            <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
+            <SettingsTopics numScreen={props.numScreen}/>
 
-            <Header ref={headerRef} showActionConnect={true} />
+            <Header showActionConnect={true} />
 
-            <HeaderScreen ref={headerScreenRef} onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal} />
+            <HeaderScreen onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal} />
+            
+            <View style={styles.contentIconsBulb}>
+                    <IconBulb state={stateBulb} />
+            </View>
 
             <View style={styles.contentButtons}>
                 <ButtonOnOff type="on" action={_on} />
@@ -105,6 +79,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+
+    contentIconsBulb: {
+        flex: 1,
+        alignItems: 'center',
     },
 
     contentButtons: {

@@ -3,30 +3,13 @@ import { StyleSheet, View, Text, Pressable, } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconBulb from '../components/IconBulb';
 
-const HeaderScreen = forwardRef((props, ref) => {
+const HeaderScreen = (props)  => {
 
-    const [stateBulb, setStateBulb] = useState(false);
-
-    const publicRef = {
-        updateStateIconBulb: (payload) => {
-            setStateBulb(false);
-            if (payload == "on") {
-                setStateBulb(true);
-            } else if (payload == "off") {
-                setStateBulb(false);
-            }
-        }
-    }
-    useImperativeHandle(ref, () => publicRef);
+    
 
     return (
         <View style={styles.content}>
             <Text style={styles.title}>{props.defaultTitle}</Text>
-            {(props.onoff != undefined) &&
-                <View style={styles.contentIconsBulb}>
-                    <IconBulb state={stateBulb} />
-                </View>
-            }
 
             {(props.actionSetting != undefined) &&
                 <View style={styles.contenIconSetting}>
@@ -37,7 +20,7 @@ const HeaderScreen = forwardRef((props, ref) => {
             }
         </View>
     );
-});
+};
 
 const styles = StyleSheet.create({
 
@@ -57,10 +40,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         alignItems: 'flex-start',
-    },
-    contentIconsBulb: {
-        flex: 1,
-        alignItems: 'center',
     },
     contenIconSetting: {
         flex: 3,

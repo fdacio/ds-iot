@@ -1,30 +1,28 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useEffect, useContext } from 'react';
 import { Modal, View, StyleSheet, Text, Pressable, Alert } from 'react-native';
 import TextInputLabel from './TextInputLabel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppContext from '../context/AppProvider';
 
-const SettingsTopics = forwardRef((props, ref) => {
+const SettingsTopics = (props) => {
+
+    const appContext = useContext(AppContext);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState("");
-    const [brokerMqttTopicSubscribe, setBrokerMqttTopicSubscribe] = useState('');
-    const [brokerMqttTopicPublish, setBrokerMqttTopicPublish] = useState('');
-    const [titleKey, setTitleKey] = useState("");
-    const [topicSubscribeKey, setTopicSubscribeKey] = useState("");
-    const [topicPublishKey, setTopicPublishKey] = useState("");
+    const [topicSubscribe, setTopicSubscribe] = useState('');
+    const [topicPublish, setTopicPublish] = useState('');
     const [alertTitle, setAlertTitle] = useState();
     const [alertSubscribe, setAlertSubscribe] = useState();
     const [alertPublish, setAlertPublish] = useState();
 
-    const publicRef = {
-        // add any methods or properties here
-        showModal: async (numScreen) => {
-            _setKeysStore(numScreen);
-            setModalVisible(true);
-        }
-    };
+    useEffect(() => {
+        const params = appContext.screenMqttParams(props.numScreen);
+        setTitle(params.title);
+        setTopicPublish(params.topicPublish);
+        setTopicSubscribe(params.topicSubscribe);
 
-    useImperativeHandle(ref, () => publicRef);
+    }, []);
 
     const _onSave = async () => {
 
@@ -33,11 +31,13 @@ const SettingsTopics = forwardRef((props, ref) => {
         if (!_onValid()) return;
 
         try {
-            await AsyncStorage.setItem(titleKey, title);
-            await AsyncStorage.setItem(topicSubscribeKey, brokerMqttTopicSubscribe);
-            await AsyncStorage.setItem(topicPublishKey, brokerMqttTopicPublish);
+            const params = {
+                "topicSubscribe": topicSubscribe,
+                "topicPublis": topicPublish,
+                "title": title
+            }
+            appContext.screenMqttSaveParams(props.numScreen, params);
             setModalVisible(false);
-            if (props.callBackPostSave != undefined) props.callBackPostSave();
         } catch (error) {
             Alert.alert(`${app.name}`, "Erro ao salvar configuração");
         }
@@ -47,15 +47,15 @@ const SettingsTopics = forwardRef((props, ref) => {
 
         let _isValid = true;
 
-        if ((title == "") || (title == null) || (title == undefined)) {
+        if (title == "") {
             setAlertTitle("Title is required");
             _isValid = false;
         }
-        if ((brokerMqttTopicSubscribe == "") || (brokerMqttTopicSubscribe == null) || (brokerMqttTopicSubscribe == undefined)) {
+        if (topicSubscribe == "") {
             setAlertSubscribe("Topic Subscribe is required");
             _isValid = false;
         }
-        if ((brokerMqttTopicPublish == "") || (brokerMqttTopicPublish == null) || (brokerMqttTopicPublish == undefined)) {
+        if (topicPublish == "") {
             setAlertPublish("Topic Publish is required");
             _isValid = false;
         }
@@ -65,7 +65,7 @@ const SettingsTopics = forwardRef((props, ref) => {
     }
 
     const _onLoadData = async () => {
-        
+
         let title = await AsyncStorage.getItem(titleKey);
         if (title != null) {
             setTitle(title);
@@ -92,15 +92,10 @@ const SettingsTopics = forwardRef((props, ref) => {
         }
     }
 
-    const _setKeysStore = (numScreen) => {
-        setTitleKey(`title-screen${numScreen}`);
-        setTopicSubscribeKey(`broker-mqtt-topic-subscribe${numScreen}`);
-        setTopicPublishKey(`broker-mqtt-topic-publish${numScreen}`);    }
-
     const _resetAlerts = () => {
-        setAlertTitle();
-        setAlertSubscribe();
-        setAlertPublish();
+        setAlertTitle("");
+        setAlertSubscribe("");
+        setAlertPublish("");
     }
 
     return (
@@ -115,7 +110,7 @@ const SettingsTopics = forwardRef((props, ref) => {
 
                 <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
                 <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={brokerMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={brokerMqttTopicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true}/>
+                <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
                 <View style={styles.contentPressable}>
                     <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
@@ -130,7 +125,7 @@ const SettingsTopics = forwardRef((props, ref) => {
         </Modal>
     );
 
-});
+}
 
 const styles = StyleSheet.create({
 

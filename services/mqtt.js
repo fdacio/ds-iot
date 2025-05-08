@@ -53,8 +53,8 @@ const loadConfig = async () => {
     brokerMqttPass = await AsyncStorage.getItem("broker-mqtt-pass");
     brokerMqttTopicSubscribe = await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${screenNum}`);
     brokerMqttTopicPublish = await AsyncStorage.getItem(`broker-mqtt-topic-publish${screenNum}`);
-
     brokerMqttClientId = `mqtt-dsiot-app-android-${(Math.random()) * 1000}`;
+    
     if ((brokerMqttHost == null) || (brokerMqttPort == null) || (brokerMqttUser == null) || (brokerMqttPass == null)) {
         return false;
     }
