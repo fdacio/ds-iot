@@ -1,20 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { StyleSheet, View, Text, Pressable, } from 'react-native';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View, } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IconBulb from '../components/IconBulb';
 
 const HeaderScreen = (props)  => {
-
-    
 
     return (
         <View style={styles.content}>
             <Text style={styles.title}>{props.defaultTitle}</Text>
 
-            {(props.actionSetting != undefined) &&
+            {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>
-                    <Pressable onPress={props.actionSetting}>
-                        <Icon name="cog" color="#ccc" size={32} />
+                    <Pressable onPress={props.handlerEditSetting}>
+                        <Icon name="edit" color="#ccc" size={32} />
                     </Pressable>
                 </View>
             }

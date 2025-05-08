@@ -5,7 +5,6 @@ import { expo } from '../app.json';
 import ButtonOnOff from '../components/ButtonOnOff';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
-import SettingsTopics from '../components/SettingsTopics';
 import AppContext from '../context/AppProvider';
 import MqttContext from '../context/MqttProvider';
 import IconBulb from '../components/IconBulb';
@@ -24,7 +23,7 @@ const OnOff = (props) => {
         if (isFocused) {
             const params = appContext.screenMqttParams(props.numScreen);
             setTopicPublish(params.topicPublish);
-            setTitle(params.setTitle);
+            setTitle((params.setTitle) ? params.setTitle : props.title);
         }
     }, [isFocused]);
 
@@ -33,10 +32,9 @@ const OnOff = (props) => {
 
         if (!mqttContext.isConnected) {
             Alert.alert(`${expo.name}`, "MQTT broker not connected.");
-            _onUpdateStatusBarConnection(false);
             return;
         }
-        if (topicPublish === '') {
+        if (!topicPublish) {
             Alert.alert(`${expo.name}`, "There is no configured publish topic.");
             return;
         }
@@ -54,14 +52,12 @@ const OnOff = (props) => {
     return (
         <View style={styles.container}>
 
-            <SettingsTopics numScreen={props.numScreen}/>
+            
 
-            <Header showActionConnect={true} />
-
-            <HeaderScreen onoff={true} defaultTitle={title} actionSetting={() => {}} />
+            <HeaderScreen defaultTitle={title} editSetting={true} />
             
             <View style={styles.contentIconsBulb}>
-                    <IconBulb state={stateBulb} />
+                <IconBulb state={stateBulb} />
             </View>
 
             <View style={styles.contentButtons}>
@@ -81,14 +77,14 @@ const styles = StyleSheet.create({
     },
 
     contentIconsBulb: {
-        flex: 1,
+        marginTop: 100,
+        flexGrow: 1,
         alignItems: 'center',
     },
 
     contentButtons: {
-        flexGrow: 1,
+        flexGrow: 2,
         alignItems: 'center',
-        justifyContent: 'center',
     }
 
 });

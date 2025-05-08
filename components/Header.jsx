@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-import MqttConnect from './MqttConnect';
 import AppContext from '../context/AppProvider';
+import MqttConnect from './MqttConnect';
 
 const Header = (props) => {
 
@@ -19,11 +18,7 @@ const Header = (props) => {
                 <Text style={styles.textVersion}>{appContext.appVersion}</Text>
             </View>
             <View style={styles.contentRight}>
-                {props.showActionConnect &&
-                    <>
-                        <MqttConnect />
-                    </>
-                }
+                <MqttConnect />
             </View>
         </View>
     );

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
 import TextInputPasswordLabel from '../components/TextInputPasswordLabel';
@@ -111,7 +110,6 @@ const Settings = () => {
 
     return (
         <View style={styles.container}>
-            <Header showActionConnect={false} />
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
