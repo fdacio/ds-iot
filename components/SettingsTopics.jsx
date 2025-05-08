@@ -17,12 +17,15 @@ const SettingsTopics = (props) => {
     const [alertPublish, setAlertPublish] = useState();
 
     useEffect(() => {
+
+    }, []);
+
+    const _onShowModal = () => {
         const params = appContext.screenMqttParams(props.numScreen);
         setTitle(params.title);
         setTopicPublish(params.topicPublish);
         setTopicSubscribe(params.topicSubscribe);
-
-    }, []);
+    }
 
     const _onSave = async () => {
 
@@ -64,34 +67,7 @@ const SettingsTopics = (props) => {
 
     }
 
-    const _onLoadData = async () => {
-
-        let title = await AsyncStorage.getItem(titleKey);
-        if (title != null) {
-            setTitle(title);
-        }
-
-        let subscribe = await AsyncStorage.getItem(topicSubscribeKey);
-        if (subscribe != null) {
-            setBrokerMqttTopicSubscribe(subscribe);
-        }
-
-        let publish = await AsyncStorage.getItem(topicPublishKey);
-        if (publish != null) {
-            setBrokerMqttTopicPublish(publish);
-        }
-
-    }
-
-    const _onShowModal = async () => {
-        _resetAlerts();
-        try {
-            _onLoadData();
-        } catch (e) {
-            Alert.alert(`${app.name}`, "Erro ao carregar configurações");
-        }
-    }
-
+  
     const _resetAlerts = () => {
         setAlertTitle("");
         setAlertSubscribe("");
@@ -109,7 +85,7 @@ const SettingsTopics = (props) => {
             <View style={styles.modalView}>
 
                 <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={brokerMqttTopicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
                 <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
                 <View style={styles.contentPressable}>

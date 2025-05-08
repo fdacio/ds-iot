@@ -1,39 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import Header from '../components/Header';
 import HeaderScreen from '../components/HeaderScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SettingsTopics from '../components/SettingsTopics';
 
-
-import MqttService, { mqttServicePublish,
-    mqttServiceSetOnMessageArrived, 
-    mqttServiceStatusConnected } from '../services/mqtt';
-
 const Weather = (props) => {
-    const numScreen = 3;
     const isFocused = useIsFocused();
     const [title, setTitle] = useState("Weather");
     const [temp, setTemp] = useState(0);
     const [humi, setHumi] = useState(0);
-    const settingTopicsRef = useRef();
-    const headerRef = useRef();   
-    const headerScreenRef = useRef();
-
-    const _settingTopicsShowModal = () => {
-        if (!settingTopicsRef.current) return;
-        settingTopicsRef.current.showModal(numScreen);
-    }
     
     useEffect(() => {
-        if (isFocused) {
-            MqttService(numScreen);
-            mqttServiceSetOnMessageArrived((payload) => {
-                _onUpdateTempHumi(payload)
-            });
-            _onUpdateStatusBarConnection(mqttServiceStatusConnected());
-        } 
+
     }, [isFocused]);
 
     const _onUpdateTempHumi = (response) => {
@@ -44,24 +24,13 @@ const Weather = (props) => {
         }
     }
     
-    const _postSaveSetting = () => {
-        MqttService(props.numScreen);
-    }
-
-    const _onUpdateStatusBarConnection = (status) => {
-        if (!headerRef.current) return;
-        headerRef.current.updateStateConneticon(status)
-    }
-
     return (
 
         <View style={styles.container}>
 
-            <SettingsTopics ref={settingTopicsRef} callBackPostSave={_postSaveSetting} />
+            <Header showActionConnect={true}/>
 
-            <Header ref={headerRef} showActionConnect={true}/>
-
-            <HeaderScreen ref={headerScreenRef} defaultTitle={title} actionSetting={_settingTopicsShowModal}  />
+            <HeaderScreen defaultTitle={title} />
 
             <View style={styles.containerDados}>
                 <View style={styles.contentDados}>

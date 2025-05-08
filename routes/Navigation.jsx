@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Mqtt from '../screens/Mqtt';
+import OnOff from '../screens/OnOff';
 import Settings from '../screens/Settings';
 import Weather from "../screens/Weather";
 
@@ -18,8 +18,8 @@ const Navigation = () => {
   const [titleTab1, setTitleTab1] = useState(_titleDefault);
   const [titleTab2, setTitleTab2] = useState(_titleDefault);
 
-  const Mqtt1 = () => (<Mqtt numScreen="1" title={_titleDefault} />);
-  const Mqtt2 = () => (<Mqtt numScreen="2" title={_titleDefault} />);
+  const OnOff1 = () => (<OnOff numScreen="1" title={_titleDefault} />);
+  const OnOff2 = () => (<OnOff numScreen="2" title={_titleDefault} />);
 
   const _setTitlesTabFromAsyncStorage = async () => {
     console.log("Set titles from async store");
@@ -57,9 +57,9 @@ const Navigation = () => {
             }
 
           }}>
-          <Tab.Screen name="Mqtt1" component={Mqtt1} options={{ title: titleTab1, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-          <Tab.Screen name="Mqtt2" component={Mqtt2} options={{ title: titleTab2, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-          <Tab.Screen name="Weather" component={Weather} options={{ title: 'Weather', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cloud" size={size} color={color} />) }} />
+          <Tab.Screen name="OnOff1" component={OnOff1} options={{ title: titleTab1, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+          <Tab.Screen name="OnOff" component={OnOff2} options={{ title: titleTab2, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+          <Tab.Screen name="Weather" component={Weather} numScreen="3" options={{ title: 'Weather', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cloud" size={size} color={color} />) }} />
           <Tab.Screen name="Settings" component={Settings} options={{ title: 'Settings', headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
         </Tab.Navigator>
       </SafeAreaView>

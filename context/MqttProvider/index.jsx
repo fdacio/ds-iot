@@ -2,21 +2,30 @@ import React, { createContext, useContext, useState } from "react";
 import Paho from "paho-mqtt";
 import AppContext from "../AppProvider";
 
-const MQTT_VERSION = 3;
-let clientMqttDSIOT = NULL;
 
 const MqttContext = createContext({});
 
-export const MqttProvider = (props) => {
+export const MqttProvider = ({ children }) => {
+    
+    const MQTT_VERSION = 3;
+    let clientMqttDSIOT = {};
 
     const [isConnected, setIsConnected] = useState(false);
     const appContext = useContext(AppContext);
 
-    const handlerConnect = (callBackConnetionSuccess, callBackConnetionError) => {
+    const handlerConnect = async (callBackConnetionSuccess, callBackConnetionError) => {
 
         let mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
 
-        const brokerParams = appContext.brokerParamsConnection();
+        const brokerParams = await appContext.brokerParamsConnection();
+
+        if (!brokerParams.host) {
+            throw Error("Broker Host not provided");
+        }
+
+        if (!brokerParams.port) {
+            throw Error("Broker Port not provided");
+        }
 
         clientMqttDSIOT = new Paho.Client(
             brokerParams.host,
@@ -53,6 +62,7 @@ export const MqttProvider = (props) => {
                     messageFail = error.errorMessage;
                 }
                 if (callBackConnetionError != null) callBackConnetionError(messageFail);
+                //throw Error("ERROR: " + error.errorMessage);
             }
         };
 
@@ -74,15 +84,15 @@ export const MqttProvider = (props) => {
 
     return (
         <MqttContext.Provider value={
-            [
-                handlerConnect(),
-                handlerPublish(),
-                handlerSubscribe(),
+            {
+                handlerConnect,
+                handlerPublish,
+                handlerSubscribe,
                 isConnected
-            ]
+            }
         }
         >
-            {props.children}
+            {children}
         </MqttContext.Provider>
     );
 

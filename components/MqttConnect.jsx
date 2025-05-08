@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text, StyleSheet, Alert } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { expo } from '../app.json';
 import MqttContext from "../context/MqttProvider";
@@ -8,14 +8,15 @@ import { useNetInfoInstance } from "@react-native-community/netinfo";
 const MqttConnect = () => {
 
     const mqttContext = useContext(MqttContext);
+    //console.warn(Object.keys(mqttContext));
 
+    const [textConnect, setTextConnect] = useState("");
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const labelWait = "Wait ...";
     const labelConnect = "Connect";
-    const { netInfo, refresh } = useNetInfoInstance();
-
+    const { netInfo } = useNetInfoInstance();
 
     useEffect(() => {
         setConnected(mqttContext.isConnected);
@@ -28,17 +29,22 @@ const MqttConnect = () => {
         }
         setTextConnect(labelWait);
         setLoading(true);
-        mqttContext.handlerConnect(
-            () => {
-                setConnected(true);
-                setLoading(false);
-            },
-            (error) => {
-                Alert.alert(`${expo.name}`, "Error connecting to MQTT Broker: " + error);
-                setConnected(false);
-                setTextConnect(labelConnect);
-                setLoading(false);
-            });
+        try {
+            mqttContext.handlerConnect(
+                () => {
+                    setConnected(true);
+                    setLoading(false);
+                },
+                (error) => {
+                    Alert.alert(`${expo.name}`, error);
+                    setConnected(false);
+                    setTextConnect(labelConnect);
+                    setLoading(false);
+                });
+        } catch (error) {
+            Alert.alert(`${expo.name}`, error.message);
+            setLoading(false);
+        }
     }
 
     return (

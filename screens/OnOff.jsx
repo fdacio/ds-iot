@@ -8,14 +8,14 @@ import HeaderScreen from '../components/HeaderScreen';
 import SettingsTopics from '../components/SettingsTopics';
 import AppContext from '../context/AppProvider';
 import MqttContext from '../context/MqttProvider';
+import IconBulb from '../components/IconBulb';
 
-const Mqtt = (props) => {
+const OnOff = (props) => {
 
     const appContext = useContext(AppContext);
     const mqttContext = useContext(MqttContext);
     const isFocused = useIsFocused();
 
-    const [topicSubscribe, setTopicSubscribe] = useState("");
     const [topicPublish, setTopicPublish] = useState("");
     const [title, setTitle] = useState(props.title);
     const [stateBulb, setStateBulb] = useState(false);
@@ -24,7 +24,6 @@ const Mqtt = (props) => {
         if (isFocused) {
             const params = appContext.screenMqttParams(props.numScreen);
             setTopicPublish(params.topicPublish);
-            setTopicSubscribe(params.topicSubscribe);
             setTitle(params.setTitle);
         }
     }, [isFocused]);
@@ -59,7 +58,7 @@ const Mqtt = (props) => {
 
             <Header showActionConnect={true} />
 
-            <HeaderScreen onoff={true} defaultTitle={title} actionSetting={_settingTopicsShowModal} />
+            <HeaderScreen onoff={true} defaultTitle={title} actionSetting={() => {}} />
             
             <View style={styles.contentIconsBulb}>
                     <IconBulb state={stateBulb} />
@@ -94,4 +93,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Mqtt;
+export default OnOff;

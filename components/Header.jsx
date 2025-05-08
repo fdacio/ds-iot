@@ -1,10 +1,13 @@
-import React, {  } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { expo } from '../app.json';
+
 import MqttConnect from './MqttConnect';
+import AppContext from '../context/AppProvider';
 
 const Header = (props) => {
+
+    const appContext = useContext(AppContext);
 
     return (
         <View style={styles.content}>
@@ -12,8 +15,8 @@ const Header = (props) => {
                 <Icon name="home" color="#fff" size={32} style={styles.iconLeft} />
             </View>
             <View style={styles.contentTitle}>
-                <Text style={styles.title}>{expo.name}</Text>
-                <Text style={styles.textVersion}>{expo.version}</Text>
+                <Text style={styles.title}>{appContext.appName}</Text>
+                <Text style={styles.textVersion}>{appContext.appVersion}</Text>
             </View>
             <View style={styles.contentRight}>
                 {props.showActionConnect &&
