@@ -42,7 +42,7 @@ const SettingsTopics = (props) => {
             }
             await appContext.screenMqttSaveParams(props.numberScreen, params);
             setModalVisible(false);
-            
+            appContext.dispatch({type: "save-params", payload: title})
         } catch (error) {
             Alert.alert(`${appContext.appName}`, "Error on save topics settings");
             throw Error(error);

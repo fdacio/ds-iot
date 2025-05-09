@@ -1,4 +1,4 @@
-import React, { Children, createContext } from "react";
+import React, { createContext, useReducer, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { expo } from '../../app.json';
 
@@ -9,7 +9,18 @@ export const AppProvider = ({ children }) => {
     const appName = expo.name
     const appVersion = expo.version;
 
-    const initialTitle = "";
+    const [title, setTitle] = useState('');
+    const [titlesTab, setTitleTab] = useState();
+
+    function reducer (state, action) {
+        if (action.type == "save-params") {
+            const newTitle = action.payload;
+            return newTitle;
+        }
+        return state;
+    }
+
+    const [state, dispatch] = useReducer(reducer, title);
 
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
@@ -42,8 +53,8 @@ export const AppProvider = ({ children }) => {
 
         let topicSubscribe = await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${screenNumber}`);
         let topicPublish = await AsyncStorage.getItem(`broker-mqtt-topic-publish${screenNumber}`);
-        let title = await AsyncStorage.getItem(`title-screen${screenNumber}`);
-
+        let _title = await AsyncStorage.getItem(`title-screen${screenNumber}`);
+        setTitle(_title);
         return {
             "topicSubscribe": topicSubscribe,
             "topicPublish": topicPublish,
@@ -69,7 +80,10 @@ export const AppProvider = ({ children }) => {
                 brokerParamsConnection,
                 screenMqttSaveParams,
                 screenMqttParams,
-                titlesScreens
+                titlesScreens,
+                title,
+                titlesTab,
+                dispatch
             }
         }
         >

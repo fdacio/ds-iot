@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SettingsTopics from './SettingsTopics';
+import AppContext from '../context/AppProvider';
 
 const HeaderScreen = (props) => {
+    
+    const appContext = useContext(AppContext);
 
     return (
         <View style={styles.content}>
-            <Text style={styles.title}>{props.defaultTitle}</Text>
+            <Text style={styles.title}>{appContext.title}</Text>
 
             {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>
