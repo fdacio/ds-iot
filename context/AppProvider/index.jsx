@@ -9,7 +9,7 @@ export const AppProvider = ({ children }) => {
     const appName = expo.name
     const appVersion = expo.version;
 
-    const [title, setTitle] = useState('');
+    const [titleScreen, setTitleScreen] = useState('');
     const [titlesTab, setTitleTab] = useState();
 
     function reducer (state, action) {
@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
         return state;
     }
 
-    const [state, dispatch] = useReducer(reducer, title);
+    const [state, dispatch] = useReducer(reducer, titleScreen);
 
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
@@ -54,11 +54,11 @@ export const AppProvider = ({ children }) => {
         let topicSubscribe = await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${screenNumber}`);
         let topicPublish = await AsyncStorage.getItem(`broker-mqtt-topic-publish${screenNumber}`);
         let _title = await AsyncStorage.getItem(`title-screen${screenNumber}`);
-        setTitle(_title);
+        setTitleScreen(_title);
         return {
             "topicSubscribe": topicSubscribe,
             "topicPublish": topicPublish,
-            "title": title
+            "title": titleScreen
         }
     }
 
@@ -81,7 +81,7 @@ export const AppProvider = ({ children }) => {
                 screenMqttSaveParams,
                 screenMqttParams,
                 titlesScreens,
-                title,
+                title: titleScreen,
                 titlesTab,
                 dispatch
             }
