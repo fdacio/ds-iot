@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
     const appVersion = expo.version;
 
     const [titleScreen, setTitleScreen] = useState('');
-    const [titlesTab, setTitleTab] = useState();
+    const [titlesTab, setTitlesTab] = useState([1,2,3]);
 
     function reducer (state, action) {
         if (action.type == "save-params") {
@@ -62,12 +62,22 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    const topicsSubscribe = async () => {
+        const topics = new Array(1, 2, 3).map(async (n) => {
+            let topic = await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${n}`);
+            return topic;
+        });
+        return await Promise.all(topics);
+    }
+
     /*numbersScreen: array de numeros das telas*/
     const titlesScreens = async (numbersScreen) => {
         const titles = numbersScreen.map(async (n) => {
             let title = await AsyncStorage.getItem(`title-screen${n}`);
             return title;
         });
+        const titlesTabe = await Promise.all(titles);
+        setTitlesTab(titlesTabe);
         return await Promise.all(titles);
     }
 
@@ -80,8 +90,9 @@ export const AppProvider = ({ children }) => {
                 brokerParamsConnection,
                 screenMqttSaveParams,
                 screenMqttParams,
+                topicsSubscribe,
                 titlesScreens,
-                title: titleScreen,
+                titleScreen,
                 titlesTab,
                 dispatch
             }

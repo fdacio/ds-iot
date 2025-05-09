@@ -99,7 +99,6 @@ const Settings = (props) => {
         if (isFocused) {
             const _loadParam = async () => {
                 const paramBroker = await appContext.brokerParamsConnection();
-                console.log(props);
                 setTitle(props.title);
                 setBrokerMqttHost(paramBroker.host);
                 setBrokerMqttPort(paramBroker.port);

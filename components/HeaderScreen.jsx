@@ -9,7 +9,7 @@ const HeaderScreen = (props) => {
 
     return (
         <View style={styles.content}>
-            <Text style={styles.title}>{appContext.title}</Text>
+            <Text style={styles.title}>{appContext.titleScreen}</Text>
 
             {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>

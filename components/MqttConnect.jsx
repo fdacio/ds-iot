@@ -1,29 +1,25 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, StyleSheet, Alert } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { expo } from '../app.json';
-import MqttContext from "../context/MqttProvider";
 import { useNetInfoInstance } from "@react-native-community/netinfo";
+import React, { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text } from "react-native";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from "../context/AppProvider";
+import MqttContext from "../context/MqttProvider";
 
-const MqttConnect = (props) => {
+const MqttConnect = () => {
 
     const mqttContext = useContext(MqttContext);
     const appContext = useContext(AppContext);
 
-    const [textConnect, setTextConnect] = useState("");
+    const labelWait = "Wait ...";
+    const labelConnect = "Connect";
+    const [textConnect, setTextConnect] = useState(labelConnect);
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const labelWait = "Wait ...";
-    const labelConnect = "Connect";
     const { netInfo } = useNetInfoInstance();
 
-    useEffect(() => {
-        setConnected(mqttContext.isConnected);
-    }, []);
 
-    const _onConnect = () => {
+    const _onConnect = async () => {
         if (!netInfo.isConnected) {
             Alert.alert(`${appContext.appName}`, "Check the internet connection");
             return;
@@ -31,9 +27,9 @@ const MqttConnect = (props) => {
         setTextConnect(labelWait);
         setLoading(true);
         try {
-            mqttContext.handlerConnect(
-                () => {
-                    setConnected(true);
+            await mqttContext.handlerConnect(
+                (client) => {
+                    setConnected(client.isConnected());
                     setLoading(false);
                 },
                 (error) => {
@@ -42,8 +38,10 @@ const MqttConnect = (props) => {
                     setTextConnect(labelConnect);
                     setLoading(false);
                 });
+                
+
         } catch (error) {
-            Alert.alert(`${appContext.appName}`, error.message);
+            Alert.alert(`${appContext.appName}+++`, error.message);
             setTextConnect(labelConnect);
             setLoading(false);
         }
@@ -59,7 +57,7 @@ const MqttConnect = (props) => {
                         ? <Icon name="wifi" color={styles.iconDisconnected.color} size={24} />
                         : <ActivityIndicator color="#ccc" size={24} />
                     }
-                    <Text style={styles.textIconConnection}>{labelConnect}</Text>
+                    <Text style={styles.textIconConnection}>{textConnect}</Text>
                 </Pressable>
             }
         </>

@@ -17,8 +17,6 @@ const Navigation = () => {
 
 	const appContext = useContext(AppContext);
 
-	
-
 	const [titleTab1, setTitleTab1] = useState("On/Off 1");
 	const [titleTab2, setTitleTab2] = useState("On/Off 2");
 	const [titleTab3, setTitleTab3] = useState("Weather");
@@ -34,6 +32,7 @@ const Navigation = () => {
 
 	const _updateTitleTab = async () => {
 		const titles = await appContext.titlesScreens([1, 2, 3]);
+		const titlesTab = appContext.titlesTab;
 		setTitleTab1(titles[0]);
 		setTitleTab2(titles[1]);
 		setTitleTab3(titles[2]);

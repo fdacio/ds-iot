@@ -14,22 +14,21 @@ const OnOff = (props) => {
     const isFocused = useIsFocused();
 
     const [topicPublish, setTopicPublish] = useState("");
-    const [topicSubscribe, setTopicSubscribe] = useState("");
     const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
 
     useEffect(() => {
-        if (isFocused) {
-            const load = async () => {
-                const params = await appContext.screenMqttParams(props.numScreen);
-                setTopicPublish(params.topicPublish);
-                setTopicSubscribe(params.topicSubscribe);
-                setTitle((params.title) ? params.title : props.title);
-                mqttContext.handlerMessageArrived(topicSubscribe, updateStateBulb);
-            }
-            load();
+        const load = async () => {
+            const params = await appContext.screenMqttParams(props.numScreen);
+            setTopicPublish(params.topicPublish);
+            setTitle((params.title) ? params.title : props.title);
+            mqttContext.handlerMessageArrived(params.topicSubscribe, updateStateBulb);
+            mqttContext.handlerSubscribe(params.topicSubscribe);
         }
-    }, [isFocused]);
+        load();
+        if (isFocused) {
+        }
+    }, []);
 
 
     const updateStateBulb = (message) => {
