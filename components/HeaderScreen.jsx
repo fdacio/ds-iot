@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import SettingsTopics from './SettingsTopics';
 
-const HeaderScreen = (props)  => {
+const HeaderScreen = (props) => {
 
     return (
         <View style={styles.content}>
@@ -10,7 +10,7 @@ const HeaderScreen = (props)  => {
 
             {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>
-                    <SettingsTopics numberScreen={props.numberScreen}/>
+                    <SettingsTopics numberScreen={props.numberScreen} />
                 </View>
             }
         </View>

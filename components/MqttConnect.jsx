@@ -4,10 +4,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { expo } from '../app.json';
 import MqttContext from "../context/MqttProvider";
 import { useNetInfoInstance } from "@react-native-community/netinfo";
+import AppContext from "../context/AppProvider";
 
-const MqttConnect = () => {
+const MqttConnect = (props) => {
 
     const mqttContext = useContext(MqttContext);
+    const appContext = useContext(AppContext);
 
     const [textConnect, setTextConnect] = useState("");
     const [connected, setConnected] = useState(false);
@@ -23,7 +25,7 @@ const MqttConnect = () => {
 
     const _onConnect = () => {
         if (!netInfo.isConnected) {
-            Alert.alert(`${expo.name}`, "Check the internet connection");
+            Alert.alert(`${appContext.appName}`, "Check the internet connection");
             return;
         }
         setTextConnect(labelWait);
@@ -35,13 +37,14 @@ const MqttConnect = () => {
                     setLoading(false);
                 },
                 (error) => {
-                    Alert.alert(`${expo.name}`, error);
+                    Alert.alert(`${appContext.appName}`, error);
                     setConnected(false);
                     setTextConnect(labelConnect);
                     setLoading(false);
                 });
         } catch (error) {
-            Alert.alert(`${expo.name}`, error.message);
+            Alert.alert(`${appContext.appName}`, error.message);
+            setTextConnect(labelConnect);
             setLoading(false);
         }
     }

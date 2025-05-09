@@ -1,29 +1,27 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect, useContext } from 'react';
-import { Modal, View, StyleSheet, Text, Pressable, Alert } from 'react-native';
-import TextInputLabel from './TextInputLabel';
+import React, { useContext, useState } from 'react';
+import { Alert, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from '../context/AppProvider';
+import TextInputLabel from './TextInputLabel';
 
 const SettingsTopics = (props) => {
 
     const appContext = useContext(AppContext);
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
     const [topicSubscribe, setTopicSubscribe] = useState('');
     const [topicPublish, setTopicPublish] = useState('');
     const [alertTitle, setAlertTitle] = useState();
     const [alertSubscribe, setAlertSubscribe] = useState();
     const [alertPublish, setAlertPublish] = useState();
     
-    const showEditSetting = () => {
+    const _onPressEdit = () => {
         setModalVisible(true);
     }
     
     const _onShowModal = async () => {
         const params = await appContext.screenMqttParams(props.numberScreen);
-        console.warn("Num Screen: " + props.numberScreen);
-        console.warn("Parmas On Show: " + params);
         setTitle(params.title);
         setTopicPublish(params.topicPublish);
         setTopicSubscribe(params.topicSubscribe);
@@ -42,9 +40,9 @@ const SettingsTopics = (props) => {
                 "topicPublish": topicPublish,
                 "title": title
             }
-            console.log("Param on Save: " + params);
             await appContext.screenMqttSaveParams(props.numberScreen, params);
             setModalVisible(false);
+            
         } catch (error) {
             Alert.alert(`${appContext.appName}`, "Error on save topics settings");
             throw Error(error);
@@ -81,7 +79,7 @@ const SettingsTopics = (props) => {
 
     return (
         <>
-            <Pressable onPress={showEditSetting}>
+            <Pressable onPress={_onPressEdit}>
                 <Icon name="edit" color="#ccc" size={32} />
             </Pressable>
 

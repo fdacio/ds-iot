@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { Children, createContext } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { expo } from '../../app.json';
 
@@ -8,6 +8,8 @@ export const AppProvider = ({ children }) => {
 
     const appName = expo.name
     const appVersion = expo.version;
+
+    const initialTitle = "";
 
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
@@ -23,10 +25,10 @@ export const AppProvider = ({ children }) => {
         let brokerMqttPass = await AsyncStorage.getItem("broker-mqtt-pass");
 
         return {
-            "host" : (brokerMqttHost) && brokerMqttHost,
-            "port" : (brokerMqttPort) && brokerMqttPort,
-            "user" : (brokerMqttUser) && brokerMqttUser,
-            "pass" : (brokerMqttPass) && brokerMqttPass,
+            "host": (brokerMqttHost) && brokerMqttHost,
+            "port": (brokerMqttPort) && brokerMqttPort,
+            "user": (brokerMqttUser) && brokerMqttUser,
+            "pass": (brokerMqttPass) && brokerMqttPass,
         }
     }
 
@@ -47,8 +49,17 @@ export const AppProvider = ({ children }) => {
             "topicPublish": topicPublish,
             "title": title
         }
-
     }
+
+    /*numbersScreen: array de numeros das telas*/
+    const titlesScreens = async (numbersScreen) => {
+        const titles = numbersScreen.map(async (n) => {
+            let title = await AsyncStorage.getItem(`title-screen${n}`);
+            return title;
+        });
+        return await Promise.all(titles);
+    }
+
     return (
         <AppContext.Provider value={
             {
@@ -58,6 +69,7 @@ export const AppProvider = ({ children }) => {
                 brokerParamsConnection,
                 screenMqttSaveParams,
                 screenMqttParams,
+                titlesScreens
             }
         }
         >

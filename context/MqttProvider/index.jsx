@@ -2,32 +2,30 @@ import React, { createContext, useContext, useState } from "react";
 import Paho from "paho-mqtt";
 import AppContext from "../AppProvider";
 
-
 const MqttContext = createContext({});
 
 export const MqttProvider = ({ children }) => {
 
     const MQTT_VERSION = 3;
-    let clientMqttDSIOT = {};
+    const [clientMqtt, setClientMqtt] = useState();
 
     const appContext = useContext(AppContext);
     const [isConnected, setIsConnected] = useState(false);
 
     const handlerConnect = async (callBackConnetionSuccess, callBackConnetionError) => {
 
-        let mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
-
         const brokerParams = await appContext.brokerParamsConnection();
-
+        
         if (!brokerParams.host) {
             throw Error("Broker Host not provided");
         }
-
+        
         if (!brokerParams.port) {
             throw Error("Broker Port not provided");
         }
-
-        clientMqttDSIOT = new Paho.Client(
+        
+        let mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
+        let _clientMqtt = new Paho.Client(
             brokerParams.host,
             parseInt(brokerParams.port),
             mqttClientId
@@ -41,9 +39,10 @@ export const MqttProvider = ({ children }) => {
             onSuccess: () => {
 
                 setIsConnected(true);
+                setClientMqtt(_clientMqtt);
 
-                clientMqttDSIOT.onConnectionLost = (error) => {
-                    clientMqttDSIOT = null;
+                _clientMqtt.onConnectionLost = (error) => {
+                    setClientMqtt(null);
                     setIsConnected(false);
                 }
 
@@ -52,6 +51,7 @@ export const MqttProvider = ({ children }) => {
             },
 
             onFailure: (error) => {
+                setClientMqtt(null);
                 setIsConnected(false);
                 let messageFail = "";
                 if (error.errorMessage.includes("undefined")) {
@@ -62,32 +62,30 @@ export const MqttProvider = ({ children }) => {
                     messageFail = error.errorMessage;
                 }
                 if (callBackConnetionError != null) callBackConnetionError(messageFail);
-                //throw Error("ERROR: " + error.errorMessage);
             }
-
 
         };
 
-
-        clientMqttDSIOT.connect(options);
+        _clientMqtt.connect(options);
 
     }
     const handlerPublish = async (topic, payload) => {
-        if (!isConnected) return;
+        if (!clientMqtt) return;
         let message = new Paho.Message(payload);
         message.destinationName = topic;
-        clientMqttDSIOT.send(message);
+        clientMqtt.send(message);
     }
 
     const handlerSubscribe = async (topic) => {
-        if (!isConnected) return;
-        clientMqttDSIOT.subscribe(topic);
+        if (!clientMqtt) return;
+        clientMqtt.subscribe(topic);
     }
 
     const handlerMessageArrived = async (topicSubscribe, callBackMessageArrived) => {
         if (!topicSubscribe) return;
         if (!callBackMessageArrived) return;
-        clientMqttDSIOT.onMessageArrived = (message) => {
+        if (!clientMqtt) return;
+        clientMqtt.onMessageArrived = (message) => {
             if (message.destinationName === topicSubscribe) {
                 callBackMessageArrived(message.payloadString);
             }

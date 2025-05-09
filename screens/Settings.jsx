@@ -37,12 +37,12 @@ const Settings = (props) => {
 
         try {
             const params = {
-                "host" : brokerMqttHost,
-                "port" : brokerMqttPort,
-                "user" : brokerMqttUser,
-                "pass" : brokerMqttPass
+                "host": brokerMqttHost,
+                "port": brokerMqttPort,
+                "user": brokerMqttUser,
+                "pass": brokerMqttPass
             }
-   
+
             await appContext.brokerSaveParams(params);
 
             Alert.alert(`${appContext.appName}`, "Settings broker save with success");
@@ -96,20 +96,23 @@ const Settings = (props) => {
     }
 
     useEffect(() => {
-        const _loadParam = async () => {
-            const paramBroker = await appContext.brokerParamsConnection();
-            setTitle(props.title);
-            setBrokerMqttHost(paramBroker.host);
-            setBrokerMqttPort(paramBroker.port);
-            setBrokerMqttUser(paramBroker.user);
-            setBrokerMqttPass(paramBroker.pass);
+        if (isFocused) {
+            const _loadParam = async () => {
+                const paramBroker = await appContext.brokerParamsConnection();
+                console.log(props);
+                setTitle(props.title);
+                setBrokerMqttHost(paramBroker.host);
+                setBrokerMqttPort(paramBroker.port);
+                setBrokerMqttUser(paramBroker.user);
+                setBrokerMqttPass(paramBroker.pass);
+            }
+            _loadParam();
         }
-        _loadParam();
     }, [isFocused]);
 
     return (
         <View style={styles.container}>
-            <HeaderScreen defaultTitle={title}  />
+            <HeaderScreen defaultTitle={title} />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqttHost(text)} value={brokerMqttHost} keyboardType="default" alert={alertBrokerMqttHost} />
