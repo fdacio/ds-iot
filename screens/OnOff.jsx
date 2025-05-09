@@ -14,17 +14,33 @@ const OnOff = (props) => {
     const isFocused = useIsFocused();
 
     const [topicPublish, setTopicPublish] = useState("");
-    const [title, setTitle] = useState(props.title);
+    const [topicSubscribe, setTopicSubscribe] = useState("");
+    const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
-    
+
     useEffect(() => {
         if (isFocused) {
-            const params = appContext.screenMqttParams(props.numScreen);
-            setTopicPublish(params.topicPublish);
-            setTitle((params.setTitle) ? params.setTitle : props.title);
+            const load = async () => {
+                const params = await appContext.screenMqttParams(props.numScreen);
+                setTopicPublish(params.topicPublish);
+                setTopicSubscribe(params.topicSubscribe);
+                setTitle((params.title) ? params.title : props.title);
+                mqttContext.handlerMessageArrived(topicSubscribe, updateStateBulb);
+            }
+            load();
         }
     }, [isFocused]);
 
+
+    const updateStateBulb = (message) => {
+        if (message === "on") {
+            setStateBulb(true);
+        }
+
+        if (message === "off") {
+            setStateBulb(false);
+        }
+    }
 
     const _pusblish = (payload) => {
 
@@ -48,10 +64,10 @@ const OnOff = (props) => {
     }
 
     return (
-        <View style={styles.container}>            
+        <View style={styles.container}>
 
-            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numberScreen}/>
-            
+            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
+
             <View style={styles.contentIconsBulb}>
                 <IconBulb state={stateBulb} />
             </View>

@@ -8,7 +8,6 @@ import { useNetInfoInstance } from "@react-native-community/netinfo";
 const MqttConnect = () => {
 
     const mqttContext = useContext(MqttContext);
-    //console.warn(Object.keys(mqttContext));
 
     const [textConnect, setTextConnect] = useState("");
     const [connected, setConnected] = useState(false);

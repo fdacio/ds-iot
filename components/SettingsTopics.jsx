@@ -20,8 +20,10 @@ const SettingsTopics = (props) => {
         setModalVisible(true);
     }
     
-    const _onShowModal = () => {
-        const params = appContext.screenMqttParams(props.numberScreen);
+    const _onShowModal = async () => {
+        const params = await appContext.screenMqttParams(props.numberScreen);
+        console.warn("Num Screen: " + props.numberScreen);
+        console.warn("Parmas On Show: " + params);
         setTitle(params.title);
         setTopicPublish(params.topicPublish);
         setTopicSubscribe(params.topicSubscribe);
@@ -37,13 +39,15 @@ const SettingsTopics = (props) => {
         try {
             const params = {
                 "topicSubscribe": topicSubscribe,
-                "topicPublis": topicPublish,
+                "topicPublish": topicPublish,
                 "title": title
             }
-            appContext.screenMqttSaveParams(props.numScreen, params);
+            console.log("Param on Save: " + params);
+            await appContext.screenMqttSaveParams(props.numberScreen, params);
             setModalVisible(false);
         } catch (error) {
-            Alert.alert(`${app.name}`, "Error on save topics settings");
+            Alert.alert(`${appContext.appName}`, "Error on save topics settings");
+            throw Error(error);
         }
     }
 
@@ -90,8 +94,8 @@ const SettingsTopics = (props) => {
                 <View style={styles.modalView}>
 
                     <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                    <TextInputLabel label="Topic Subscribe" onChangeText={text => setBrokerMqttTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                    <TextInputLabel label="Topic Publish" onChangeText={text => setBrokerMqttTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
+                    <TextInputLabel label="Topic Subscribe" onChangeText={text => setTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                    <TextInputLabel label="Topic Publish" onChangeText={text => setTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
                     <View style={styles.contentPressable}>
                         <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>

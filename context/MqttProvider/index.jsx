@@ -6,12 +6,12 @@ import AppContext from "../AppProvider";
 const MqttContext = createContext({});
 
 export const MqttProvider = ({ children }) => {
-    
+
     const MQTT_VERSION = 3;
     let clientMqttDSIOT = {};
 
-    const [isConnected, setIsConnected] = useState(false);
     const appContext = useContext(AppContext);
+    const [isConnected, setIsConnected] = useState(false);
 
     const handlerConnect = async (callBackConnetionSuccess, callBackConnetionError) => {
 
@@ -64,6 +64,8 @@ export const MqttProvider = ({ children }) => {
                 if (callBackConnetionError != null) callBackConnetionError(messageFail);
                 //throw Error("ERROR: " + error.errorMessage);
             }
+
+
         };
 
 
@@ -82,12 +84,24 @@ export const MqttProvider = ({ children }) => {
         clientMqttDSIOT.subscribe(topic);
     }
 
+    const handlerMessageArrived = async (topicSubscribe, callBackMessageArrived) => {
+        if (!topicSubscribe) return;
+        if (!callBackMessageArrived) return;
+        clientMqttDSIOT.onMessageArrived = (message) => {
+            if (message.destinationName === topicSubscribe) {
+                callBackMessageArrived(message.payloadString);
+            }
+        }
+
+    }
+
     return (
         <MqttContext.Provider value={
             {
                 handlerConnect,
                 handlerPublish,
                 handlerSubscribe,
+                handlerMessageArrived,
                 isConnected
             }
         }

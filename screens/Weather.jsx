@@ -1,32 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import Header from '../components/Header';
-import HeaderScreen from '../components/HeaderScreen';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import HeaderScreen from '../components/HeaderScreen';
 import AppContext from '../context/AppProvider';
 import MqttContext from '../context/MqttProvider';
 
 const Weather = (props) => {
-    
-    const appContext = useContext(AppContext);    
+
+    const appContext = useContext(AppContext);
     const mqttContext = useContext(MqttContext);
     const [topicPublish, setTopicPublish] = useState("");
     const [topicSubscribe, setTopicSubscribe] = useState("");
     const isFocused = useIsFocused();
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState();
     const [temp, setTemp] = useState(0);
     const [humi, setHumi] = useState(0);
 
     useEffect(() => {
-        const params = appContext.screenMqttParams(props.numScreen);
-        setTopicSubscribe(params.topicPublish);
-        setTitle((params.setTitle) ? params.setTitle : "Weather");
-
+        if (isFocused) {
+            const load = async () => {
+                const params = await appContext.screenMqttParams(props.numScreen);
+                setTopicPublish(params.topicPublish);
+                setTopicSubscribe(params.topicSubscribe);
+                setTitle((params.title) ? params.title : props.title);
+                mqttContext.handlerMessageArrived(topicSubscribe, updateTempHumi);
+            }
+            load();
+        }
     }, [isFocused]);
 
-    const _onUpdateTempHumi = (response) => {
-        if (response != '') {
+    const updateTempHumi = (response) => {
+        if (response) {
             let dado = JSON.parse(response);
             setTemp(Math.floor(dado.temp));
             setHumi(Math.floor(dado.humi));
@@ -37,7 +42,7 @@ const Weather = (props) => {
 
         <View style={styles.container}>
 
-            <HeaderScreen defaultTitle={title} editSetting={true} />
+            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen}/>
 
             <View style={styles.containerDados}>
                 <View style={styles.contentDados}>

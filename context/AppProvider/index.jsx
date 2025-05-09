@@ -31,9 +31,9 @@ export const AppProvider = ({ children }) => {
     }
 
     const screenMqttSaveParams = async (screenNumber, params) => {
-        await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${screenNumber}`, params.topicSubscribe);
-        await AsyncStorage.getItem(`broker-mqtt-topic-publish${screenNumber}`, params.topicPublish);
-        await AsyncStorage.getItem(`title-screen${screenNumber}`, params.title);
+        await AsyncStorage.setItem(`broker-mqtt-topic-subscribe${screenNumber}`, params.topicSubscribe);
+        await AsyncStorage.setItem(`broker-mqtt-topic-publish${screenNumber}`, params.topicPublish);
+        await AsyncStorage.setItem(`title-screen${screenNumber}`, params.title);
     }
 
     const screenMqttParams = async (screenNumber) => {

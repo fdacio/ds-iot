@@ -8,11 +8,12 @@ import Loading from '../components/Loading';
 import Button from '../components/Button';
 import AppContext from '../context/AppProvider';
 
-const Settings = () => {
+const Settings = (props) => {
 
     const appContext = useContext(AppContext);
-
     const isFocused = useIsFocused();
+
+    const [title, setTitle] = useState();
     const [brokerMqttHost, setBrokerMqttHost] = useState('');
     const [brokerMqttPort, setBrokerMqttPort] = useState('');
     const [brokerMqttUser, setBrokerMqttUser] = useState('');
@@ -23,8 +24,8 @@ const Settings = () => {
     const [alertBrokerMqttPass, setAlertBrokerMqttPass] = useState();
     const [loading, setLoading] = useState(false);
     const [disabledButton, setDisabledButton] = useState(false);
-    const defaultLabelBotao = "Save";
-    const [labelButton, setLabelButton] = useState("");
+    const defaultLabelButton = "Save";
+    const [labelButton, setLabelButton] = useState(defaultLabelButton);
 
     const _onSaveAndConnect = async () => {
 
@@ -52,7 +53,7 @@ const Settings = () => {
         } finally {
             setLoading(false);
             setDisabledButton(false);
-            setLabelButton(defaultLabelBotao);
+            setLabelButton(defaultLabelButton);
         }
 
     }
@@ -62,8 +63,6 @@ const Settings = () => {
         _resetAlerts();
 
         let _isValid = true;
-
-        console.log("host input " + brokerMqttHost);
 
         if (!brokerMqttHost) {
             setAlertBrokerMqttHost("Broker Host is required");
@@ -99,7 +98,7 @@ const Settings = () => {
     useEffect(() => {
         const _loadParam = async () => {
             const paramBroker = await appContext.brokerParamsConnection();
-            console.warn(Object.keys(paramBroker));
+            setTitle(props.title);
             setBrokerMqttHost(paramBroker.host);
             setBrokerMqttPort(paramBroker.port);
             setBrokerMqttUser(paramBroker.user);
@@ -110,14 +109,14 @@ const Settings = () => {
 
     return (
         <View style={styles.container}>
-            <HeaderScreen defaultTitle="Settings" />
+            <HeaderScreen defaultTitle={title}  />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqttHost(text)} value={brokerMqttHost} keyboardType="default" alert={alertBrokerMqttHost} />
                     <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBrokerMqttPort(text)} value={brokerMqttPort} keyboardType="numeric" alert={alertBrokerMqttPort} />
                     <TextInputLabel label="Broker MQTT User" onChangeText={text => setBrokerMqttUser(text)} value={brokerMqttUser} keyboardType="default" alert={alertBrokerMqttUser} />
                     <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBrokerMqttPass(text)} value={brokerMqttPass} keyboardType="default" alert={alertBrokerMqttPass} />
-                    <Button label={defaultLabelBotao} onPress={_onSaveAndConnect} disabled={disabledButton} />
+                    <Button label={labelButton} onPress={_onSaveAndConnect} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />
             </ScrollView>

@@ -5,8 +5,6 @@ import { MqttProvider } from './context/MqttProvider';
 
 const App = () => {
 
-  console.log("App init");
-
   return (
     <AppProvider>
       <MqttProvider>
