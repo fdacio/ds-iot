@@ -6,7 +6,7 @@ import SettingsTopics from './SettingsTopics';
 const HeaderScreen = (props) => {
     
     const appContext = useContext(AppContext);
-    const title = appContext.stateTitles.titles[props.numberScreen-1];
+    const title = appContext.state.titles[props.numberScreen-1];
     return (
         <View style={styles.content}>
             <Text style={styles.title}>{(title) ? title : props.defaultTitle}</Text>

@@ -31,7 +31,7 @@ export const AppProvider = ({ children }) => {
         }
         return state;
     }
-    const [stateTitles, dispatch] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
 
     const brokerSaveParams = async (params) => {
@@ -100,7 +100,7 @@ export const AppProvider = ({ children }) => {
                 screenMqttParams,
                 topicsSubscribe,
                 titlesScreens,
-                stateTitles,
+                state,
                 dispatch
             }
         }
