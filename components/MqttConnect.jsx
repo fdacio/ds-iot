@@ -18,6 +18,10 @@ const MqttConnect = () => {
 
     const { netInfo } = useNetInfoInstance();
 
+    useEffect(() => {
+
+
+    }, []);
 
     const _onConnect = async () => {
         if (!netInfo.isConnected) {

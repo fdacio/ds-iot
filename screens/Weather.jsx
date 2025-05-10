@@ -10,25 +10,27 @@ const Weather = (props) => {
 
     const appContext = useContext(AppContext);
     const mqttContext = useContext(MqttContext);
-    const [topicPublish, setTopicPublish] = useState("");
-    const [topicSubscribe, setTopicSubscribe] = useState("");
     const isFocused = useIsFocused();
+
     const [title, setTitle] = useState();
     const [temp, setTemp] = useState(0);
     const [humi, setHumi] = useState(0);
+
+    let topicSubscribe;
 
     useEffect(() => {
         if (isFocused) {
             const load = async () => {
                 const params = await appContext.screenMqttParams(props.numScreen);
-                setTopicPublish(params.topicPublish);
-                setTopicSubscribe(params.topicSubscribe);
                 setTitle((params.title) ? params.title : props.title);
-                mqttContext.handlerMessageArrived(topicSubscribe, updateTempHumi);
+                topicSubscribe = params.topicSubscribe;
+                mqttContext.handlerPostConnected(() => mqttContext.handlerListenerSubscribe(topicSubscribe, updateTempHumi));
+                mqttContext.handlerListenerSubscribe(topicSubscribe, updateTempHumi);
             }
             load();
         }
     }, [isFocused]);
+
 
     const updateTempHumi = (response) => {
         if (response) {

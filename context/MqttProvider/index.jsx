@@ -3,7 +3,7 @@ import Paho from "paho-mqtt";
 import AppContext from "../AppProvider";
 
 const MqttContext = createContext({});
-let isConnected = null;
+/** Variáveis de instânica */
 let clientMqtt = null;
 let callBackPostConnected = null;
 
@@ -39,13 +39,12 @@ export const MqttProvider = ({ children }) => {
             mqttVersion: MQTT_VERSION,
 
             onSuccess: () => {
-                isConnected = clientMqtt.isConnected();
-                if (callBackConnetionSuccess) callBackConnetionSuccess(isConnected);
+                let _isConnected = clientMqtt.isConnected();
+                if (callBackConnetionSuccess) callBackConnetionSuccess(_isConnected);
                 if (callBackPostConnected) callBackPostConnected();
             },
 
             onFailure: (error) => {
-                isConnected = null;
                 clientMqtt = null;
                 let messageFail = "";
                 if (error.errorMessage.includes("undefined")) {
@@ -62,8 +61,6 @@ export const MqttProvider = ({ children }) => {
 
 
         clientMqtt.onConnectionLost = (error) => {
-            console.error("Connection Lost: " + JSON.stringify(error));
-            isConnected = null;
             clientMqtt = null;
         }
 
@@ -87,7 +84,6 @@ export const MqttProvider = ({ children }) => {
     }
 
     const handlerIsConnected = () => {
-        console.log("clientMqtt", clientMqtt);
         if (!clientMqtt) return false;
         return clientMqtt.isConnected();
     }
@@ -97,12 +93,10 @@ export const MqttProvider = ({ children }) => {
         clientMqtt.subscribe(topicSubscrive);
         clientMqtt.onMessageArrived = (message) => {
             if (message.destinationName === topicSubscrive) {
-                console.log("exec MessageArrived");
                 callMessageArrived(message.payloadString);
             }
         }
     }
-
 
     return (
         <MqttContext.Provider value={

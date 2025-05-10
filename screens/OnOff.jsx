@@ -15,7 +15,7 @@ const OnOff = (props) => {
 
     const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
-    const [screenParams, setScreenParmas] = useState()
+    const [screenParams, setScreenParmas] = useState();
     
     let topicSubscribe;
 
@@ -37,7 +37,6 @@ const OnOff = (props) => {
         if(mqttContext.handlerIsConnected()) {
             mqttContext.handlerListenerSubscribe(topicSubscribe, updateStateBulb);
         }
-
     }
 
     const updateStateBulb = (message) => {
