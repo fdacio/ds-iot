@@ -3,13 +3,13 @@ import Paho from "paho-mqtt";
 import AppContext from "../AppProvider";
 
 const MqttContext = createContext({});
+let isConnected = null;
+let clientMqtt = null;
+let callBackPostConnected = null;
 
 export const MqttProvider = ({ children }) => {
 
     const appContext = useContext(AppContext);
-    let isConnected = null;
-    let clientMqtt = null;
-    let callBackPostConnected = null;
 
     const MQTT_VERSION = 3;
     const mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
