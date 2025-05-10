@@ -17,27 +17,10 @@ const Navigation = () => {
 
 	const appContext = useContext(AppContext);
 
-	const [titleTab1, setTitleTab1] = useState("On/Off 1");
-	const [titleTab2, setTitleTab2] = useState("On/Off 2");
-	const [titleTab3, setTitleTab3] = useState("Weather");
-
 	const _OnOff1 = () => (<OnOff numScreen="1" title={"ON/OFF 1"} />);
 	const _OnOff2 = () => (<OnOff numScreen="2" title={"ON/OFF 2"} />);
 	const _Weather = () => (<Weather numScreen="3" title={"Weather"} />)
 	const _Settings = () => (<Settings numScreen="4" title={"Settings"} />)
-
-	useEffect(() => {
-		_updateTitleTab();
-	}, []);
-
-	const _updateTitleTab = async () => {
-		const titles = await appContext.titlesScreens([1, 2, 3]);
-		const titlesTab = appContext.titlesTab;
-		setTitleTab1(titles[0]);
-		setTitleTab2(titles[1]);
-		setTitleTab3(titles[2]);
-	}
-
 
 	return (
 		<NavigationContainer>
@@ -61,9 +44,9 @@ const Navigation = () => {
 						}
 
 					}}>
-					<Tab.Screen name="OnOff1" component={_OnOff1} options={{ title: titleTab1, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-					<Tab.Screen name="OnOff" component={_OnOff2} options={{ title: titleTab2, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-					<Tab.Screen name="Weather" component={_Weather} options={{ title: titleTab3, headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cloud" size={size} color={color} />) }} />
+					<Tab.Screen name="OnOff1" component={_OnOff1} options={{ title: appContext.stateTitles.titles[0], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+					<Tab.Screen name="OnOff" component={_OnOff2} options={{ title: appContext.stateTitles.titles[1], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
+					<Tab.Screen name="Weather" component={_Weather} options={{ title: appContext.stateTitles.titles[2], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cloud" size={size} color={color} />) }} />
 					<Tab.Screen name="Settings" component={_Settings} options={{ title: "Settings", headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
 				</Tab.Navigator>
 			</SafeAreaView>

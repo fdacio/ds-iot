@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import SettingsTopics from './SettingsTopics';
 import AppContext from '../context/AppProvider';
+import SettingsTopics from './SettingsTopics';
 
 const HeaderScreen = (props) => {
     
     const appContext = useContext(AppContext);
-
+    const title = appContext.stateTitles.titles[props.numberScreen-1];
     return (
         <View style={styles.content}>
-            <Text style={styles.title}>{appContext.titleScreen}</Text>
+            <Text style={styles.title}>{(title) ? title : props.defaultTitle}</Text>
 
             {(props.editSetting) &&
                 <View style={styles.contenIconSetting}>

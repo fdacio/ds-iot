@@ -1,26 +1,38 @@
-import React, { createContext, useReducer, useState } from "react";
+import React, { createContext, useEffect, useReducer, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { expo } from '../../app.json';
 
 const AppContext = createContext({});
 
+let initialTitles = ["On/Off 1", "On/Off 2", "Weather", "Settings4"];
+const getInitialTitles = (numbersScreen) => {
+    numbersScreen.map(async (n) => {
+        let title = await AsyncStorage.getItem(`title-screen${n}`);
+        if(title) initialTitles[n-1] = title;
+    });
+}
+getInitialTitles([1,2,3,4]);
+
 export const AppProvider = ({ children }) => {
 
     const appName = expo.name
     const appVersion = expo.version;
+    const initialState = { titles: initialTitles };
 
-    const [titleScreen, setTitleScreen] = useState('');
-    const [titlesTab, setTitlesTab] = useState([1,2,3]);
-
-    function reducer (state, action) {
+    function reducer(state, action) {
         if (action.type == "save-params") {
-            const newTitle = action.payload;
-            return newTitle;
+            const titles = action.payload;
+            const n = titles.n - 1;
+            const newTitle = titles.title;
+            return {
+                ...state,
+                titles: state.titles.map((item, idx) => idx === n ? newTitle : item)
+            }
         }
         return state;
     }
+    const [stateTitles, dispatch] = useReducer(reducer, initialState);
 
-    const [state, dispatch] = useReducer(reducer, titleScreen);
 
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
@@ -54,11 +66,10 @@ export const AppProvider = ({ children }) => {
         let topicSubscribe = await AsyncStorage.getItem(`broker-mqtt-topic-subscribe${screenNumber}`);
         let topicPublish = await AsyncStorage.getItem(`broker-mqtt-topic-publish${screenNumber}`);
         let _title = await AsyncStorage.getItem(`title-screen${screenNumber}`);
-        setTitleScreen(_title);
         return {
+            "title": _title,
             "topicSubscribe": topicSubscribe,
             "topicPublish": topicPublish,
-            "title": titleScreen
         }
     }
 
@@ -69,18 +80,15 @@ export const AppProvider = ({ children }) => {
         });
         return await Promise.all(topics);
     }
-
     /*numbersScreen: array de numeros das telas*/
-    const titlesScreens = async (numbersScreen) => {
+    const titlesScreens = (numbersScreen) => {
         const titles = numbersScreen.map(async (n) => {
             let title = await AsyncStorage.getItem(`title-screen${n}`);
             return title;
         });
-        const titlesTabe = await Promise.all(titles);
-        setTitlesTab(titlesTabe);
-        return await Promise.all(titles);
+        return Promise.all(titles);
     }
-
+    
     return (
         <AppContext.Provider value={
             {
@@ -92,8 +100,7 @@ export const AppProvider = ({ children }) => {
                 screenMqttParams,
                 topicsSubscribe,
                 titlesScreens,
-                titleScreen,
-                titlesTab,
+                stateTitles,
                 dispatch
             }
         }

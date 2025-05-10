@@ -13,7 +13,6 @@ const Settings = (props) => {
     const appContext = useContext(AppContext);
     const isFocused = useIsFocused();
 
-    const [title, setTitle] = useState();
     const [brokerMqttHost, setBrokerMqttHost] = useState('');
     const [brokerMqttPort, setBrokerMqttPort] = useState('');
     const [brokerMqttUser, setBrokerMqttUser] = useState('');
@@ -99,7 +98,6 @@ const Settings = (props) => {
         if (isFocused) {
             const _loadParam = async () => {
                 const paramBroker = await appContext.brokerParamsConnection();
-                setTitle(props.title);
                 setBrokerMqttHost(paramBroker.host);
                 setBrokerMqttPort(paramBroker.port);
                 setBrokerMqttUser(paramBroker.user);
@@ -111,7 +109,7 @@ const Settings = (props) => {
 
     return (
         <View style={styles.container}>
-            <HeaderScreen defaultTitle={title} />
+            <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
                     <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqttHost(text)} value={brokerMqttHost} keyboardType="default" alert={alertBrokerMqttHost} />
