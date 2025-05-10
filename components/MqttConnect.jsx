@@ -28,8 +28,8 @@ const MqttConnect = () => {
         setLoading(true);
         try {
             await mqttContext.handlerConnect(
-                (client) => {
-                    setConnected(client.isConnected());
+                (isConnected) => {
+                    setConnected(isConnected);
                     setLoading(false);
                 },
                 (error) => {

@@ -13,23 +13,32 @@ const OnOff = (props) => {
     const mqttContext = useContext(MqttContext);
     const isFocused = useIsFocused();
 
-    const [topicPublish, setTopicPublish] = useState("");
     const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
+    const [screenParams, setScreenParmas] = useState()
+    
+    let topicSubscribe;
 
     useEffect(() => {
-        const load = async () => {
-            const params = await appContext.screenMqttParams(props.numScreen);
-            setTopicPublish(params.topicPublish);
-            setTitle((params.title) ? params.title : props.title);
-            mqttContext.handlerMessageArrived(params.topicSubscribe, updateStateBulb);
-            mqttContext.handlerSubscribe(params.topicSubscribe);
-        }
-        load();
         if (isFocused) {
+            const load = async () => {
+                const params = await appContext.screenMqttParams(props.numScreen);
+                setScreenParmas(params);
+                topicSubscribe = params.topicSubscribe;
+                setTitle((params.title) ? params.title : props.title);
+                mqttContext.handlerPostConnected(postMqttConnected);
+                mqttContext.handlerListenerSubscribe(topicSubscribe, updateStateBulb);
+            }
+            load();
         }
-    }, []);
+    }, [isFocused]);
 
+    const postMqttConnected = () => {
+        if(mqttContext.handlerIsConnected()) {
+            mqttContext.handlerListenerSubscribe(topicSubscribe, updateStateBulb);
+        }
+
+    }
 
     const updateStateBulb = (message) => {
         if (message === "on") {
@@ -43,15 +52,15 @@ const OnOff = (props) => {
 
     const _pusblish = (payload) => {
 
-        if (!mqttContext.isConnected) {
+        if (!mqttContext.handlerIsConnected()) {
             Alert.alert(`${appContext.appName}`, "MQTT broker not connected.");
             return;
         }
-        if (!topicPublish) {
+        if (!screenParams.topicPublish) {
             Alert.alert(`${appContext.appName}`, "There is no configured publish topic.");
             return;
         }
-        mqttContext.handlerPublish(topicPublish, payload);
+        mqttContext.handlerPublish(screenParams.topicPublish, payload);
     }
 
     const _on = () => {

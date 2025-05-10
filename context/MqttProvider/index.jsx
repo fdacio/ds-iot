@@ -7,8 +7,9 @@ const MqttContext = createContext({});
 export const MqttProvider = ({ children }) => {
 
     const appContext = useContext(AppContext);
-    const [isConnected, setIsConnected] = useState(false);
-    const [clientMqtt, setClientMqtt] = useState();
+    let isConnected = null;
+    let clientMqtt = null;
+    let callBackPostConnected = null;
 
     const MQTT_VERSION = 3;
     const mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
@@ -26,7 +27,7 @@ export const MqttProvider = ({ children }) => {
         }
 
 
-        let _client = new Paho.Client(
+        clientMqtt = new Paho.Client(
             brokerParams.host,
             parseInt(brokerParams.port),
             mqttClientId
@@ -38,20 +39,14 @@ export const MqttProvider = ({ children }) => {
             mqttVersion: MQTT_VERSION,
 
             onSuccess: () => {
-                setIsConnected(_client.isConnected());
-                if (_client.isConnected()) {
-                    console.log("CONNECTADO");
-                } else {
-                    console.log("não CONNECTADO");
-                }
-                setClientMqtt(_client);
-                handlerSubscribeAll(_client);
-                if (callBackConnetionSuccess) callBackConnetionSuccess(_client);
+                isConnected = clientMqtt.isConnected();
+                if (callBackConnetionSuccess) callBackConnetionSuccess(isConnected);
+                if (callBackPostConnected) callBackPostConnected();
             },
 
             onFailure: (error) => {
-                setIsConnected(false);
-                setClientMqtt(null);
+                isConnected = null;
+                clientMqtt = null;
                 let messageFail = "";
                 if (error.errorMessage.includes("undefined")) {
                     messageFail = "Broker address or port invalid";
@@ -66,15 +61,13 @@ export const MqttProvider = ({ children }) => {
         };
 
 
-        _client.onConnectionLost = (error) => {
+        clientMqtt.onConnectionLost = (error) => {
             console.error("Connection Lost: " + JSON.stringify(error));
-            setIsConnected(false);
-            setClientMqtt(null);
+            isConnected = null;
+            clientMqtt = null;
         }
 
-        _client.connect(options);
-
-
+        clientMqtt.connect(options);
     }
 
     const handlerPublish = (topic, payload) => {
@@ -89,30 +82,25 @@ export const MqttProvider = ({ children }) => {
         clientMqtt.subscribe(topic);
     }
 
-    const handlerMessageArrived = (topicSubscribe, callBackMessageArrived) => {
-        if (!topicSubscribe) return;
-        if (!callBackMessageArrived) return;
-        if (!clientMqtt) return;
-        clientMqtt.onMessageArrived = (message) => {
-            if (message.destinationName === topicSubscribe) {
-                callBackMessageArrived(message.payloadString);
-            }
-        }
+    const handlerPostConnected = (_callBackPostConnected) => {
+        callBackPostConnected = _callBackPostConnected;
     }
 
-    const handlerSubscribeAll = async (client) => {
-        if (!client) return;
-        const topics = await appContext.topicsSubscribe();
-        console.log("***subscribe all *****");
-        console.log(topics);
-        topics.map(topic => {
-            client.subscribe(topic);
-            client.onMessageArrived = (message) => {
-                if (message.destinationName === topic) {
-                    callBackMessageArrived(message.payloadString);
-                }
+    const handlerIsConnected = () => {
+        console.log("clientMqtt", clientMqtt);
+        if (!clientMqtt) return false;
+        return clientMqtt.isConnected();
+    }
+
+    const handlerListenerSubscribe = async (topicSubscrive, callMessageArrived) => {
+        if (!clientMqtt) return;
+        clientMqtt.subscribe(topicSubscrive);
+        clientMqtt.onMessageArrived = (message) => {
+            if (message.destinationName === topicSubscrive) {
+                console.log("exec MessageArrived");
+                callMessageArrived(message.payloadString);
             }
-        });
+        }
     }
 
 
@@ -122,8 +110,9 @@ export const MqttProvider = ({ children }) => {
                 handlerConnect,
                 handlerPublish,
                 handlerSubscribe,
-                handlerMessageArrived,
-                isConnected
+                handlerPostConnected,
+                handlerIsConnected,
+                handlerListenerSubscribe
             }
         }
         >
