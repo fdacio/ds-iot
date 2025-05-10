@@ -52,11 +52,11 @@ const OnOff = (props) => {
     const _pusblish = (payload) => {
 
         if (!mqttContext.handlerIsConnected()) {
-            Alert.alert(`${appContext.appName}`, "MQTT broker not connected.");
+            Alert.alert(`${appContext.appName}`, "MQTT broker not connected");
             return;
         }
         if (!screenParams.topicPublish) {
-            Alert.alert(`${appContext.appName}`, "There is no configured publish topic.");
+            Alert.alert(`${appContext.appName}`, "There is no publish topic configured");
             return;
         }
         mqttContext.handlerPublish(screenParams.topicPublish, payload);

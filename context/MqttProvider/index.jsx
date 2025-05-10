@@ -18,15 +18,6 @@ export const MqttProvider = ({ children }) => {
 
         const brokerParams = await appContext.brokerParamsConnection();
 
-        if (!brokerParams.host) {
-            throw Error("Broker Host not provided");
-        }
-
-        if (!brokerParams.port) {
-            throw Error("Broker Port not provided");
-        }
-
-
         clientMqtt = new Paho.Client(
             brokerParams.host,
             parseInt(brokerParams.port),
@@ -46,15 +37,7 @@ export const MqttProvider = ({ children }) => {
 
             onFailure: (error) => {
                 clientMqtt = null;
-                let messageFail = "";
-                if (error.errorMessage.includes("undefined")) {
-                    messageFail = "Broker address or port invalid";
-                } else if (error.errorMessage.includes("not authorized")) {
-                    messageFail = "Broker user or pass invalid";
-                } else {
-                    messageFail = error.errorMessage;
-                }
-                if (callBackConnetionError != null) callBackConnetionError(messageFail);
+                if (callBackConnetionError != null) callBackConnetionError(error);
             }
 
         };
@@ -66,6 +49,7 @@ export const MqttProvider = ({ children }) => {
                     type: "mqtt-connection",
                     payload: {
                         mqttConnected: false,
+                        mqttError: error
                     }
                 });
 
@@ -92,7 +76,7 @@ export const MqttProvider = ({ children }) => {
     }
 
     const handlerIsConnected = () => {
-        if (!clientMqtt) return false;
+        if (mqttDontConnected()) return false;
         return clientMqtt.isConnected();
     }
 
@@ -107,17 +91,7 @@ export const MqttProvider = ({ children }) => {
     }
 
     const mqttDontConnected = () => {
-        if (!clientMqtt) {
-            appContext.dispatch(
-                {
-                    type: "mqtt-connection",
-                    payload: {
-                        mqttConnected: false,
-                    }
-                });
-            return true;
-        }
-        return false;
+        return (!clientMqtt); 
     }
 
 

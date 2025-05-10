@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import HeaderScreen from '../components/HeaderScreen';
 import TextInputLabel from '../components/TextInputLabel';
@@ -35,6 +35,7 @@ const Settings = (props) => {
         setDisabledButton(true);
 
         try {
+
             const params = {
                 "host": brokerMqttHost,
                 "port": brokerMqttPort,
@@ -48,16 +49,20 @@ const Settings = (props) => {
 
 
         } catch (error) {
+            console.log(error.message);
             Alert.alert(`${appContext.appName}`, "Error saving settings broker");
         } finally {
             setLoading(false);
             setDisabledButton(false);
             setLabelButton(defaultLabelButton);
+            _resetAlerts();
         }
 
     }
 
     const _onValid = () => {
+
+        return true;
 
         _resetAlerts();
 

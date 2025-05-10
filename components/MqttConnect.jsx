@@ -43,7 +43,11 @@ const MqttConnect = () => {
                     setLoading(false);
                 },
                 (error) => {
-                    Alert.alert(`${appContext.appName}`, error);
+
+                    let messageError = error.errorMessage;            
+                    if (messageError.includes('Socket error')) messageError = "Broker host or port invalid";        
+
+                    Alert.alert(`${appContext.appName}`, messageError);
                     appContext.dispatch(
                         {
                             type: "mqtt-connection", 
@@ -59,9 +63,14 @@ const MqttConnect = () => {
                 
 
         } catch (error) {
-            Alert.alert(`${appContext.appName}`, error.message);
+            let messageError = error.message;            
+            if (error.message.includes('host')) messageError = "Broker host not provided";
+            if (error.message.includes('port')) messageError = "Broker port not provided";
+            if (error.message.includes('userName')) messageError = "Broker user name not provided or invalid";
+            if (error.message.includes('password')) messageError = "Broker password not provided or invalid";
             setTextConnect(labelConnect);
             setLoading(false);
+            Alert.alert(`${appContext.appName}`, messageError);
         } 
             
     }

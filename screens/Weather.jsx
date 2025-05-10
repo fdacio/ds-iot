@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HeaderScreen from '../components/HeaderScreen';
 import AppContext from '../context/AppProvider';
@@ -24,6 +24,10 @@ const Weather = (props) => {
                 const params = await appContext.screenMqttParams(props.numScreen);
                 setTitle((params.title) ? params.title : props.title);
                 topicSubscribe = params.topicSubscribe;
+                if (topicSubscribe == null) {
+                    Alert.alert(`${appContext.appName}`, "There is no subscribe topic configured");
+                    return;
+                }
                 mqttContext.handlerPostConnected(() => mqttContext.handlerListenerSubscribe(topicSubscribe, updateTempHumi));
                 mqttContext.handlerListenerSubscribe(topicSubscribe, updateTempHumi);
             }
@@ -31,6 +35,9 @@ const Weather = (props) => {
         }
     }, [isFocused]);
 
+    const alert = () => {
+
+    }
 
     const updateTempHumi = (response) => {
         if (response) {
@@ -44,7 +51,7 @@ const Weather = (props) => {
 
         <View style={styles.container}>
 
-            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen}/>
+            <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
 
             <View style={styles.containerDados}>
                 <View style={styles.contentDados}>
