@@ -61,6 +61,14 @@ export const MqttProvider = ({ children }) => {
 
 
         clientMqtt.onConnectionLost = (error) => {
+            appContext.dispatch(
+                {
+                    type: "mqtt-connection",
+                    payload: {
+                        mqttConnected: false,
+                    }
+                });
+
             clientMqtt = null;
         }
 
@@ -68,14 +76,14 @@ export const MqttProvider = ({ children }) => {
     }
 
     const handlerPublish = (topic, payload) => {
-        if (!clientMqtt) return;
+        if (mqttDontConnected()) return;
         let message = new Paho.Message(payload);
         message.destinationName = topic;
         clientMqtt.send(message);
     }
 
     const handlerSubscribe = (topic) => {
-        if (!clientMqtt) return;
+        if (mqttDontConnected()) return;
         clientMqtt.subscribe(topic);
     }
 
@@ -89,7 +97,7 @@ export const MqttProvider = ({ children }) => {
     }
 
     const handlerListenerSubscribe = async (topicSubscrive, callMessageArrived) => {
-        if (!clientMqtt) return;
+        if (mqttDontConnected()) return;
         clientMqtt.subscribe(topicSubscrive);
         clientMqtt.onMessageArrived = (message) => {
             if (message.destinationName === topicSubscrive) {
@@ -97,6 +105,21 @@ export const MqttProvider = ({ children }) => {
             }
         }
     }
+
+    const mqttDontConnected = () => {
+        if (!clientMqtt) {
+            appContext.dispatch(
+                {
+                    type: "mqtt-connection",
+                    payload: {
+                        mqttConnected: false,
+                    }
+                });
+            return true;
+        }
+        return false;
+    }
+
 
     return (
         <MqttContext.Provider value={

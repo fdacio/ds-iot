@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
 
     const appName = expo.name
     const appVersion = expo.version;
-    const initialState = { titles: initialTitles };
+    const initialState = { titles: initialTitles, mqttConnected: false };
 
     function reducer(state, action) {
         if (action.type == "save-params") {
@@ -27,6 +27,13 @@ export const AppProvider = ({ children }) => {
             return {
                 ...state,
                 titles: state.titles.map((item, idx) => idx === n ? newTitle : item)
+            }
+        }
+        if (action.type === "mqtt-connection") {
+            const payload = action.payload;
+            return {
+                ...state,
+                mqttConnected : payload.mqttConnected
             }
         }
         return state;

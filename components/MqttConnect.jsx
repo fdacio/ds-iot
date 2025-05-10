@@ -13,7 +13,6 @@ const MqttConnect = () => {
     const labelWait = "Wait ...";
     const labelConnect = "Connect";
     const [textConnect, setTextConnect] = useState(labelConnect);
-    const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const { netInfo } = useNetInfoInstance();
@@ -33,27 +32,43 @@ const MqttConnect = () => {
         try {
             await mqttContext.handlerConnect(
                 (isConnected) => {
-                    setConnected(isConnected);
+                    appContext.dispatch(
+                        {
+                            type: "mqtt-connection", 
+                            payload: {
+                                mqttConnected : isConnected, 
+                            }
+                        });
+        
                     setLoading(false);
                 },
                 (error) => {
                     Alert.alert(`${appContext.appName}`, error);
-                    setConnected(false);
+                    appContext.dispatch(
+                        {
+                            type: "mqtt-connection", 
+                            payload: {
+                                mqttConnected : false, 
+                            }
+                        });
+        
+
                     setTextConnect(labelConnect);
                     setLoading(false);
                 });
                 
 
         } catch (error) {
-            Alert.alert(`${appContext.appName}+++`, error.message);
+            Alert.alert(`${appContext.appName}`, error.message);
             setTextConnect(labelConnect);
             setLoading(false);
-        }
+        } 
+            
     }
 
     return (
         <>
-            {(connected)
+            {(appContext.state.mqttConnected)
                 ? <Icon name="wifi" color={styles.iconConnected.color} size={24} />
                 :
                 <Pressable onPress={_onConnect} style={styles.buttonConnect}>
@@ -61,7 +76,10 @@ const MqttConnect = () => {
                         ? <Icon name="wifi" color={styles.iconDisconnected.color} size={24} />
                         : <ActivityIndicator color="#ccc" size={24} />
                     }
-                    <Text style={styles.textIconConnection}>{textConnect}</Text>
+                    {(loading)
+                        ?<Text style={styles.textIconConnection}>{labelWait}</Text>
+                        :<Text style={styles.textIconConnection}>{labelConnect}</Text>
+                    }
                 </Pressable>
             }
         </>
