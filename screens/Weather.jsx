@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, View, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HeaderScreen from '../components/HeaderScreen';
 import AppContext from '../context/AppProvider';
@@ -50,32 +50,31 @@ const Weather = (props) => {
     return (
 
         <View style={styles.container}>
-
             <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
-
-            <View style={styles.containerDados}>
-                <View style={styles.contentDados}>
-                    <View style={styles.contentHeader}>
-                        <Text style={[styles.contentHeaderTitle, styles.colorTemp]}>Temperature</Text>
-                        <Icon name="thermometer" size={32} style={styles.colorTemp} />
+            <ScrollView>
+                <View style={styles.containerDados}>
+                    <View style={styles.contentDados}>
+                        <View style={styles.contentHeader}>
+                            <Text style={[styles.contentHeaderTitle, styles.colorTemp]}>Temperature</Text>
+                            <Icon name="thermometer" size={32} style={styles.colorTemp} />
+                        </View>
+                        <View style={styles.contentMain}>
+                            <Text style={styles.textMainPrimary}>{temp}</Text>
+                            <Text style={styles.textMainSecundary}>°C</Text>
+                        </View>
                     </View>
-                    <View style={styles.contentMain}>
-                        <Text style={styles.textMainPrimary}>{temp}</Text>
-                        <Text style={styles.textMainSecundary}>°C</Text>
+                    <View style={styles.contentDados}>
+                        <View style={styles.contentHeader}>
+                            <Text style={[styles.contentHeaderTitle, styles.colorHumi]}>Humidity</Text>
+                            <Icon name="tint" size={32} style={styles.colorHumi} />
+                        </View>
+                        <View style={styles.contentMain}>
+                            <Text style={styles.textMainPrimary}>{humi}</Text>
+                            <Text style={styles.textMainSecundary}>%</Text>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.contentDados}>
-                    <View style={styles.contentHeader}>
-                        <Text style={[styles.contentHeaderTitle, styles.colorHumi]}>Humidity</Text>
-                        <Icon name="tint" size={32} style={styles.colorHumi} />
-                    </View>
-                    <View style={styles.contentMain}>
-                        <Text style={styles.textMainPrimary}>{humi}</Text>
-                        <Text style={styles.textMainSecundary}>%</Text>
-                    </View>
-                </View>
-            </View>
-
+            </ScrollView>
         </View>
     );
 }
@@ -88,9 +87,10 @@ const styles = StyleSheet.create({
     },
 
     containerDados: {
-        flexGrow: 1,
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        alignSelf: 'center',
+        marginTop: 32,
     },
 
     contentDados: {

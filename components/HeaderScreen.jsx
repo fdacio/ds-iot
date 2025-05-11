@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AppContext from '../context/AppProvider';
 import SettingsTopics from './SettingsTopics';
@@ -7,6 +7,7 @@ const HeaderScreen = (props) => {
     
     const appContext = useContext(AppContext);
     const title = appContext.state.titles[props.numberScreen-1];
+    
     return (
         <View style={styles.content}>
             <Text style={styles.title}>{(title) ? title : props.defaultTitle}</Text>

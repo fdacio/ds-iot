@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import { useContext, useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import Button from '../components/Button';
 import HeaderScreen from '../components/HeaderScreen';
+import Loading from '../components/Loading';
 import TextInputLabel from '../components/TextInputLabel';
 import TextInputPasswordLabel from '../components/TextInputPasswordLabel';
-import Loading from '../components/Loading';
-import Button from '../components/Button';
 import AppContext from '../context/AppProvider';
 
-const Settings = (props) => {
+const Settings = () => {
 
     const appContext = useContext(AppContext);
     const isFocused = useIsFocused();
@@ -25,6 +25,21 @@ const Settings = (props) => {
     const [disabledButton, setDisabledButton] = useState(false);
     const defaultLabelButton = "Save";
     const [labelButton, setLabelButton] = useState(defaultLabelButton);
+
+
+    useEffect(() => {
+        if (isFocused) {
+            const _loadParam = async () => {
+                const paramBroker = await appContext.brokerParamsConnection();
+                setBrokerMqttHost(paramBroker.host);
+                setBrokerMqttPort(paramBroker.port);
+                setBrokerMqttUser(paramBroker.user);
+                setBrokerMqttPass(paramBroker.pass);
+            }
+            _loadParam();
+        }
+    }, [isFocused]);
+
 
     const _onSaveAndConnect = async () => {
 
@@ -51,7 +66,7 @@ const Settings = (props) => {
         } catch (error) {
 
             Alert.alert(`${appContext.appName}`, "Error saving settings broker");
-            
+
         } finally {
             setLoading(false);
             setDisabledButton(false);
@@ -95,19 +110,6 @@ const Settings = (props) => {
         setAlertBrokerMqttUser();
         setAlertBrokerMqttPass();
     }
-
-    useEffect(() => {
-        if (isFocused) {
-            const _loadParam = async () => {
-                const paramBroker = await appContext.brokerParamsConnection();
-                setBrokerMqttHost(paramBroker.host);
-                setBrokerMqttPort(paramBroker.port);
-                setBrokerMqttUser(paramBroker.user);
-                setBrokerMqttPass(paramBroker.pass);
-            }
-            _loadParam();
-        }
-    }, [isFocused]);
 
     return (
         <View style={styles.container}>

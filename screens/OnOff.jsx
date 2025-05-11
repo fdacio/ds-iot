@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { Alert, StyleSheet, View, ScrollView } from 'react-native';
 import ButtonOnOff from '../components/ButtonOnOff';
 import HeaderScreen from '../components/HeaderScreen';
 import IconBulb from '../components/IconBulb';
@@ -16,7 +16,7 @@ const OnOff = (props) => {
     const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
     const [screenParams, setScreenParmas] = useState();
-    
+
     let topicSubscribe;
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const OnOff = (props) => {
     }, [isFocused]);
 
     const postMqttConnected = () => {
-        if(mqttContext.handlerIsConnected()) {
+        if (mqttContext.handlerIsConnected()) {
             mqttContext.handlerListenerSubscribe(topicSubscribe, updateStateBulb);
         }
     }
@@ -71,18 +71,18 @@ const OnOff = (props) => {
 
     return (
         <View style={styles.container}>
-
             <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
-
-            <View style={styles.contentIconsBulb}>
-                <IconBulb state={stateBulb} />
-            </View>
-
-            <View style={styles.contentButtons}>
-                <ButtonOnOff type="on" action={_on} />
-                <ButtonOnOff type="off" action={_off} />
-            </View>
-
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.content}>
+                    <View style={styles.contentIconsBulb}>
+                        <IconBulb state={stateBulb} />
+                    </View>
+                    <View style={styles.contentButtons}>
+                        <ButtonOnOff type="on" action={_on} />
+                        <ButtonOnOff type="off" action={_off} />
+                    </View>
+                </View>
+            </ScrollView>
         </View>
     );
 }
@@ -92,16 +92,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-
+    content: {
+        marginTop: 64,
+    },
     contentIconsBulb: {
-        marginTop: 100,
-        flexGrow: 1,
         alignItems: 'center',
     },
 
     contentButtons: {
-        flexGrow: 2,
         alignItems: 'center',
     }
 
