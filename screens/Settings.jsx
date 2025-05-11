@@ -17,10 +17,7 @@ const Settings = () => {
     const [brokerMqttPort, setBrokerMqttPort] = useState('');
     const [brokerMqttUser, setBrokerMqttUser] = useState('');
     const [brokerMqttPass, setBrokerMqttPass] = useState('');
-    const [alertBrokerMqttHost, setAlertBrokerMqttHost] = useState();
-    const [alertBrokerMqttPort, setAlertBrokerMqttPort] = useState();
-    const [alertBrokerMqttUser, setAlertBrokerMqttUser] = useState();
-    const [alertBrokerMqttPass, setAlertBrokerMqttPass] = useState();
+    const [alertValidate, setAlertValidate] = useState();
     const [loading, setLoading] = useState(false);
     const [disabledButton, setDisabledButton] = useState(false);
     const defaultLabelButton = "Save";
@@ -37,11 +34,14 @@ const Settings = () => {
                 setBrokerMqttPass(paramBroker.pass);
             }
             _loadParam();
+            setAlertValidate({});
         }
     }, [isFocused]);
 
 
     const _onSaveAndConnect = async () => {
+
+        setAlertValidate({});
 
         if (!_onValid()) return;
 
@@ -71,7 +71,6 @@ const Settings = () => {
             setLoading(false);
             setDisabledButton(false);
             setLabelButton(defaultLabelButton);
-            _resetAlerts();
         }
 
     }
@@ -79,36 +78,30 @@ const Settings = () => {
     const _onValid = () => {
 
         let _isValid = true;
+        let _alertValidate = {}
 
         if (!brokerMqttHost) {
-            setAlertBrokerMqttHost("Broker Host is required");
+            _alertValidate = {..._alertValidate , 'host' : 'Broker Host is required'};
             _isValid = false;
         }
         if (!brokerMqttPort) {
-            setAlertBrokerMqttPort("Broker Port is required");
+            _alertValidate = {..._alertValidate, 'port' : 'Broker Port is required'};
             _isValid = false;
         }
         if (Number(brokerMqttPort) > 9999) {
-            setAlertBrokerMqttPort("Invalid Broker Port");
+            _alertValidate = {... _alertValidate, 'port' : 'Invalid Broker Port'};
             _isValid = false;
         }
         if (!brokerMqttUser) {
-            setAlertBrokerMqttUser("Broker User is required");
+            _alertValidate = {... _alertValidate, 'user' : 'Broker User is required'};
             _isValid = false;
         }
         if (!brokerMqttPass) {
-            setAlertBrokerMqttPass("Broker Pass is required");
+            _alertValidate = {... _alertValidate, 'pass' : 'Broker Pass is required'};
             _isValid = false;
         }
-
+        setAlertValidate(_alertValidate);
         return _isValid;
-    }
-
-    const _resetAlerts = () => {
-        setAlertBrokerMqttHost();
-        setAlertBrokerMqttPort();
-        setAlertBrokerMqttUser();
-        setAlertBrokerMqttPass();
     }
 
     return (
@@ -116,10 +109,10 @@ const Settings = () => {
             <HeaderScreen defaultTitle="Settings" />
             <ScrollView>
                 <View style={{ padding: 16, marginBottom: 48 }}>
-                    <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqttHost(text)} value={brokerMqttHost} keyboardType="default" alert={alertBrokerMqttHost} />
-                    <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBrokerMqttPort(text)} value={brokerMqttPort} keyboardType="numeric" alert={alertBrokerMqttPort} />
-                    <TextInputLabel label="Broker MQTT User" onChangeText={text => setBrokerMqttUser(text)} value={brokerMqttUser} keyboardType="default" alert={alertBrokerMqttUser} />
-                    <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBrokerMqttPass(text)} value={brokerMqttPass} keyboardType="default" alert={alertBrokerMqttPass} />
+                    <TextInputLabel label="Broker MQTT" onChangeText={text => setBrokerMqttHost(text)} value={brokerMqttHost} keyboardType="default" alert={(alertValidate?.host)} />
+                    <TextInputLabel label="Broker MQTT Port" onChangeText={text => setBrokerMqttPort(text)} value={brokerMqttPort} keyboardType="numeric" alert={alertValidate?.port} />
+                    <TextInputLabel label="Broker MQTT User" onChangeText={text => setBrokerMqttUser(text)} value={brokerMqttUser} keyboardType="default" alert={alertValidate?.user} />
+                    <TextInputPasswordLabel label="Broker MQTT Pass" onChangeText={text => setBrokerMqttPass(text)} value={brokerMqttPass} keyboardType="default" alert={alertValidate?.pass} />
                     <Button label={labelButton} onPress={_onSaveAndConnect} disabled={disabledButton} />
                 </View>
                 <Loading loading={loading} />

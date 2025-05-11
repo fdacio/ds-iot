@@ -15,6 +15,7 @@
     "@react-navigation/native": "^6.1.17",
     "expo": "^53",
     "expo-build-properties": "~0.14.6",
+    "expo-splash-screen": "~0.30.8",
     "expo-status-bar": "~2.2.3",
     "install": "^0.13.0",
     "npm": "^10.8.2",

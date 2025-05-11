@@ -35,9 +35,6 @@ const Weather = (props) => {
         }
     }, [isFocused]);
 
-    const alert = () => {
-
-    }
 
     const updateTempHumi = (response) => {
         if (response) {

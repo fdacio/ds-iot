@@ -2,25 +2,25 @@
   "expo": {
     "name": "DS-IoT",
     "slug": "ds-iot",
-    "version": "2.0.2",
+    "version": "2.2.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/adaptive-icon.png",
     "userInterfaceStyle": "light",
     "android": {
       "package": "br.com.daciosoftware.dsiot",
-      "versionCode": 21,
+      "versionCode": 22,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "splash": {
-        "image": "./assets/splash.png",
+        "image": "./assets/splash-icon-light.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       }
     },
     "ios": {
-      "buildNumber": "2.0.2",
+      "buildNumber": "2.2.0",
       "bundleIdentifier": "br.com.daciosoftware.dsiot"
     },
     "extra": {
