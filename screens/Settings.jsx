@@ -49,8 +49,9 @@ const Settings = (props) => {
 
 
         } catch (error) {
-            console.log(error.message);
+
             Alert.alert(`${appContext.appName}`, "Error saving settings broker");
+            
         } finally {
             setLoading(false);
             setDisabledButton(false);
@@ -61,10 +62,6 @@ const Settings = (props) => {
     }
 
     const _onValid = () => {
-
-        return true;
-
-        _resetAlerts();
 
         let _isValid = true;
 

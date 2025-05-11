@@ -44,7 +44,7 @@ const SettingsTopics = (props) => {
             setModalVisible(false);
             appContext.dispatch(
                 {
-                    type: "save-params", 
+                    type: "updateTitle", 
                     payload: {
                         "n" : props.numberScreen, 
                         "title" : 

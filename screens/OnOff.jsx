@@ -43,7 +43,6 @@ const OnOff = (props) => {
         if (message === "on") {
             setStateBulb(true);
         }
-
         if (message === "off") {
             setStateBulb(false);
         }

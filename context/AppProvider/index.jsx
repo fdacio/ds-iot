@@ -4,42 +4,51 @@ import { expo } from '../../app.json';
 
 const AppContext = createContext({});
 
-let initialTitles = ["On/Off 1", "On/Off 2", "Weather", "Settings4"];
-const getInitialTitles = (numbersScreen) => {
-    numbersScreen.map(async (n) => {
-        let title = await AsyncStorage.getItem(`title-screen${n}`);
-        if(title) initialTitles[n-1] = title;
-    });
-}
-getInitialTitles([1,2,3,4]);
 
 export const AppProvider = ({ children }) => {
 
+    const defaultTitles = ["On/Off 1", "On/Off 2", "Weather"];
+
+    useEffect(() => {
+        const _f = async () => {
+            const titles = await titlesScreens([1, 2, 3]);
+            dispatch({ type: 'loadTitles', payload: { titles: titles } });
+        }
+        _f();
+    }, []);
+
     const appName = expo.name
     const appVersion = expo.version;
-    const initialState = { titles: initialTitles, mqttConnected: false };
+    const initialState = { titles: defaultTitles, mqttConnected: false };
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     function reducer(state, action) {
-        if (action.type == "save-params") {
-            const titles = action.payload;
-            const n = titles.n - 1;
-            const newTitle = titles.title;
+        if (action.type == "updateTitle") {
+            const payload = action.payload;
+            const idxNewTitle = (payload.n) - 1;
+            const newTitle = payload.title;
             return {
                 ...state,
-                titles: state.titles.map((item, idx) => idx === n ? newTitle : item)
+                titles: state.titles.map((item, idx) => idx === idxNewTitle ? newTitle : item)
+            }
+        }
+        if (action.type == "loadTitles") {
+            const payload = action.payload;
+            const _titles = payload.titles;
+            return {
+                ...state,
+                titles: _titles
             }
         }
         if (action.type === "mqtt-connection") {
             const payload = action.payload;
             return {
                 ...state,
-                mqttConnected : payload.mqttConnected
+                mqttConnected: payload.mqttConnected
             }
         }
         return state;
     }
-    const [state, dispatch] = useReducer(reducer, initialState);
-
 
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
@@ -87,15 +96,16 @@ export const AppProvider = ({ children }) => {
         });
         return await Promise.all(topics);
     }
+
     /*numbersScreen: array de numeros das telas*/
     const titlesScreens = (numbersScreen) => {
-        const titles = numbersScreen.map(async (n) => {
+        const titles = numbersScreen.map(async (n, key) => {
             let title = await AsyncStorage.getItem(`title-screen${n}`);
-            return title;
+            return (title) ? title : defaultTitles[key];
         });
         return Promise.all(titles);
     }
-    
+
     return (
         <AppContext.Provider value={
             {

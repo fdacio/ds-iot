@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from "expo-status-bar";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -58,8 +58,7 @@ const Navigation = () => {
 const styles = StyleSheet.create({
 
 	container: {
-		flex: 1,
-		backgroundColor: "#B5B5B5"
+		flex: 1
 	},
 
 });

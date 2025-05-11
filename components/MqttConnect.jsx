@@ -34,36 +34,38 @@ const MqttConnect = () => {
                 (isConnected) => {
                     appContext.dispatch(
                         {
-                            type: "mqtt-connection", 
+                            type: "mqtt-connection",
                             payload: {
-                                mqttConnected : isConnected, 
+                                mqttConnected: isConnected,
                             }
                         });
-        
+
                     setLoading(false);
                 },
                 (error) => {
 
-                    let messageError = error.errorMessage;            
-                    if (messageError.includes('Socket error')) messageError = "Broker host or port invalid";        
+                    let messageError = error.errorMessage;
+                    if (messageError.includes('Socket error')) messageError = "Broker host or port invalid";
+                    if (messageError.includes('not authorized')) messageError = "Broker user name ou pass invalid";
 
-                    Alert.alert(`${appContext.appName}`, messageError);
                     appContext.dispatch(
                         {
-                            type: "mqtt-connection", 
+                            type: "mqtt-connection",
                             payload: {
-                                mqttConnected : false, 
+                                mqttConnected: false,
                             }
                         });
-        
 
                     setTextConnect(labelConnect);
                     setLoading(false);
+
+                    Alert.alert(`${appContext.appName}`, messageError);
+
                 });
-                
+
 
         } catch (error) {
-            let messageError = error.message;            
+            let messageError = error.message;
             if (error.message.includes('host')) messageError = "Broker host not provided";
             if (error.message.includes('port')) messageError = "Broker port not provided";
             if (error.message.includes('userName')) messageError = "Broker user name not provided or invalid";
@@ -71,8 +73,8 @@ const MqttConnect = () => {
             setTextConnect(labelConnect);
             setLoading(false);
             Alert.alert(`${appContext.appName}`, messageError);
-        } 
-            
+        }
+
     }
 
     return (
@@ -86,8 +88,8 @@ const MqttConnect = () => {
                         : <ActivityIndicator color="#ccc" size={24} />
                     }
                     {(loading)
-                        ?<Text style={styles.textIconConnection}>{labelWait}</Text>
-                        :<Text style={styles.textIconConnection}>{labelConnect}</Text>
+                        ? <Text style={styles.textIconConnection}>{labelWait}</Text>
+                        : <Text style={styles.textIconConnection}>{labelConnect}</Text>
                     }
                 </Pressable>
             }
