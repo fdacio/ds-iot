@@ -1,12 +1,11 @@
-import React, { Fragment, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const TextInputPasswordLabel = (props) => {
 
     const [focus, setFocus] = useState(false);
     const [secure, setSecure] = useState(true);
-
 
     return (
         <View style={styles.content}>

@@ -1,5 +1,4 @@
-import React from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 const TextInputLabel = (props) => {
 

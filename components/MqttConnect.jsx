@@ -1,5 +1,5 @@
 import { useNetInfoInstance } from "@react-native-community/netinfo";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from "../context/AppProvider";

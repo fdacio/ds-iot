@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const IconBulb = (props) => {

@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useReducer, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext, useEffect, useReducer } from "react";
 import { expo } from '../../app.json';
 
 const AppContext = createContext({});
