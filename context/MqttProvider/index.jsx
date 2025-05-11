@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 import AppContext from "../AppProvider";
 
 const MqttContext = createContext({});
-/** Variáveis de instânica */
+/** Variáveis de instâncias */
 let clientMqtt = null;
 let callBackPostConnected = null;
 

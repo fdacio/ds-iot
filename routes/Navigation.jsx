@@ -18,9 +18,36 @@ const Navigation = () => {
 	const appContext = useContext(AppContext);
 
 	const _OnOff1 = () => (<OnOff numScreen="1" />);
-	const _OnOff2 = () => (<OnOff numScreen="2"  />);
-	const _Weather = () => (<Weather numScreen="3"  />)
+	const _OnOff2 = () => (<OnOff numScreen="2" />);
+	const _Weather = () => (<Weather numScreen="3" />)
 	const _Settings = () => (<Settings numScreen="4" />)
+
+	const tabs = [
+		{ name: "OnOff1", component: _OnOff1, title: appContext.state.titles[0], icon: "power-off" },
+		{ name: "OnOff2", component: _OnOff2, title: appContext.state.titles[1], icon: "power-off" },
+		{ name: "Weather", component: _Weather, title: appContext.state.titles[2], icon: "cloud-sun-rain" },
+		{ name: "Settings", component: _Settings, title: "Settings", icon: "cog", },
+	];
+
+	const getTabNavigatorStyles = () => {
+		return {
+			tabBarActiveTintColor: '#000',
+			tabBarInactiveTintColor: "#B5B5B5",
+			tabBarLabelStyle: {
+				fontSize: 18,
+				fontFamily: 'arial',
+				fontWeight: 'bold',
+				paddingBottom: 4,
+			},
+			tabBarActiveBackgroundColor: '#B5B5B5',
+			tabBarStyle: {
+				height: 64,
+				borderLeftColor: '#B5B5B5',
+				borderLeftWidth: 1,
+				paddingBottom: 0,
+			}
+		};
+	};
 
 	return (
 		<NavigationContainer>
@@ -28,32 +55,24 @@ const Navigation = () => {
 			<SafeAreaView style={styles.container}>
 				<Header />
 				<Tab.Navigator
-					screenOptions={{
-						tabBarActiveTintColor: '#000',
-						tabBarInactiveTintColor: "#B5B5B5",
-						tabBarLabelStyle: {
-							fontSize: 18,
-							fontFamily: 'arial',
-							fontWeight: 'bold',
-							paddingBottom: 4,
-						},
-						tabBarActiveBackgroundColor: '#B5B5B5',
-						tabBarStyle: {
-							height: 64,
-							borderLeftColor: '#B5B5B5',
-							borderLeftWidth: 1,
-							paddingBottom: 0,
-						}
-
-					}}>
-					<Tab.Screen name="OnOff1" component={_OnOff1} options={{ title: appContext.state.titles[0], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-					<Tab.Screen name="OnOff" component={_OnOff2} options={{ title: appContext.state.titles[1], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="power-off" size={size} color={color} />) }} />
-					<Tab.Screen name="Weather" component={_Weather} options={{ title: appContext.state.titles[2], headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cloud-sun-rain" size={size} color={color} />) }} />
-					<Tab.Screen name="Settings" component={_Settings} options={{ title: "Settings", headerShown: false, tabBarIcon: (({ color, size }) => <Icon name="cog" size={size} color={color} />) }} />
+					screenOptions={getTabNavigatorStyles}>
+					{tabs.map((tab, index) => (
+						<Tab.Screen
+							key={index}
+							name={tab.name}
+							component={tab.component}
+							options={{
+								title: tab.title,
+								tabBarIcon: ({ color, size }) => <Icon name={tab.icon} size={size} color={color} />,
+								headerShown: false
+							}}
+						/>
+					))}
 				</Tab.Navigator>
 			</SafeAreaView>
 		</NavigationContainer>
 	)
+
 }
 const styles = StyleSheet.create({
 
@@ -62,4 +81,6 @@ const styles = StyleSheet.create({
 	},
 
 });
+
+
 export default Navigation;
