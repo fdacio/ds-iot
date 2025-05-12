@@ -1,5 +1,5 @@
 import Paho from "paho-mqtt";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import AppContext from "../AppProvider";
 
 const MqttContext = createContext({});
@@ -10,11 +10,21 @@ let callBackPostConnected = null;
 export const MqttProvider = ({ children }) => {
 
     const appContext = useContext(AppContext);
-
+    
     const MQTT_VERSION = 3;
-    const mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`;
+    const mqttClientId = `dsiot-app-device-${(Math.random()) * 1000}`; //Melhoria: pegar um identificador único do dispositivo (IMEI por exemplo)
 
-    const handlerConnect = async (callBackConnetionSuccess, callBackConnetionError) => {
+    useEffect(() => {
+        appContext.dispatch(
+            {
+                type: "mqttConnection",
+                payload: {
+                    mqttConnected: handlerIsConnected(),
+                }
+            });
+    }, []);
+
+    const handlerConnect = async (callBackConnectionSuccess, callBackConnectionError) => {
 
         const brokerParams = await appContext.brokerParamsConnection();
 
@@ -31,22 +41,21 @@ export const MqttProvider = ({ children }) => {
 
             onSuccess: () => {
                 let _isConnected = clientMqtt.isConnected();
-                if (callBackConnetionSuccess) callBackConnetionSuccess(_isConnected);
+                if (callBackConnectionSuccess) callBackConnectionSuccess(_isConnected);
                 if (callBackPostConnected) callBackPostConnected();
             },
 
             onFailure: (error) => {
                 clientMqtt = null;
-                if (callBackConnetionError != null) callBackConnetionError(error);
+                if (callBackConnectionError != null) callBackConnectionError(error);
             }
 
         };
 
-
         clientMqtt.onConnectionLost = (error) => {
             appContext.dispatch(
                 {
-                    type: "mqtt-connection",
+                    type: "mqttConnection",
                     payload: {
                         mqttConnected: false,
                         mqttError: error
@@ -57,6 +66,13 @@ export const MqttProvider = ({ children }) => {
         }
 
         clientMqtt.connect(options);
+    }
+
+
+    const handlerDisconnect = () => {
+        if (mqttDontConnected()) return;
+        clientMqtt.disconnect();
+        clientMqtt = null;
     }
 
     const handlerPublish = (topic, payload) => {
@@ -91,14 +107,14 @@ export const MqttProvider = ({ children }) => {
     }
 
     const mqttDontConnected = () => {
-        return (!clientMqtt); 
+        return (!clientMqtt);
     }
-
 
     return (
         <MqttContext.Provider value={
             {
                 handlerConnect,
+                handlerDisconnect,
                 handlerPublish,
                 handlerSubscribe,
                 handlerPostConnected,

@@ -7,34 +7,27 @@ import MqttContext from "../context/MqttProvider";
 
 const MqttConnect = () => {
 
-    const mqttContext = useContext(MqttContext);
     const appContext = useContext(AppContext);
+    const mqttContext = useContext(MqttContext);
+    const { netInfo } = useNetInfoInstance();
 
     const labelWait = "Wait ...";
     const labelConnect = "Connect";
-    const [textConnect, setTextConnect] = useState(labelConnect);
     const [loading, setLoading] = useState(false);
 
-    const { netInfo } = useNetInfoInstance();
-
-    useEffect(() => {
-
-
-    }, []);
 
     const _onConnect = async () => {
         if (!netInfo.isConnected) {
             Alert.alert(`${appContext.appName}`, "Check the internet connection");
             return;
         }
-        setTextConnect(labelWait);
         setLoading(true);
         try {
             await mqttContext.handlerConnect(
                 (isConnected) => {
                     appContext.dispatch(
                         {
-                            type: "mqtt-connection",
+                            type: "mqttConnection",
                             payload: {
                                 mqttConnected: isConnected,
                             }
@@ -50,19 +43,17 @@ const MqttConnect = () => {
 
                     appContext.dispatch(
                         {
-                            type: "mqtt-connection",
+                            type: "mqttConnection",
                             payload: {
                                 mqttConnected: false,
                             }
                         });
 
-                    setTextConnect(labelConnect);
                     setLoading(false);
 
                     Alert.alert(`${appContext.appName}`, messageError);
 
                 });
-
 
         } catch (error) {
             let messageError = error.message;
@@ -70,19 +61,26 @@ const MqttConnect = () => {
             if (error.message.includes('port')) messageError = "Broker port not provided";
             if (error.message.includes('userName')) messageError = "Broker user name not provided or invalid";
             if (error.message.includes('password')) messageError = "Broker password not provided or invalid";
-            setTextConnect(labelConnect);
             setLoading(false);
             Alert.alert(`${appContext.appName}`, messageError);
+            
         }
 
+    }
+
+    const _onDisconnect = () => {
+        mqttContext.handlerDisconnect();
     }
 
     return (
         <>
             {(appContext.state.mqttConnected)
-                ? <Icon name="wifi" color={styles.iconConnected.color} size={24} />
+                ? 
+                <Pressable onPress={_onDisconnect} style={styles.buttonConnectDisconect}>
+                    <Icon name="wifi" color={styles.iconConnected.color} size={24} />
+                </Pressable>
                 :
-                <Pressable onPress={_onConnect} style={styles.buttonConnect}>
+                <Pressable onPress={_onConnect} style={styles.buttonConnectDisconect}>
                     {(!loading)
                         ? <Icon name="wifi" color={styles.iconDisconnected.color} size={24} />
                         : <ActivityIndicator color="#ccc" size={24} />
@@ -99,7 +97,7 @@ const MqttConnect = () => {
 
 const styles = StyleSheet.create({
 
-    buttonConnect: {
+    buttonConnectDisconect: {
         flexDirection: "row",
         textAlignVertical: 'center'
     },

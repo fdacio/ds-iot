@@ -7,21 +7,36 @@ const AppContext = createContext({});
 
 export const AppProvider = ({ children }) => {
 
-    const defaultTitles = ["On/Off 1", "On/Off 2", "Weather"];
-
-    useEffect(() => {
-        const _f = async () => {
-            const titles = await titlesScreens([1, 2, 3]);
-            dispatch({ type: 'loadTitles', payload: { titles: titles } });
-        }
-        _f();
-    }, []);
-
     const appName = expo.name
     const appVersion = expo.version;
+    const defaultTitles = ["On/Off 1", "On/Off 2", "Weather"];
+    const numbersScreen = [1,2,3];
     const initialState = { titles: defaultTitles, mqttConnected: false };
-    const [state, dispatch] = useReducer(reducer, initialState);
+    
+    /*Chamada na loadTitles para inicializar os títulos das telas*/
+    const titlesScreens = (numbersScreen) => {
+        const titles = numbersScreen.map(async (n, key) => {
+            let title = await AsyncStorage.getItem(`title-screen${n}`);
+            return (title) ? title : defaultTitles[key];
+        });
+        return Promise.all(titles);
+    }
 
+    const loadTitles = async () => {
+        const titles = await titlesScreens(numbersScreen);
+        dispatch(
+            { 
+                type: 'loadTitles', 
+                payload: { titles: titles } 
+            }
+        );
+    }
+
+    useEffect(() => {
+        loadTitles();
+    }, []);
+
+    /** useReducer */
     function reducer(state, action) {
         if (action.type == "updateTitle") {
             const payload = action.payload;
@@ -40,16 +55,20 @@ export const AppProvider = ({ children }) => {
                 titles: _titles
             }
         }
-        if (action.type === "mqtt-connection") {
+        if (action.type === "mqttConnection") {
             const payload = action.payload;
             return {
                 ...state,
-                mqttConnected: payload.mqttConnected
+                mqttConnected: payload.mqttConnected,
+                mqttError: payload.mqttError
             }
         }
         return state;
     }
+    const [state, dispatch] = useReducer(reducer, initialState);
+    /** Fim do useReducer*/
 
+    /** Funções disponibilizadas/exportadas pelo AppProvider */
     const brokerSaveParams = async (params) => {
         await AsyncStorage.setItem("broker-mqtt", params.host);
         await AsyncStorage.setItem("broker-mqtt-port", params.port);
@@ -97,15 +116,6 @@ export const AppProvider = ({ children }) => {
         return await Promise.all(topics);
     }
 
-    /*numbersScreen: array de numeros das telas*/
-    const titlesScreens = (numbersScreen) => {
-        const titles = numbersScreen.map(async (n, key) => {
-            let title = await AsyncStorage.getItem(`title-screen${n}`);
-            return (title) ? title : defaultTitles[key];
-        });
-        return Promise.all(titles);
-    }
-
     return (
         <AppContext.Provider value={
             {
@@ -116,7 +126,6 @@ export const AppProvider = ({ children }) => {
                 screenMqttSaveParams,
                 screenMqttParams,
                 topicsSubscribe,
-                titlesScreens,
                 state,
                 dispatch
             }

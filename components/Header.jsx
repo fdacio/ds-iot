@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from '../context/AppProvider';
 import MqttConnect from './MqttConnect';
 
-const Header = (props) => {
+const Header = () => {
 
     const appContext = useContext(AppContext);
 
