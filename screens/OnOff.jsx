@@ -15,7 +15,7 @@ const OnOff = (props) => {
 
     const [title, setTitle] = useState();
     const [stateBulb, setStateBulb] = useState(false);
-    const [screenParams, setScreenParmas] = useState();
+    const [screenParams, setScreenParams] = useState();
 
     let topicSubscribe;
 
@@ -23,7 +23,7 @@ const OnOff = (props) => {
         if (isFocused) {
             const load = async () => {
                 const params = await appContext.screenMqttParams(props.numScreen);
-                setScreenParmas(params);
+                setScreenParams(params);
                 topicSubscribe = params.topicSubscribe;
                 setTitle((params.title) ? params.title : props.title);
                 mqttContext.handlerPostConnected(postMqttConnected);

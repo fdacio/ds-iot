@@ -4,7 +4,6 @@ import { expo } from '../../app.json';
 
 const AppContext = createContext({});
 
-
 export const AppProvider = ({ children }) => {
 
     const appName = expo.name
@@ -61,6 +60,20 @@ export const AppProvider = ({ children }) => {
                 ...state,
                 mqttConnected: payload.mqttConnected,
                 mqttError: payload.mqttError
+            }
+        }
+        if (action.type === "mqttDataOnOff") {
+            const payload = action.payload;
+            return {
+                ...state,
+                mqttDataOnOff : payload.OnOff, 
+            }
+        }
+        if (action.type === "mqttDataDHT") {
+            const payload = action.payload;
+            return {
+                ...state,
+                mqttDataDHT: payload.dht,
             }
         }
         return state;
