@@ -8,8 +8,8 @@ export const AppProvider = ({ children }) => {
 
     const appName = expo.name
     const appVersion = expo.version;
-    const defaultTitles = ["On/Off 1", "On/Off 2", "Weather"];
-    const numbersScreen = [1,2,3];
+    const defaultTitles = ["On/Off 1", "On/Off 2", "On/Off 3", "Weather"];
+    const numbersScreen = [1,2,3,4];
     const initialState = { titles: defaultTitles, mqttConnected: false };
     
     /*Chamada na loadTitles para inicializar os títulos das telas*/

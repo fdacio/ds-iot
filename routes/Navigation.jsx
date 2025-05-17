@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/Header';
 import AppContext from '../context/AppProvider';
 import OnOff from '../screens/OnOff';
-import Settings from '../screens/Settings';
 import Weather from "../screens/Weather";
 
 const Tab = createBottomTabNavigator();
@@ -19,14 +18,14 @@ const Navigation = () => {
 
 	const _OnOff1 = () => (<OnOff numScreen="1" />);
 	const _OnOff2 = () => (<OnOff numScreen="2" />);
-	const _Weather = () => (<Weather numScreen="3" />)
-	const _Settings = () => (<Settings numScreen="4" />)
-
+	const _OnOff3 = () => (<OnOff numScreen="3" />);
+	const _Weather = () => (<Weather numScreen="4" />)
+	
 	const tabs = [
-		{ name: "OnOff1", component: _OnOff1, title: appContext.state.titles[0], icon: "power-off" },
-		{ name: "OnOff2", component: _OnOff2, title: appContext.state.titles[1], icon: "power-off" },
-		{ name: "Weather", component: _Weather, title: appContext.state.titles[2], icon: "cloud-sun-rain" },
-		{ name: "Settings", component: _Settings, title: "Settings", icon: "cog", },
+		{ name: "OnOff1",  component: _OnOff1,  title: appContext.state.titles[0], icon: "power-off" },
+		{ name: "OnOff2",  component: _OnOff2,  title: appContext.state.titles[1], icon: "power-off" },
+		{ name: "OnOff3",  component: _OnOff3,  title: appContext.state.titles[2], icon: "power-off" },
+		{ name: "Weather", component: _Weather, title: appContext.state.titles[3], icon: "cloud-sun-rain" },
 	];
 
 	const getTabNavigatorStyles = () => {

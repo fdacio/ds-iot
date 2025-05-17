@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Settings from './Settings';
 import AppContext from '../context/AppProvider';
 import MqttConnect from './MqttConnect';
 
@@ -18,7 +19,10 @@ const Header = () => {
                 <Text style={styles.textVersion}>{appContext.appVersion}</Text>
             </View>
             <View style={styles.contentRight}>
-                <MqttConnect />
+                <View style={styles.contentRightComps}>
+                    <Settings />
+                    <MqttConnect />
+                </View>
             </View>
         </View>
     );
@@ -49,7 +53,10 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
-
+    contentRightComps: {
+        flexDirection: 'row',
+        gap: 8,
+    },
     title: {
         fontSize: 18,
         fontWeight: 'bold',

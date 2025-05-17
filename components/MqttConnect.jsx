@@ -77,12 +77,12 @@ const MqttConnect = () => {
             {(appContext.state.mqttConnected)
                 ? 
                 <Pressable onPress={_onDisconnect} style={styles.buttonConnectDisconect}>
-                    <Icon name="wifi" color={styles.iconConnected.color} size={24} />
+                    <Icon name="wifi" color={styles.iconConnected.color} size={32} />
                 </Pressable>
                 :
                 <Pressable onPress={_onConnect} style={styles.buttonConnectDisconect}>
                     {(!loading)
-                        ? <Icon name="wifi" color={styles.iconDisconnected.color} size={24} />
+                        ? <Icon name="wifi" color={styles.iconDisconnected.color} size={32} />
                         : <ActivityIndicator color="#ccc" size={24} />
                     }
                     {(loading)
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
 
     buttonConnectDisconect: {
         flexDirection: "row",
-        textAlignVertical: 'center'
+        alignItems: 'center',
     },
 
     textIconConnection: {
