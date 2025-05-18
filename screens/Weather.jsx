@@ -48,30 +48,28 @@ const Weather = (props) => {
 
         <View style={styles.container}>
             <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
-            <ScrollView>
-                <View style={styles.containerDados}>
-                    <View style={styles.contentDados}>
-                        <View style={styles.contentHeader}>
-                            <Text style={[styles.contentHeaderTitle, styles.colorTemp]}>Temperature</Text>
-                            <Icon name="thermometer" size={32} style={styles.colorTemp} />
-                        </View>
-                        <View style={styles.contentMain}>
-                            <Text style={styles.textMainPrimary}>{temp}</Text>
-                            <Text style={styles.textMainSecundary}>°C</Text>
-                        </View>
+            <View style={styles.containerDados}>
+                <View style={styles.contentDados}>
+                    <View style={styles.contentHeader}>
+                        <Text style={[styles.contentHeaderTitle, styles.colorTemp]}>Temperature</Text>
+                        <Icon name="thermometer" size={32} style={styles.colorTemp} />
                     </View>
-                    <View style={styles.contentDados}>
-                        <View style={styles.contentHeader}>
-                            <Text style={[styles.contentHeaderTitle, styles.colorHumi]}>Humidity</Text>
-                            <Icon name="tint" size={32} style={styles.colorHumi} />
-                        </View>
-                        <View style={styles.contentMain}>
-                            <Text style={styles.textMainPrimary}>{humi}</Text>
-                            <Text style={styles.textMainSecundary}>%</Text>
-                        </View>
+                    <View style={styles.contentMain}>
+                        <Text style={styles.textMainPrimary}>{temp}</Text>
+                        <Text style={styles.textMainSecundary}>°C</Text>
                     </View>
                 </View>
-            </ScrollView>
+                <View style={styles.contentDados}>
+                    <View style={styles.contentHeader}>
+                        <Text style={[styles.contentHeaderTitle, styles.colorHumi]}>Humidity</Text>
+                        <Icon name="tint" size={32} style={styles.colorHumi} />
+                    </View>
+                    <View style={styles.contentMain}>
+                        <Text style={styles.textMainPrimary}>{humi}</Text>
+                        <Text style={styles.textMainSecundary}>%</Text>
+                    </View>
+                </View>
+            </View>
         </View>
     );
 }

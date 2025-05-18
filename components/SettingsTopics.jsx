@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from '../context/AppProvider';
+import ModalScreen from './ModalScreen';
 import TextInputLabel from './TextInputLabel';
 
 const SettingsTopics = (props) => {
@@ -15,11 +16,11 @@ const SettingsTopics = (props) => {
     const [alertTitle, setAlertTitle] = useState();
     const [alertSubscribe, setAlertSubscribe] = useState();
     const [alertPublish, setAlertPublish] = useState();
-    
+
     const _onPressEdit = () => {
         setModalVisible(true);
     }
-    
+
     const _onShowModal = async () => {
         const params = await appContext.screenMqttParams(props.numberScreen);
         setTitle(params.title);
@@ -44,11 +45,11 @@ const SettingsTopics = (props) => {
             setModalVisible(false);
             appContext.dispatch(
                 {
-                    type: "updateTitle", 
+                    type: "updateTitle",
                     payload: {
-                        "n" : props.numberScreen, 
-                        "title" : 
-                        title
+                        "n": props.numberScreen,
+                        "title":
+                            title
                     }
                 });
         } catch (error) {
@@ -90,85 +91,23 @@ const SettingsTopics = (props) => {
             <Pressable onPress={_onPressEdit}>
                 <Icon name="edit" color="#ccc" size={32} />
             </Pressable>
+            <ModalScreen 
+                title="Topics" 
+                onShowModal={_onShowModal} 
+                visible={modalVisible} 
+                setModalVisible={setModalVisible} 
+                onSave={_onSave} >
 
-            <Modal
-                visible={modalVisible}
-                animationType="none"
-                transparent={true}
-                onRequestClose={() => setModalVisible(!modalVisible)}
-                onShow={_onShowModal}>
-                <View style={styles.modalView}>
+                <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
+                <TextInputLabel label="Topic Subscribe" onChangeText={text => setTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
+                <TextInputLabel label="Topic Publish" onChangeText={text => setTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
-                    <TextInputLabel label="Title" onChangeText={text => setTitle(text)} value={title} keyboardType="default" alert={alertTitle} />
-                    <TextInputLabel label="Topic Subscribe" onChangeText={text => setTopicSubscribe(text)} value={topicSubscribe} keyboardType="default" alert={alertSubscribe} />
-                    <TextInputLabel label="Topic Publish" onChangeText={text => setTopicPublish(text)} value={topicPublish} keyboardType="default" alert={alertPublish} secureTextEntry={true} />
 
-                    <View style={styles.contentPressable}>
-                        <Pressable style={[styles.pressableButton]} onPress={() => _onSave()}>
-                            <Text style={styles.pressableText}>Save</Text>
-                        </Pressable>
-                        <View style={styles.pressableSeparator}></View>
-                        <Pressable style={[styles.pressableButton]} onPress={() => setModalVisible(!modalVisible)}>
-                            <Text style={styles.pressableText}>Cancel</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
+            </ModalScreen>
         </>
     );
 
 }
 
-const styles = StyleSheet.create({
-
-    modalView: {
-        margin: 20,
-        marginTop: 140,
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderRadius: 5,
-        padding: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-
-    contentPressable: {
-        flexDirection: 'row',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 4,
-    },
-
-    pressableButton: {
-        flex: 1,
-        width: '50%',
-        height: 45,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    pressableText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        alignItems: 'center',
-    },
-
-    pressableSeparator: {
-        borderRightWidth: 1,
-        borderRightColor: '#ccc',
-        height: '100%',
-        width: 1
-    },
-
-})
 
 export default SettingsTopics;

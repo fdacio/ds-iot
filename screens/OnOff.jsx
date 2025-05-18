@@ -72,17 +72,11 @@ const OnOff = (props) => {
     return (
         <View style={styles.container}>
             <HeaderScreen defaultTitle={title} editSetting={true} numberScreen={props.numScreen} />
-            <ScrollView style={styles.scrollView}>
-                <View style={styles.content}>
-                    <View style={styles.contentIconsBulb}>
-                        <IconBulb state={stateBulb} />
-                    </View>
-                    <View style={styles.contentButtons}>
-                        <ButtonOnOff type="on" action={_on} />
-                        <ButtonOnOff type="off" action={_off} />
-                    </View>
-                </View>
-            </ScrollView>
+            <View style={styles.containerDados}>
+                <IconBulb state={stateBulb} />
+                <ButtonOnOff type="on" action={_on} />
+                <ButtonOnOff type="off" action={_off} />
+            </View>
         </View>
     );
 }
@@ -95,16 +89,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    content: {
-        marginTop: 64,
-    },
-    contentIconsBulb: {
+
+    containerDados: {
+        flex: 1,
         alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: 32,
     },
 
-    contentButtons: {
-        alignItems: 'center',
-    }
 
 });
 

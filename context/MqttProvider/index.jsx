@@ -68,7 +68,6 @@ export const MqttProvider = ({ children }) => {
         clientMqtt.connect(options);
     }
 
-
     const handlerDisconnect = () => {
         if (mqttDontConnected()) return;
         clientMqtt.disconnect();

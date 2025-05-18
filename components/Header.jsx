@@ -19,7 +19,7 @@ const Header = () => {
                 <Text style={styles.textVersion}>{appContext.appVersion}</Text>
             </View>
             <View style={styles.contentRight}>
-                <View style={styles.contentRightComps}>
+                <View style={styles.contentRight.comps}>
                     <Settings />
                     <MqttConnect />
                 </View>
@@ -52,11 +52,13 @@ const styles = StyleSheet.create({
     contentRight: {
         flex: 1,
         alignItems: 'flex-end',
+        comps: {
+            flexDirection: 'row',
+            gap: 8,
+        }
     },
-    contentRightComps: {
-        flexDirection: 'row',
-        gap: 8,
-    },
+    
+
     title: {
         fontSize: 18,
         fontWeight: 'bold',
