@@ -7,7 +7,8 @@ const ModalScreen = (props) => {
         <Modal
             visible={props.visible}
             animationType="none"
-            transparent={true}
+            transparent={false}
+            backdropColor={'rgba(0, 0, 0, 0.1)'}
             onRequestClose={() => props.setModalVisible(!props.visible)}
             onShow={props.onShowModal}>
 

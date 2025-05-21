@@ -95,7 +95,7 @@ const Settings = () => {
     return (
         <>
             <Pressable onPress={_onPressEdit}>
-                <Icon name="cog" color="#ccc" size={32} />
+                <Icon name="cog" color="#ccc" size={24} />
             </Pressable>
             <ModalScreen 
                 title="Settings" 
