@@ -27,7 +27,7 @@ A tela do **DHT/Clima** recebe o payload no formato JSON abaixo:
 ```json
 {
   "temp": 25.3,
-  "umid": 62.1
+  "humi": 62.1
 }
 
 ```
