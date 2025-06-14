@@ -20,11 +20,11 @@ const Navigation = () => {
 	const _OnOff2 = () => (<OnOff numScreen="2" />);
 	const _OnOff3 = () => (<OnOff numScreen="3" />);
 	const _Weather = () => (<Weather numScreen="4" />)
-	
+
 	const tabs = [
-		{ name: "OnOff1",  component: _OnOff1,  title: appContext.state.titles[0], icon: "power-off" },
-		{ name: "OnOff2",  component: _OnOff2,  title: appContext.state.titles[1], icon: "power-off" },
-		{ name: "OnOff3",  component: _OnOff3,  title: appContext.state.titles[2], icon: "power-off" },
+		{ name: "OnOff1", component: _OnOff1, title: appContext.state.titles[0], icon: "power-off" },
+		{ name: "OnOff2", component: _OnOff2, title: appContext.state.titles[1], icon: "power-off" },
+		{ name: "OnOff3", component: _OnOff3, title: appContext.state.titles[2], icon: "power-off" },
 		{ name: "Weather", component: _Weather, title: appContext.state.titles[3], icon: "cloud-sun-rain" },
 	];
 
@@ -50,8 +50,8 @@ const Navigation = () => {
 
 	return (
 		<NavigationContainer>
-			<StatusBar backgroundColor='#B5B5B5' style="dark" translucent={false} />
 			<SafeAreaView style={styles.container}>
+				<StatusBar backgroundColor='#B5B5B5' barStyle="dark-content" translucent={false} />
 				<Header />
 				<Tab.Navigator
 					screenOptions={getTabNavigatorStyles}>
