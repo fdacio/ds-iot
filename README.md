@@ -38,10 +38,10 @@ A lógica do firmware do seu microcontrolador deve enviar o dado nesse formato.
 
 ## 🖼️ Imagens da Aplicação
 
-![Tela Principal](./assets/telas/tela1.png)
-![Configurações](./assets/telas/tela2.png)
-![Acionar Carga](./assets/telas/tela3.png)
-![Dashboard DHT](./assets/telas/tela4.png)
+![Tela Principal](https://daciosoftware.com.br/apps/ds-iot-mqtt/telas/tela1.png)
+![Configurações](https://daciosoftware.com.br/apps/ds-iot-mqtt/telas/tela2.png)
+![Acionar Carga](https://daciosoftware.com.br/apps/ds-iot-mqtt/telas/tela3.png)
+![Dashboard DHT](https://daciosoftware.com.br/apps/ds-iot-mqtt/telas/tela4.png)
 
 
 
